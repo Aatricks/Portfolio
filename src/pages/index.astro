@@ -20,12 +20,15 @@ const secondary = featuredProjects.slice(1);
 	<div class="stack page-shell">
 		<section class="hero wrapper stack gap-8">
 			<div class="hero-content stack gap-4">
-				<h1 class="hero-title">Android-native AI software for real device constraints.</h1>
+    			<div class="identity-header stack gap-2">
+                    <p class="name lede">Emilio Melis • Aatricks</p>
+                </div>
+				<h2 class="hero-title">Android-native AI software for real device constraints.</h2>
 				<p class="lede">
 					I build local inference systems where runtime ownership matters as much as model output.
 				</p>
 			</div>
-			
+
 			<div class="proof-strip">
 				<span>Android-native AI</span>
 				<span class="dot">•</span>
@@ -51,7 +54,7 @@ const secondary = featuredProjects.slice(1);
 						<PortfolioPreview project={flagship} variant="dominant" />
 					</div>
 				)}
-				
+
 				{secondary.length > 0 && (
 					<div class="secondary-grid">
 						{secondary.map((project) => (
