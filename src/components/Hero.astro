@@ -1,82 +1,72 @@
 ---
 interface Props {
 	title: string;
-    title2: string;
+	title2?: string;
 	tagline?: string;
 	align?: 'start' | 'center';
+	variant?: 'display' | 'page';
 }
 
-const { align = 'center', tagline, title, title2 } = Astro.props;
+const { align = 'center', tagline, title, title2, variant = 'display' } = Astro.props;
 ---
 
-<div class:list={['hero stack gap-4', align]}>
-    <div class="stack gap-2">
-        <h1 class="title">{title}</h1>
-        <h1 class="title">{title2}</h1>
-        {tagline && <p class="tagline">{tagline}</p>}
-		<p><span id="typed"></span></p>
+<div class:list={['hero stack gap-4', align, variant]}>
+	<div class="stack gap-2">
+		<h1 class="title">{title}</h1>
+		{title2 && <h1 class="title muted">{title2}</h1>}
+		{tagline && <p class="tagline">{tagline}</p>}
 	</div>
 	<slot />
 </div>
 
-<script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
-<script>
-//GSAP
-import { gsap } from "gsap";
-let tl = gsap.timeline({
-	scrollTrigger:{
-		trigger: ".hero",
-		start: "top top",
-		end: "bottom bottom",
-		scrub: false,
-		markers: true,
-		toggleActions: 'play reverse play reverse'
-	}
-})
-tl.from(".hero", {
-	duration: 3,
-	opacity: 0,
-	y: 100,
-	ease: "power4.out"
-})
-</script>
-
 <style>
-    .hero {
-        font-size: var(--text-lg);
-        text-align: center;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-	p{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
+	.hero {
+		font-size: var(--text-lg);
+		text-align: center;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
 
-    .title {
-        font-size: var(--text-3xl);
-        color: var(--gray-0);
-        text-align: center;
-    }
+	.title {
+		font-size: clamp(2.4rem, 6vw, 4.75rem);
+		color: var(--gray-0);
+		text-align: center;
+		letter-spacing: -0.055em;
+		line-height: 0.95;
+		max-width: 12ch;
+		text-wrap: balance;
+	}
 
-    @media (min-width: 50em) {
-        .hero {
-            font-size: var(--text-xl);
-        }
+	.title.muted {
+		color: var(--gray-300);
+	}
 
-        .start {
-            text-align: start;
-        }
+	.tagline {
+		max-width: 38rem;
+		margin-inline: auto;
+		color: var(--gray-300);
+	}
 
-        .start .title,
-        .start .tagline {
-            margin-inline: unset;
-        }
+	.page .title {
+		font-size: clamp(2.45rem, 4.35vw, 3.85rem);
+		max-width: 16ch;
+	}
 
-        .title {
-            font-size: var(--text-5xl);
-        }
-    }
+	@media (min-width: 50em) {
+		.hero {
+			font-size: var(--text-xl);
+		}
+
+		.start {
+			text-align: start;
+			align-items: flex-start;
+		}
+
+		.start .title,
+		.start .tagline {
+			margin-inline: unset;
+			text-align: start;
+		}
+	}
 </style>

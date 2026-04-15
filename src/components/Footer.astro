@@ -2,33 +2,53 @@
 const currentYear = new Date().getFullYear();
 ---
 
-<footer>
+<footer id="contact">
 	<div class="group">
-		<a href="mailto:melis.emilio1@gmail.com" target="blank" class="flex text-sm mr-6 my-2">melis.emilio1@gmail.com</a>
+		<p>
+			Open to internships and engineering conversations in on-device AI, Android, and
+			runtime-heavy software.
+		</p>
+		<a
+			href="mailto:melis.emilio1@gmail.com"
+			target="_blank"
+			rel="noreferrer"
+			class="contact-link"
+		>
+			melis.emilio1@gmail.com
+		</a>
 	</div>
-	<p class="socials">
-		<a href="https://twitter.com/@emilio_meli"> Twitter</a>
-		<a href="https://github.com/Aatrick"> GitHub</a>
-		<a href="https://discordapp.com/users/293781611764514816"> Discord</a>
-	</p>
+	<p class="meta">© {currentYear}</p>
 </footer>
+
 <style>
 	footer {
 		display: flex;
 		position: relative;
 		flex-direction: column;
-		gap: 3rem;
+		gap: 1.5rem;
 		margin-top: auto;
-		padding: 3rem 2rem 3rem;
-		text-align: center;
-		color: var(--gray-400);
-		font-size: var(--text-sm);
+		padding: 3rem 1.5rem 2.6rem;
+		color: var(--gray-300);
+		font-size: 0.97rem;
+		border-top: 1px solid color-mix(in srgb, var(--gray-700) 16%, transparent);
+	}
+
+	.group {
+		display: grid;
+		gap: 0.4rem;
+		max-width: 32rem;
+		line-height: 1.65;
+	}
+
+	.contact-link {
+		color: var(--gray-100);
+		text-decoration: none;
 	}
 
 	footer a {
 		color: var(--gray-400);
 		text-decoration: 1px solid underline transparent;
-		text-underline-offset: 0.25em;
+		text-underline-offset: 0.22em;
 		transition: text-decoration-color var(--theme-transition);
 	}
 
@@ -37,34 +57,16 @@ const currentYear = new Date().getFullYear();
 		text-decoration-color: currentColor;
 	}
 
-	.group {
-		display: flex;
-		flex-direction: column;
-		gap: 0.5rem;
-	}
-
-	.socials {
-		display: flex;
-		justify-content: center;
-		gap: 1rem;
-		flex-wrap: wrap;
+	.meta {
+		color: var(--gray-300);
 	}
 
 	@media (min-width: 50em) {
 		footer {
 			flex-direction: row;
 			justify-content: space-between;
-			padding: 2.5rem 5rem;
-		}
-
-		.group {
-			flex-direction: row;
-			gap: 1rem;
-			flex-wrap: wrap;
-		}
-
-		.socials {
-			justify-content: flex-end;
+			align-items: flex-end;
+			padding: 2.5rem 5rem 2.2rem;
 		}
 	}
 </style>

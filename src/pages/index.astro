@@ -1,368 +1,196 @@
 ---
 import { getCollection } from 'astro:content';
 
-// Layout import — provides basic page elements: <head>, <nav>, <footer> etc.
 import BaseLayout from '../layouts/BaseLayout.astro';
-
-// Component Imports
-import Grid from '../components/Grid.astro';
-import Hero from '../components/Hero.astro';
-import Icon from '../components/Icon.astro';
-import Pill from '../components/Pill.astro';
 import PortfolioPreview from '../components/PortfolioPreview.astro';
-import Presentation from '../components/presentation.astro';
-import Languages from '../components/languages.astro';
 
-// Page section components
-import Education from '../components/Education.astro';
-import Framework from '../components/Framework.astro';
-import Langues from '../components/Langues.astro';
-import Experiences from '../components/Experiences.astro';
-
-// Content Fetching: List four most recent work projects
-const projects = (await getCollection('work'))
-	.sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf())
-	.slice(0, 9);
+const featuredProjects = (await getCollection('work'))
+	.filter((project) => project.data.featured)
+	.sort((a, b) => (a.data.featuredOrder ?? 999) - (b.data.featuredOrder ?? 999))
+	.slice(0, 3);
 ---
 
-<BaseLayout>
-	<div class="stack gap-20 lg:gap-48">
-		<div class="wrapper stack gap-8 lg:gap-20">
-			<header class="hero" style="min-height: 100vh; overflow: hidden;">
-				<Hero
-				title='Hi  👋'
-				title2="I'm Emilio"
-				align="start">
-					<div class="roles">
-						<Pill><Icon icon="code" size="1.33em" /> Developer</Pill>
-						<Pill><img width="20" height="20" src="/Portfolio/assets/engineer.webp"/>Engineer</Pill>
-					</div>
-					<div class="w-full flex flex-row justify-center pt-30">
-						<div class="animate-bounce bg-white dark:bg-slate-800 w-10 h-10 ring-1 ring-slate-900/5 dark:ring-slate-200/20 shadow-lg rounded-full flex items-center justify-center">
-							<svg class="w-6 h-6 text-violet-500" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
-							<path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-							</svg>
-						</div>
-						</div>
-				</Hero>
-				<script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
-				<script>
-					window.onload = function() {
-				    var typed = new Typed('#typed', {
-				      strings: ['Developing as a <strong>hobby</strong>', 'Developing as a <strong>job</strong>', "<strong>Polytech' Engineer</strong>"],
-				      typeSpeed: 50,
-				      backSpeed: 30,
-				      loop: true,
-				      smartBackspace: true,
-				    });
-				  };
-				</script>
-			</header>
-			<br/>
-			<br/>
-			<br/>
-			<br/>
-			<Presentation/>
-			<br/>
-			<br/>
-			<br/>
-			<br/>
-			<Education/>
-			<br/>
-			<br/>
-			<br/>
-			<br/>
-			<Experiences/>
+<BaseLayout
+	title="Emilio Melis | Aatricks"
+	description="Android-native AI tooling focused on local inference, runtime constraints, and product-grade implementation."
+>
+	<div class="stack page-shell">
+		<section class="hero wrapper">
+			<div class="hero-copy stack gap-4">
+				<h1>Android-native AI tools built for real device constraints.</h1>
+				<p class="lede">
+					I build local inference software where runtime ownership, memory budgets, packaging,
+					and interface quality matter as much as model output.
+				</p>
 			</div>
-			<div class="langues-header">
-				<Icon icon="translate" color="var(--accent-regular)" size="2.5rem" gradient />
-				<h3>Languages :</h3>
-			</div>
-			<Langues/>
-			<div class="langues-header">
-				<Icon icon="code" color="var(--accent-regular)" size="2.5rem" gradient />
-				<h3>Programming languages :</h3>
-			</div>
-			<Languages/>
-			<div class="langues-header">
-				<Icon icon="code" color="var(--accent-regular)" size="2.5rem" gradient />
-				<h3>Frameworks :</h3>
-			</div>
-			<Framework/>
-			<main class="wrapper stack gap-20 lg:gap-48">
-				<section class="section with-background with-cta">
-					<header class="section-header stack gap-2 lg:gap-4">
-						<h3>My Projects</h3>
-					</header>
-					<div class="gallery">
-					
-						<Grid variant="offset">
-							<li>
-								<PortfolioPreview project={projects[0]} image="/Portfolio/assets/SD1.webp" />
-							</li>
-							<li>
-								<PortfolioPreview project={projects[1]} image="/Portfolio/assets/PoSubmarine.webp" />
-							</li>
-							<li>
-								<PortfolioPreview project={projects[2]} image="/Portfolio/assets/android-studio.webp" />
-							</li>
-							<li>
-								<PortfolioPreview project={projects[3]} image="/Portfolio/assets/CChess.webp" />
-							</li>
-							<li>
-								<PortfolioPreview project={projects[4]} image="/Portfolio/assets/adb.webp" />
-							</li>
-							<li>
-								<PortfolioPreview project={projects[5]} image="/Portfolio/assets/dramaquick.webp" />
-							</li>
-							<li>
-								<PortfolioPreview project={projects[6]} image="/Portfolio/assets/julia3.webp" />
-							</li>
-							<li>
-								<a class="cd" href="https://github.com/Aatrick?tab=repositories" id="moreRepo">
-									<span class="tit">More Projects</span>
-									<img class="imgpro" src="/Portfolio/assets/moreProjects.webp" loading="lazy" decoding="async" />
-								</a>
-							</li>
-							<!--
-							{
-								projects.slice(2).map((project) => (
-									<li>
-										<PortfolioPreview project={project} />
-									</li>
-								))
-							}
-							-->
-					</Grid>
-				</div>
-			</section>
-		</main>
+		</section>
 
+		<section class="wrapper">
+			<ul class="featured-grid">
+				{
+					featuredProjects.map((project) => (
+						<li>
+							<PortfolioPreview project={project} />
+						</li>
+					))
+				}
+			</ul>
+		</section>
+
+		<section class="wrapper about-band" id="about">
+			<p class="eyebrow">About</p>
+			<div class="about-grid">
+				<p class="about-copy">
+					I focus on the layer where models become products: Android APIs, native runtimes,
+					fallback paths, packaging, and the performance work that keeps local AI usable.
+				</p>
+			</div>
+		</section>
 	</div>
 </BaseLayout>
 
-<script>
-	import {gsap} from 'gsap';
-	const observer = new IntersectionObserver(entries => {
-	  entries.forEach(entry => {
-	    const pres = entry.target.querySelector('.gallery');
-
-	    if (entry.isIntersecting) {
-	        let tl1 = gsap.timeline({
-	                scrollTrigger:{
-	                    trigger: ".gallery",
-	                    start: "center 50%",
-	                    end: "bottom bottom",
-	                    scrub: false,
-	                    markers: true,
-	                    toggleActions: 'play reverse play reverse'
-	                }
-	            })
-	            tl1.to(".gallery", {
-	                duration:3,
-	                opacity:1,
-	                y: -100,
-	                ease: "power4.out"
-	            })
-	    }
-	  });
-	});
-	
-	observer.observe(document.querySelector('.gallery'));
-</script>
-
 <style>
+	.page-shell {
+		gap: clamp(2.4rem, 6vw, 4.75rem);
+		padding-bottom: 4.5rem;
+	}
+
 	.hero {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 100dvh;
-	width: 100%;
-    gap: 2rem;
+		padding-top: clamp(2rem, 5vw, 3.75rem);
+		padding-bottom: 0.25rem;
 	}
 
-	/* .wrapper {
-		width: 100%;
-		max-width: 83rem;
-		margin: 0 auto;
-		padding: 0 1rem;
-		box-sizing: border-box;
-	} */
-
-	.gallery{
-		margin-top: 100px;
-		/* width: 100%;
-		max-width: 100%;
-		overflow-x: hidden; */
-	}
-
-	.roles {
-			margin-top: 0.5rem;
-			display: flex;
-			gap: 0.5rem;
-		}
-
-	@media (min-width: 50em) {
-		.hero {
-			display: grid;
-		}
-	}
-
-	.langues-header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem; /* Adjust this value to change the space between the icon and the text */
-	}
-
-	/* ====================================================== */
-
-	.section {
-		display: grid;
-		gap: 2rem;
-	}
-
-	.with-background {
-		position: relative;
-	}
-
-	.with-background::before {
-		--hero-bg: var(--bg-image-subtle-2);
-
-		content: '';
-		position: absolute;
-		pointer-events: none;
-		left: 50%;
-		width: 100dvw;
-		aspect-ratio: calc(2.25 / var(--bg-scale));
-		top: 0;
-		transform: translateY(-75%) translateX(-50%);
-		background:
-			url('/assets/backgrounds/noise.png') top center/220px repeat,
-			var(--hero-bg) center center / var(--bg-gradient-size) no-repeat,
-			var(--gray-999);
-		background-blend-mode: overlay, normal, normal, normal;
-		mix-blend-mode: var(--bg-blend-mode);
-		z-index: -1;
-	}
-
-	.with-background.bg-variant::before {
-		--hero-bg: var(--bg-image-subtle-1);
-	}
-
-	.section-header {
-		justify-self: center;
-		text-align: center;
-		max-width: 50ch;
-		font-size: var(--text-md);
+	.eyebrow {
 		color: var(--gray-300);
+		text-transform: uppercase;
+		letter-spacing: 0.14em;
+		font-size: 0.8rem;
 	}
 
-	.section-header h3 {
-		font-size: var(--text-2xl);
+	.hero-copy {
+		max-width: 58rem;
 	}
 
-	@media (min-width: 50em) {
-		.section {
-			grid-template-columns: repeat(4, 1fr);
-			grid-template-areas: 'header header header header' 'gallery gallery gallery gallery';
-			gap: 5rem;
-			
-		}
-
-		.section.with-cta {
-			grid-template-areas: 'header header header cta' 'gallery gallery gallery gallery';
-		}
-
-		.section-header {
-			grid-area: header;
-			font-size: var(--text-lg);
-		}
-
-		.section-header h3 {
-			font-size: var(--text-4xl);
-		}
-
-		.with-cta .section-header {
-			justify-self: flex-start;
-			text-align: left;
-		}
-
-		.gallery {
-			grid-area: gallery;
-			opacity: 0;
-		}
-
-		.cta {
-			grid-area: cta;
-		}
+	.hero h1 {
+		font-size: clamp(2.9rem, 6vw, 5rem);
+		line-height: 0.96;
+		letter-spacing: -0.055em;
+		max-width: 11.5ch;
 	}
 
-	.cd {
+	.lede,
+	.about-copy,
+	.about-note {
+		color: var(--gray-200);
+	}
+
+	.lede {
+		max-width: 39rem;
+		font-size: clamp(1.02rem, 1.35vw, 1.16rem);
+		line-height: 1.72;
+	}
+
+	.section-head {
 		display: grid;
-		grid-template: auto 1fr / auto 1fr;
-		height: 11rem;
-		background: var(--gradient-subtle);
-		border: 1px solid var(--gray-800);
-		border-radius: 0.75rem;
-		overflow: hidden;
-		box-shadow: var(--shadow-sm);
+		gap: 0.45rem;
+		max-width: 56rem;
+	}
+
+	.section-note {
+		max-width: 38rem;
+		color: var(--gray-300);
+		font-size: 0.98rem;
+		line-height: 1.65;
+	}
+
+	.featured-grid {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: grid;
+		gap: 1.15rem;
+	}
+
+	.hero-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.8rem;
+		padding-top: 0.2rem;
+	}
+
+	.hero-link {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 2.8rem;
+		padding: 0.7rem 1rem;
+		border-radius: 999rem;
+		border: 1px solid color-mix(in srgb, var(--gray-700) 28%, transparent);
+		color: var(--gray-100);
 		text-decoration: none;
-		font-family: var(--font-brand);
-		font-size: var(--text-lg);
-		font-weight: 500;
-		transition: box-shadow var(--theme-transition);
+		font-size: 0.95rem;
+		transition:
+			border-color var(--theme-transition),
+			background-color var(--theme-transition),
+			color var(--theme-transition);
 	}
 
-	.cd:hover {
-		box-shadow: var(--shadow-md);
-
+	.hero-link:hover,
+	.hero-link:focus {
+		border-color: color-mix(in srgb, var(--gray-500) 38%, transparent);
+		background: color-mix(in srgb, var(--gray-900) 78%, transparent);
 	}
 
-	.cd .imgpro {
-  		transform: scale(1);
-  		transition: transform 0.3s ease-in-out;
+	.hero-link-primary {
+		background: var(--gray-0);
+		border-color: transparent;
+		color: var(--gray-999);
 	}
 
-	.cd:hover .imgpro {
-  		transform: scale(1.1);
+	.hero-link-primary:hover,
+	.hero-link-primary:focus {
+		background: color-mix(in srgb, var(--gray-0) 88%, var(--accent-dark) 12%);
 	}
 
-	.tit {
-	  	grid-area: 1 / 1 / 2 / 2;
-	  	z-index: 1;
-	  	margin: 0.5rem;
-	  	padding: 0.5rem 1rem;
-	  	background: var(--gray-999);
-	  	color: var(--gray-200);
-	  	border-radius: 0.375rem;
-	  	opacity: 0; 
-	  	transition: opacity 0.3s ease-in-out; 
-	}
-	
-	.cd:hover .tit {
-	  	opacity: 1; 
+	.about-band {
+		display: grid;
+		gap: 0.75rem;
+		padding-top: 1.1rem;
 	}
 
+	.about-grid {
+		display: grid;
+		gap: 0.9rem;
+		max-width: 58rem;
+	}
 
-	.imgpro {
-		grid-area: 1 / 1 / 3 / 3;
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
+	.about-copy {
+		max-width: 38rem;
+		font-size: 0.98rem;
+		line-height: 1.7;
+	}
+
+	.about-note {
+		color: var(--gray-300);
+		font-size: 0.95rem;
+		line-height: 1.65;
 	}
 
 	@media (min-width: 50em) {
-		.cd {
-			height: 22rem;
-			border-radius: 1.5rem;
+		.section-head {
+			grid-template-columns: minmax(12rem, 0.45fr) minmax(0, 1fr);
+			align-items: end;
+			column-gap: 1.5rem;
 		}
 
-		.tit {
-			border-radius: 0.9375rem;
+		.featured-grid {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+			gap: 1.4rem;
+		}
+
+		.about-grid {
+			grid-template-columns: minmax(0, 1.5fr) minmax(18rem, 0.8fr);
+			align-items: start;
 		}
 	}
-
-	
 </style>
