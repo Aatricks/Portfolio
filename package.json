@@ -3,15 +3,15 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev": "astro dev",
-    "start": "astro dev",
-    "build": "astro build",
-    "check": "astro check",
-    "preview": "astro preview",
-    "preview:local": "astro preview --host 127.0.0.1 --port 4321",
+    "dev": "node ./node_modules/astro/bin/astro.mjs dev",
+    "start": "node ./node_modules/astro/bin/astro.mjs dev",
+    "build": "node ./node_modules/astro/bin/astro.mjs build",
+    "check": "node ./node_modules/astro/bin/astro.mjs check",
+    "preview": "node ./node_modules/astro/bin/astro.mjs preview",
+    "preview:local": "node ./node_modules/astro/bin/astro.mjs preview --host 127.0.0.1 --port 4321",
     "smoke:site": "node scripts/site-smoke.mjs",
     "smoke:site:fresh": "npm run build && npm run smoke:site",
-    "astro": "astro"
+    "astro": "node ./node_modules/astro/bin/astro.mjs"
   },
   "dependencies": {
     "@studio-freight/lenis": "^1.0.34",

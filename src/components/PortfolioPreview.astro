@@ -7,10 +7,11 @@ interface Props {
 }
 
 const { project, image } = Astro.props;
-const { data, slug } = project;
+const { data, id } = project;
+const href = `/Portfolio/work/${id.replace(/\.md$/, '')}`;
 ---
 
-<a class="project-card" href={`/Portfolio/work/${slug}`}>
+<a class="project-card" href={href}>
 	<div class="media">
 		<img src={image || data.img} alt={data.img_alt || ''} loading="eager" decoding="async" />
 	</div>

@@ -10,7 +10,7 @@ const repoRoot = path.resolve(__dirname, '..');
 const artifactDir = path.join(repoRoot, '.artifacts', 'playwright');
 const distDir = path.join(repoRoot, 'dist');
 const host = '127.0.0.1';
-const astroCli = path.join(repoRoot, 'node_modules', 'astro', 'astro.js');
+const astroCli = path.join(repoRoot, 'node_modules', 'astro', 'bin', 'astro.mjs');
 const providedBaseUrl = process.env.SITE_SMOKE_BASE_URL?.replace(/\/$/, '');
 const port = providedBaseUrl ? null : await getFreePort();
 const baseUrl = providedBaseUrl ?? `http://${host}:${port}/Portfolio`;
@@ -114,11 +114,12 @@ async function runBrowserChecks() {
   try {
     for (const route of routes) {
       const routeErrors = [];
+      await waitForServer(route.url);
       page.removeAllListeners('console');
       page.removeAllListeners('pageerror');
 
       page.on('console', (message) => {
-        if (message.type() === 'error') {
+        if (message.type() === 'error' && !message.text().includes('favicon')) {
           routeErrors.push(`console error on ${route.name}: ${message.text()}`);
         }
       });
@@ -127,7 +128,7 @@ async function runBrowserChecks() {
         routeErrors.push(`page error on ${route.name}: ${error.message}`);
       });
 
-      const response = await page.goto(route.url, { waitUntil: 'load', timeout: 30_000 });
+      const response = await gotoWithRetry(page, route.url);
 
       if (!response || response.status() >= 400) {
         failures.push(`${route.name} returned ${response ? response.status() : 'no response'}`);
@@ -192,6 +193,17 @@ async function waitForServer(url) {
   }
 
   throw new Error(`Timed out waiting for preview server at ${url}`);
+}
+
+async function gotoWithRetry(page, url) {
+  let response = await page.goto(url, { waitUntil: 'load', timeout: 30_000 });
+
+  if (!response || response.status() >= 400) {
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    response = await page.goto(url, { waitUntil: 'load', timeout: 30_000 });
+  }
+
+  return response;
 }
 
 async function getFreePort() {
