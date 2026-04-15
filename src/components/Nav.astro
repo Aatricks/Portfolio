@@ -1,14 +1,13 @@
 ---
 const utilityLinks = [
-	{ label: 'GitHub', href: 'https://github.com/Aatricks' },
-	{ label: 'LinkedIn', href: 'https://www.linkedin.com/in/emilio-melis-14a801338/' },
-	{ label: 'Contact', href: 'mailto:melis.emilio1@gmail.com' },
+	{ label: 'Work', href: '/Portfolio/#selected-work' },
+	{ label: 'Focus', href: '/Portfolio/#about' },
+	{ label: 'Resume', href: '/Portfolio/resume.pdf' }
 ];
 ---
 
 <nav class="site-nav wrapper" aria-label="Site">
 	<a class="site-title" href="/Portfolio/">
-		<span class="site-mark">Aatricks</span>
 		<span class="site-name">Emilio Melis</span>
 	</a>
 	<div class="utility-links">
@@ -28,30 +27,28 @@ const utilityLinks = [
 		align-items: center;
 		justify-content: space-between;
 		gap: 1rem;
-		padding-top: 1rem;
-		padding-bottom: 0.35rem;
+		padding-top: 1.5rem;
+		padding-bottom: 1.5rem;
 		font-family: var(--font-brand);
+		position: sticky;
+		top: 0;
+		z-index: 10;
+		background: rgba(6, 8, 13, 0.85);
+		backdrop-filter: blur(8px);
+		border-bottom: 1px solid rgba(255, 255, 255, 0.03);
 	}
 
 	.site-title {
 		display: inline-flex;
-		flex-direction: column;
-		gap: 0.12rem;
-		color: inherit;
-		text-decoration: none;
-	}
-
-	.site-mark {
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-		font-size: 0.75rem;
+		align-items: center;
 		color: var(--gray-0);
+		text-decoration: none;
+		font-weight: 500;
+		letter-spacing: -0.01em;
 	}
 
 	.site-name {
-		font-size: 0.9rem;
-		letter-spacing: -0.02em;
-		color: var(--gray-300);
+		font-size: 1rem;
 	}
 
 	.utility-links {
@@ -59,32 +56,25 @@ const utilityLinks = [
 		align-items: center;
 		flex-wrap: wrap;
 		justify-content: flex-end;
-		gap: 0.85rem;
+		gap: 1.5rem;
 	}
 
 	.utility-link {
-		display: inline-flex;
-		align-items: center;
 		color: var(--gray-300);
 		text-decoration: none;
-		font-size: 0.92rem;
-		text-underline-offset: 0.22em;
-		text-decoration: 1px solid underline transparent;
-		transition:
-			color var(--theme-transition),
-			text-decoration-color var(--theme-transition);
+		font-size: 0.9rem;
+		transition: color var(--theme-transition);
 	}
 
 	.utility-link:hover,
 	.utility-link:focus {
-		color: var(--gray-100);
-		text-decoration-color: currentColor;
+		color: var(--gray-0);
 	}
 
 	@media (min-width: 50em) {
 		.site-nav {
-			padding-top: 1.15rem;
-			padding-bottom: 0.55rem;
+			padding-top: 2rem;
+			padding-bottom: 2rem;
 		}
 	}
 </style>

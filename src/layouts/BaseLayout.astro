@@ -1,8 +1,4 @@
 ---
-// Learn about using Astro layouts:
-// https://docs.astro.build/en/core-concepts/layouts/
-
-// Component Imports
 import MainHead from '../components/MainHead.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
@@ -20,14 +16,25 @@ const { title, description } = Astro.props;
 		<MainHead title={title} description={description} />
 	</head>
 	<body>
-		<div class="stack backgrounds">
+		<div class="backgrounds"></div>
+		<div class="stack content-wrapper">
 			<Nav />
 			<slot />
 			<Footer />
 		</div>
 		<script>
 			import Lenis from '@studio-freight/lenis';
-			const lenis = new Lenis();
+			const lenis = new Lenis({
+				duration: 1.2,
+				easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+				orientation: 'vertical',
+				gestureOrientation: 'vertical',
+				smoothWheel: true,
+				wheelMultiplier: 1,
+				smoothTouch: false,
+				touchMultiplier: 2,
+				infinite: false,
+			});
 
 			function raf(time: number) {
 				lenis.raf(time);
@@ -39,15 +46,21 @@ const { title, description } = Astro.props;
 
 		<style>
 			.backgrounds {
-				min-height: 100%;
-				isolation: isolate;
-				background:
-					radial-gradient(58rem 28rem at 50% 0%, rgba(76, 96, 160, 0.18), transparent 62%),
-					radial-gradient(22rem 14rem at 84% 10%, rgba(133, 98, 72, 0.08), transparent 72%),
-					linear-gradient(180deg, rgba(13, 15, 23, 0.98) 0%, rgba(9, 11, 17, 1) 42%, rgba(9, 11, 17, 1) 100%);
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100vw;
+				height: 100vh;
+				z-index: -1;
+				background-color: var(--gray-999);
+				background-image: 
+					radial-gradient(ellipse at top, rgba(20, 26, 45, 0.4) 0%, transparent 60%),
+					radial-gradient(ellipse at bottom left, rgba(16, 20, 34, 0.3) 0%, transparent 50%);
+			}
+			.content-wrapper {
+				min-height: 100vh;
 			}
 			@media (forced-colors: active) {
-				/* Deactivate custom backgrounds for high contrast users. */
 				.backgrounds {
 					background: none;
 				}

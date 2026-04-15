@@ -8,122 +8,252 @@ const featuredProjects = (await getCollection('work'))
 	.filter((project) => project.data.featured)
 	.sort((a, b) => (a.data.featuredOrder ?? 999) - (b.data.featuredOrder ?? 999))
 	.slice(0, 3);
+
+const flagship = featuredProjects[0];
+const secondary = featuredProjects.slice(1);
 ---
 
 <BaseLayout
-	title="Emilio Melis | Aatricks"
+	title="Emilio Melis | Systems Engineer"
 	description="Android-native AI tooling focused on local inference, runtime constraints, and product-grade implementation."
 >
 	<div class="stack page-shell">
-		<section class="hero wrapper">
-			<div class="hero-copy stack gap-4">
-				<h1>Android-native AI tools built for real device constraints.</h1>
+		<section class="hero wrapper stack gap-8">
+			<div class="hero-content stack gap-4">
+				<h1 class="hero-title">Android-native AI software for real device constraints.</h1>
 				<p class="lede">
-					I build local inference software where runtime ownership, memory budgets, packaging,
-					and interface quality matter as much as model output.
+					I build local inference systems where runtime ownership matters as much as model output.
+				</p>
+			</div>
+			
+			<div class="proof-strip">
+				<span>Android-native AI</span>
+				<span class="dot">•</span>
+				<span>local inference</span>
+				<span class="dot">•</span>
+				<span>native runtimes</span>
+				<span class="dot">•</span>
+				<span>performance engineering</span>
+				<span class="dot">•</span>
+				<span>constrained systems</span>
+			</div>
+		</section>
+
+		<section class="wrapper stack gap-8" id="selected-work">
+			<div class="section-header">
+				<h2 class="section-title">Selected Work</h2>
+				<div class="section-line"></div>
+			</div>
+
+			<div class="projects-layout stack gap-10">
+				{flagship && (
+					<div class="flagship-container">
+						<PortfolioPreview project={flagship} variant="dominant" />
+					</div>
+				)}
+				
+				{secondary.length > 0 && (
+					<div class="secondary-grid">
+						{secondary.map((project) => (
+							<PortfolioPreview project={project} variant="secondary" />
+						))}
+					</div>
+				)}
+			</div>
+		</section>
+
+		<section class="wrapper stack gap-8" id="engineering-focus">
+			<div class="section-header">
+				<h2 class="section-title">Engineering Focus</h2>
+				<div class="section-line"></div>
+			</div>
+			<div class="focus-grid">
+				<div class="focus-item">
+					<h3>Native Runtimes</h3>
+					<p>Bridging raw C++ inference engines with usable Android product surfaces via JNI and Kotlin wrappers.</p>
+				</div>
+				<div class="focus-item">
+					<h3>Local Inference</h3>
+					<p>Handling memory budgets, artifact validation, and caching on device instead of relying on remote APIs.</p>
+				</div>
+				<div class="focus-item">
+					<h3>Constrained Systems</h3>
+					<p>Building architecture that falls back gracefully across CPU/GPU/NPU on diverse hardware profiles.</p>
+				</div>
+			</div>
+		</section>
+
+		<section class="wrapper stack gap-8" id="about">
+			<div class="section-header">
+				<h2 class="section-title">About</h2>
+				<div class="section-line"></div>
+			</div>
+			<div class="about-content">
+				<p>
+					I am an engineering student focused on the reality of deploying models to constrained hardware. My work centers on runtime ownership, memory budgeting, and building stable native architectures that bridge raw inference engines with usable product surfaces. I care deeply about performance engineering and low-level system implementation.
 				</p>
 			</div>
 		</section>
 
-		<section class="wrapper" id="selected-work" aria-labelledby="selected-work-title">
-			<h2 id="selected-work-title" class="sr-only">Selected work</h2>
-			<ul class="featured-grid">
-				{
-					featuredProjects.map((project) => (
-						<li>
-							<PortfolioPreview project={project} />
-						</li>
-					))
-				}
-			</ul>
-		</section>
-
-		<section class="wrapper about-band" id="about">
-			<p class="eyebrow">About</p>
-			<div class="about-grid">
-				<p class="about-copy">
-					I focus on the layer where models become products: Android APIs, native runtimes,
-					fallback paths, packaging, and the performance work that keeps local AI usable.
-				</p>
-			</div>
-		</section>
 	</div>
 </BaseLayout>
 
 <style>
 	.page-shell {
-		gap: clamp(2.4rem, 6vw, 4.75rem);
-		padding-bottom: 4.5rem;
+		gap: clamp(4rem, 8vw, 8rem);
+		padding-bottom: 4rem;
+		padding-top: 4rem;
 	}
 
-	.hero {
-		padding-top: clamp(2rem, 5vw, 3.75rem);
-		padding-bottom: 0.25rem;
+	.hero-content {
+		max-width: 50rem;
 	}
 
-	.eyebrow {
-		color: var(--gray-300);
-		text-transform: uppercase;
-		letter-spacing: 0.14em;
-		font-size: 0.8rem;
-	}
-
-	.hero-copy {
-		max-width: 58rem;
-	}
-
-	.hero h1 {
-		font-size: clamp(2.9rem, 6vw, 5rem);
-		line-height: 0.96;
-		letter-spacing: -0.055em;
-		max-width: 11.5ch;
-	}
-
-	.lede,
-	.about-copy {
-		color: var(--gray-200);
+	.hero-title {
+		font-size: clamp(2.5rem, 5vw, 4.5rem);
+		line-height: 1.05;
+		letter-spacing: -0.03em;
+		color: var(--gray-0);
 	}
 
 	.lede {
-		max-width: 39rem;
-		font-size: clamp(1.02rem, 1.35vw, 1.16rem);
-		line-height: 1.72;
+		color: var(--gray-300);
+		font-size: clamp(1.1rem, 1.5vw, 1.25rem);
+		line-height: 1.6;
+		max-width: 40rem;
 	}
 
-	.featured-grid {
-		list-style: none;
-		padding: 0;
-		margin: 0;
-		display: grid;
-		gap: 1.15rem;
-	}
-
-	.about-band {
-		display: grid;
+	.proof-strip {
+		display: flex;
+		flex-wrap: wrap;
 		gap: 0.75rem;
-		padding-top: 1.1rem;
+		align-items: center;
+		font-family: var(--font-brand);
+		font-size: 0.85rem;
+		color: var(--gray-500);
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		padding-top: 2rem;
 	}
 
-	.about-grid {
+	.proof-strip .dot {
+		color: var(--accent-regular);
+	}
+
+	.section-header {
+		display: flex;
+		align-items: center;
+		gap: 1.5rem;
+	}
+
+	.section-title {
+		font-size: 1.25rem;
+		color: var(--gray-200);
+		font-weight: 500;
+		white-space: nowrap;
+	}
+
+	.section-line {
+		height: 1px;
+		width: 100%;
+		background: linear-gradient(90deg, rgba(255,255,255,0.1), transparent);
+	}
+
+	.projects-layout {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.secondary-grid {
 		display: grid;
-		gap: 0.9rem;
-		max-width: 58rem;
+		grid-template-columns: 1fr;
+		gap: 2rem;
 	}
 
-	.about-copy {
-		max-width: 38rem;
-		font-size: 0.98rem;
+	.focus-grid {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 2rem;
+	}
+
+	.focus-item {
+		padding: 2rem;
+		background: rgba(255, 255, 255, 0.02);
+		border: 1px solid rgba(255, 255, 255, 0.05);
+		border-radius: 4px;
+	}
+
+	.focus-item h3 {
+		font-size: 1.1rem;
+		color: var(--gray-0);
+		margin-bottom: 0.75rem;
+	}
+
+	.focus-item p {
+		color: var(--gray-300);
+		font-size: 0.95rem;
+		line-height: 1.6;
+	}
+
+	.about-content p {
+		color: var(--gray-200);
+		font-size: 1.1rem;
 		line-height: 1.7;
+		max-width: 45rem;
+	}
+
+	.compact-list {
+		display: flex;
+		flex-direction: column;
+		gap: 1px;
+		background: rgba(255, 255, 255, 0.05);
+		border: 1px solid rgba(255, 255, 255, 0.05);
+		border-radius: 4px;
+		overflow: hidden;
+	}
+
+	.compact-item {
+		display: flex;
+		flex-direction: column;
+		padding: 1.25rem 1.5rem;
+		background: var(--gray-999);
+		text-decoration: none;
+		transition: background-color var(--theme-transition);
+	}
+
+	.compact-item:hover {
+		background: rgba(255, 255, 255, 0.02);
+	}
+
+	.compact-title {
+		color: var(--gray-0);
+		font-weight: 500;
+		font-family: var(--font-brand);
+		margin-bottom: 0.25rem;
+	}
+
+	.compact-desc {
+		color: var(--gray-400);
+		font-size: 0.9rem;
 	}
 
 	@media (min-width: 50em) {
-		.featured-grid {
-			grid-template-columns: repeat(3, minmax(0, 1fr));
-			gap: 1.4rem;
+		.secondary-grid {
+			grid-template-columns: repeat(2, 1fr);
 		}
 
-		.about-grid {
-			grid-template-columns: minmax(0, 1fr);
+		.focus-grid {
+			grid-template-columns: repeat(3, 1fr);
+		}
+
+		.compact-item {
+			flex-direction: row;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		.compact-title {
+			margin-bottom: 0;
 		}
 	}
 </style>
