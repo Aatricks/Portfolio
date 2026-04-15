@@ -26,19 +26,15 @@ const { title, description } = Astro.props;
 			<Footer />
 		</div>
 		<script>
-			import Lenis from '@studio-freight/lenis'
-			const lenis = new Lenis()
-
-			lenis.on('scroll', (e) => {
-				e
-			})
+			import Lenis from '@studio-freight/lenis';
+			const lenis = new Lenis();
 
 			function raf(time) {
-			lenis.raf(time)
-			requestAnimationFrame(raf)
+				lenis.raf(time);
+				requestAnimationFrame(raf);
 			}
 
-			requestAnimationFrame(raf)
+			requestAnimationFrame(raf);
 		</script>
 
 		<style>

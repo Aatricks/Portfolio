@@ -6,6 +6,7 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
+    "check": "astro check",
     "preview": "astro preview",
     "preview:local": "astro preview --host 127.0.0.1 --port 4321",
     "smoke:site": "node scripts/site-smoke.mjs",
@@ -13,14 +14,12 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/tailwind": "^5.0.2",
     "@studio-freight/lenis": "^1.0.34",
-    "astro": "^3.4.4",
-    "gsap": "^3.12.5",
-    "typed.js": "^2.1.0"
+    "astro": "^6.0.3"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.4",
     "playwright": "^1.59.1",
-    "tailwindcss": "^3.3.5"
+    "typescript": "^5.9.3"
   }
 }

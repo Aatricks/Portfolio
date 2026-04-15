@@ -25,7 +25,8 @@ const featuredProjects = (await getCollection('work'))
 			</div>
 		</section>
 
-		<section class="wrapper">
+		<section class="wrapper" id="selected-work" aria-labelledby="selected-work-title">
+			<h2 id="selected-work-title" class="sr-only">Selected work</h2>
 			<ul class="featured-grid">
 				{
 					featuredProjects.map((project) => (
@@ -79,8 +80,7 @@ const featuredProjects = (await getCollection('work'))
 	}
 
 	.lede,
-	.about-copy,
-	.about-note {
+	.about-copy {
 		color: var(--gray-200);
 	}
 
@@ -90,66 +90,12 @@ const featuredProjects = (await getCollection('work'))
 		line-height: 1.72;
 	}
 
-	.section-head {
-		display: grid;
-		gap: 0.45rem;
-		max-width: 56rem;
-	}
-
-	.section-note {
-		max-width: 38rem;
-		color: var(--gray-300);
-		font-size: 0.98rem;
-		line-height: 1.65;
-	}
-
 	.featured-grid {
 		list-style: none;
 		padding: 0;
 		margin: 0;
 		display: grid;
 		gap: 1.15rem;
-	}
-
-	.hero-actions {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.8rem;
-		padding-top: 0.2rem;
-	}
-
-	.hero-link {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		min-height: 2.8rem;
-		padding: 0.7rem 1rem;
-		border-radius: 999rem;
-		border: 1px solid color-mix(in srgb, var(--gray-700) 28%, transparent);
-		color: var(--gray-100);
-		text-decoration: none;
-		font-size: 0.95rem;
-		transition:
-			border-color var(--theme-transition),
-			background-color var(--theme-transition),
-			color var(--theme-transition);
-	}
-
-	.hero-link:hover,
-	.hero-link:focus {
-		border-color: color-mix(in srgb, var(--gray-500) 38%, transparent);
-		background: color-mix(in srgb, var(--gray-900) 78%, transparent);
-	}
-
-	.hero-link-primary {
-		background: var(--gray-0);
-		border-color: transparent;
-		color: var(--gray-999);
-	}
-
-	.hero-link-primary:hover,
-	.hero-link-primary:focus {
-		background: color-mix(in srgb, var(--gray-0) 88%, var(--accent-dark) 12%);
 	}
 
 	.about-band {
@@ -170,27 +116,14 @@ const featuredProjects = (await getCollection('work'))
 		line-height: 1.7;
 	}
 
-	.about-note {
-		color: var(--gray-300);
-		font-size: 0.95rem;
-		line-height: 1.65;
-	}
-
 	@media (min-width: 50em) {
-		.section-head {
-			grid-template-columns: minmax(12rem, 0.45fr) minmax(0, 1fr);
-			align-items: end;
-			column-gap: 1.5rem;
-		}
-
 		.featured-grid {
 			grid-template-columns: repeat(3, minmax(0, 1fr));
 			gap: 1.4rem;
 		}
 
 		.about-grid {
-			grid-template-columns: minmax(0, 1.5fr) minmax(18rem, 0.8fr);
-			align-items: start;
+			grid-template-columns: minmax(0, 1fr);
 		}
 	}
 </style>

@@ -21,7 +21,7 @@ const routes = [
     url: `${baseUrl}/`,
     screenshot: 'home.png',
     fullPage: true,
-    selectors: ['.hero', '#selected-work', '.featured-grid', '.section-note', '.hero-link-primary', '.utility-links', 'footer', '.contact-link'],
+    selectors: ['.hero', '#selected-work', '.featured-grid', '.utility-links', 'footer', '.contact-link'],
     expectedTitle: 'Emilio Melis | Aatricks',
     expectedText: 'Android-native AI tools built for real device constraints.',
   },

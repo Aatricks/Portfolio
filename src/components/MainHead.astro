@@ -29,13 +29,6 @@ const {
 	rel="stylesheet"
 />
 <script is:inline>
-	// Keep the site intentionally dark at first paint and persist later changes.
+	// Keep the site intentionally dark at first paint.
 	document.documentElement.classList.add('theme-dark');
-	if (typeof localStorage !== 'undefined') {
-		const observer = new MutationObserver(() => {
-			const isDark = document.documentElement.classList.contains('theme-dark');
-			localStorage.setItem('theme', isDark ? 'dark' : 'light');
-		});
-		observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-	}
 </script>
