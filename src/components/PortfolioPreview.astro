@@ -11,170 +11,149 @@ const { data, id } = project;
 const href = `/Portfolio/work/${id.replace(/\.md$/, '')}`;
 ---
 
-<a class={`project-card ${variant}`} href={href}>
-	<div class="content-wrapper">
-		<div class="copy">
-			<div class="header">
-				<h3 class="title">{data.title}</h3>
-				<span class="arrow">→</span>
-			</div>
-			<p class="description">{data.description}</p>
-			
-			<div class="tags">
-				{data.tags.map((tag) => (
-					<span class="tag">{tag}</span>
-				))}
-			</div>
+<a class={`project-preview ${variant}`} href={href} data-reveal>
+	<div class="project-preview__copy">
+		<p class="project-preview__eyebrow">{data.eyebrow}</p>
+		<div class="project-preview__header">
+			<h3 class="project-preview__title">{data.title}</h3>
+			<span class="project-preview__arrow" aria-hidden="true">→</span>
 		</div>
-		
-		<div class="media">
-			<img src={data.img} alt={data.img_alt || ''} loading="lazy" decoding="async" />
-		</div>
+		<p class="project-preview__thesis">{data.thesis}</p>
+		<p class="project-preview__stack">{data.stackLine}</p>
+	</div>
+	<div class="project-preview__media" data-parallax="0.06">
+		<img src={data.img} alt={data.img_alt || ''} loading="lazy" decoding="async" />
 	</div>
 </a>
 
 <style>
-	.project-card {
-		display: block;
-		text-decoration: none;
-		background: rgba(255, 255, 255, 0.01);
-		border: 1px solid rgba(255, 255, 255, 0.05);
-		border-radius: 4px;
-		overflow: hidden;
-		transition: border-color var(--theme-transition), background var(--theme-transition);
-	}
-
-	.project-card:hover {
-		border-color: rgba(255, 255, 255, 0.15);
-		background: rgba(255, 255, 255, 0.03);
-	}
-
-	.content-wrapper {
-		display: flex;
-		flex-direction: column;
-		height: 100%;
-	}
-
-	.dominant .content-wrapper {
+	.project-preview {
 		display: grid;
 		grid-template-columns: 1fr;
+		gap: 1.5rem;
+		text-decoration: none;
+		padding: 1.5rem 0;
+		border-top: 1px solid rgba(255, 255, 255, 0.07);
+		color: inherit;
 	}
 
-	.copy {
-		padding: 2rem;
+	.project-preview.secondary {
+		min-height: 100%;
+	}
+
+	.project-preview__copy {
 		display: flex;
 		flex-direction: column;
-		gap: 1.5rem;
-		flex: 1;
+		gap: 1rem;
 	}
 
-	.header {
+	.project-preview__eyebrow {
+		font-size: 0.74rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--gray-500);
+	}
+
+	.project-preview__header {
 		display: flex;
-		align-items: center;
+		align-items: flex-end;
 		justify-content: space-between;
+		gap: 1rem;
 	}
 
-	.title {
-		font-size: 1.5rem;
-		color: var(--gray-0);
-		margin: 0;
+	.project-preview__title {
+		font-size: clamp(1.7rem, 3vw, 2.75rem);
 	}
 
-	.arrow {
-		color: var(--accent-regular);
-		font-family: monospace;
-		font-size: 1.2rem;
-		opacity: 0;
-		transform: translateX(-10px);
-		transition: all var(--theme-transition);
-	}
-
-	.project-card:hover .arrow {
-		opacity: 1;
-		transform: translateX(0);
-	}
-
-	.description {
-		color: var(--gray-300);
-		font-size: 1rem;
-		line-height: 1.6;
-		margin: 0;
-	}
-
-	.tags {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.5rem;
-		margin-top: auto;
-	}
-
-	.tag {
-		font-size: 0.75rem;
-		padding: 0.25rem 0.75rem;
-		border: 1px solid rgba(255, 255, 255, 0.1);
-		border-radius: 20px;
+	.project-preview__arrow {
+		font-size: 1.1rem;
 		color: var(--gray-400);
-		font-family: var(--font-brand);
+		transform: translateX(-0.35rem);
+		transition:
+			transform var(--theme-transition),
+			color var(--theme-transition),
+			opacity var(--theme-transition);
+		opacity: 0.5;
 	}
 
-	.media {
+	.project-preview:hover .project-preview__arrow {
+		transform: translateX(0);
+		color: var(--gray-0);
+		opacity: 1;
+	}
+
+	.project-preview__thesis {
+		max-width: 34rem;
+		font-size: 1.04rem;
+		line-height: 1.65;
+		color: var(--gray-200);
+	}
+
+	.project-preview__stack {
+		max-width: 34rem;
+		font-size: 0.86rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--gray-500);
+	}
+
+	.project-preview__media {
 		position: relative;
-		border-top: 1px solid rgba(255, 255, 255, 0.05);
-		background: #000;
+		transform: translateY(var(--parallax-shift, 0px));
+		transition: transform 160ms linear;
+		border: 1px solid rgba(255, 255, 255, 0.07);
+		border-radius: 1.5rem;
+		overflow: hidden;
+		background:
+			radial-gradient(circle at top, rgba(114, 139, 255, 0.16), transparent 40%),
+			rgba(8, 11, 19, 0.9);
 	}
 
-	.media::after {
+	.project-preview__media::after {
 		content: '';
 		position: absolute;
 		inset: 0;
-		background: inset 0 0 20px rgba(0,0,0,0.5);
+		background: linear-gradient(180deg, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.3));
 		pointer-events: none;
 	}
 
-	img {
+	.project-preview__media img {
 		width: 100%;
-		height: 240px;
+		height: 100%;
+		min-height: 16rem;
 		object-fit: cover;
-		object-position: top;
-		filter: contrast(1.1) brightness(0.9);
-		transition: filter var(--theme-transition);
+		filter: contrast(1.05) brightness(0.82);
+		transition: transform 0.7s ease, filter 0.7s ease;
 	}
 
-	.project-card:hover img {
-		filter: contrast(1.1) brightness(1);
+	.project-preview:hover .project-preview__media img {
+		transform: scale(1.03);
+		filter: contrast(1.07) brightness(0.95);
 	}
 
-	.dominant img {
-		height: 320px;
+	.secondary .project-preview__title {
+		font-size: clamp(1.45rem, 2vw, 1.9rem);
 	}
 
-	@media (min-width: 50em) {
-		.dominant .content-wrapper {
-			grid-template-columns: 1fr 1.2fr;
-			align-items: stretch;
+	.secondary .project-preview__thesis,
+	.secondary .project-preview__stack {
+		max-width: 100%;
+	}
+
+	.secondary .project-preview__media img {
+		min-height: 12rem;
+	}
+
+	@media (min-width: 64em) {
+		.project-preview.dominant {
+			grid-template-columns: minmax(0, 0.95fr) minmax(26rem, 0.9fr);
+			gap: 3rem;
+			align-items: center;
+			padding: 2.5rem 0 1.5rem;
 		}
 
-		.dominant .media {
-			border-top: none;
-			border-left: 1px solid rgba(255, 255, 255, 0.05);
-			height: 100%;
-		}
-
-		.dominant img {
-			height: 100%;
-			min-height: 400px;
-		}
-
-		.dominant .copy {
-			padding: 3rem;
-		}
-
-		.dominant .title {
-			font-size: 2rem;
-		}
-
-		.dominant .description {
-			font-size: 1.15rem;
+		.project-preview.secondary {
+			align-content: start;
 		}
 	}
 </style>

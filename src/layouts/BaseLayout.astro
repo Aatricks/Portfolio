@@ -22,24 +22,115 @@ const { title, description } = Astro.props;
 		</div>
 		<script>
 			import Lenis from '@studio-freight/lenis';
-			const lenis = new Lenis({
-				duration: 1.2,
-				easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-				orientation: 'vertical',
-				gestureOrientation: 'vertical',
-				smoothWheel: true,
-				wheelMultiplier: 1,
-				smoothTouch: false,
-				touchMultiplier: 2,
-				infinite: false,
+			const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+			const revealNodes = Array.from(document.querySelectorAll<HTMLElement>('[data-reveal]'));
+			const parallaxNodes = Array.from(document.querySelectorAll<HTMLElement>('[data-parallax]'));
+			const parallaxState = parallaxNodes.map((node) => ({
+				node,
+				speed: Number(node.getAttribute('data-parallax')) || 0.08,
+				centerY: 0,
+			}));
+
+			revealNodes.forEach((node) => {
+				if (prefersReducedMotion.matches) {
+					node.classList.add('is-visible');
+				}
 			});
 
-			function raf(time: number) {
-				lenis.raf(time);
+			if (!prefersReducedMotion.matches && revealNodes.length > 0) {
+				const observer = new IntersectionObserver(
+					(entries) => {
+						entries.forEach((entry) => {
+							if (entry.isIntersecting) {
+								entry.target.classList.add('is-visible');
+							}
+						});
+					},
+					{ threshold: 0.18, rootMargin: '0px 0px -8% 0px' },
+				);
+
+				revealNodes.forEach((node) => observer.observe(node));
+			}
+
+			let viewportHeight = window.innerHeight || 1;
+
+			const emitScrollState = (
+				scroll: number,
+				limit: number,
+				velocity: number,
+				progress = limit > 0 ? scroll / limit : 0,
+			) => {
+				window.dispatchEvent(
+					new CustomEvent('site:scroll', {
+						detail: { scroll, limit, velocity, progress },
+					}),
+				);
+			};
+
+			const refreshParallax = (scrollPosition = window.scrollY || 0) => {
+				viewportHeight = window.innerHeight || 1;
+
+				parallaxState.forEach((entry) => {
+					const rect = entry.node.getBoundingClientRect();
+					entry.centerY = scrollPosition + rect.top + rect.height / 2;
+				});
+			};
+
+			const applyParallax = (scrollPosition: number) => {
+				if (prefersReducedMotion.matches) {
+					parallaxNodes.forEach((node) => node.style.setProperty('--parallax-shift', '0px'));
+					return;
+				}
+
+				const viewportCenter = scrollPosition + viewportHeight / 2;
+				parallaxState.forEach((entry) => {
+					const centerOffset = entry.centerY - viewportCenter;
+					entry.node.style.setProperty('--parallax-shift', `${(-centerOffset * entry.speed).toFixed(2)}px`);
+				});
+			};
+
+			let lenis: Lenis | null = null;
+			if (!prefersReducedMotion.matches) {
+				lenis = new Lenis({
+					duration: 1.15,
+					easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+					orientation: 'vertical',
+					gestureOrientation: 'vertical',
+					smoothWheel: true,
+					wheelMultiplier: 1,
+					touchMultiplier: 1.5,
+					infinite: false,
+				});
+
+				lenis.on('scroll', ({ scroll, limit, velocity, progress }) => {
+					applyParallax(scroll);
+					emitScrollState(scroll, limit, velocity, progress);
+				});
+
+				const raf = (time: number) => {
+					lenis?.raf(time);
+					requestAnimationFrame(raf);
+				};
+
 				requestAnimationFrame(raf);
 			}
 
-			requestAnimationFrame(raf);
+			const getScrollPosition = () => lenis?.scroll ?? window.scrollY ?? 0;
+			refreshParallax(getScrollPosition());
+			applyParallax(getScrollPosition());
+			emitScrollState(getScrollPosition(), lenis?.limit ?? 0, 0);
+
+			window.addEventListener('resize', () => {
+				refreshParallax(getScrollPosition());
+				applyParallax(getScrollPosition());
+				emitScrollState(getScrollPosition(), lenis?.limit ?? 0, 0);
+			});
+
+			window.addEventListener('load', () => {
+				refreshParallax(getScrollPosition());
+				applyParallax(getScrollPosition());
+				emitScrollState(getScrollPosition(), lenis?.limit ?? 0, 0);
+			});
 		</script>
 
 		<style>
@@ -52,9 +143,22 @@ const { title, description } = Astro.props;
 				z-index: -1;
 				background-color: var(--gray-999);
 				background-image: 
-					radial-gradient(ellipse at top, rgba(20, 26, 45, 0.4) 0%, transparent 60%),
-					radial-gradient(ellipse at bottom left, rgba(16, 20, 34, 0.3) 0%, transparent 50%);
+					radial-gradient(circle at 20% 20%, rgba(120, 140, 255, 0.12), transparent 22%),
+					radial-gradient(circle at 80% 10%, rgba(103, 222, 255, 0.09), transparent 18%),
+					radial-gradient(circle at 50% 120%, rgba(255, 255, 255, 0.04), transparent 30%),
+					linear-gradient(180deg, rgba(5, 8, 17, 0.96), rgba(4, 6, 12, 1));
 			}
+
+			.backgrounds::after {
+				content: '';
+				position: absolute;
+				inset: 0;
+				background-image: radial-gradient(rgba(255, 255, 255, 0.09) 0.6px, transparent 0.6px);
+				background-size: 28px 28px;
+				mask-image: linear-gradient(180deg, rgba(255, 255, 255, 0.22), transparent 72%);
+				opacity: 0.3;
+			}
+
 			.content-wrapper {
 				min-height: 100vh;
 			}

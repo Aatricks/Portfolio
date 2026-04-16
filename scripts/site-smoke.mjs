@@ -16,219 +16,226 @@ const port = providedBaseUrl ? null : await getFreePort();
 const baseUrl = providedBaseUrl ?? `http://${host}:${port}/Portfolio`;
 
 const routes = [
-  {
-    name: 'home',
-    url: `${baseUrl}/`,
-    screenshot: 'home.png',
-    fullPage: true,
-    selectors: ['.hero', '#selected-work', '.featured-grid', '.utility-links', 'footer', '.contact-link'],
-    expectedTitle: 'Emilio Melis | Aatricks',
-    expectedText: 'Android-native AI tools built for real device constraints.',
-  },
-  {
-    name: 'work-9',
-    url: `${baseUrl}/work/9`,
-    screenshot: 'work-9.png',
-    selectors: ['h1', 'a[href="/Portfolio/"]', 'img'],
-    expectedText: 'llmedge',
-  },
-  {
-    name: 'work-3',
-    url: `${baseUrl}/work/3`,
-    screenshot: 'work-3.png',
-    selectors: ['h1', 'a[href="/Portfolio/"]', 'img'],
-    expectedText: 'LightDiffusion-Next',
-  },
-  {
-    name: 'work-10',
-    url: `${baseUrl}/work/10`,
-    screenshot: 'work-10.png',
-    selectors: ['h1', 'a[href="/Portfolio/"]', 'img'],
-    expectedText: 'EasyReader',
-  },
+	{
+		name: 'home',
+		url: `${baseUrl}/`,
+		screenshot: 'home.png',
+		fullPage: true,
+		selectors: ['.hero', '.hero__canvas', '#selected-work', '.secondary-grid', '#about', 'footer'],
+		expectedTitle: 'Emilio Melis | Edge AI Systems Engineer',
+		expectedText: 'Edge AI. Native Performance.',
+	},
+	{
+		name: 'work-llmedge',
+		url: `${baseUrl}/work/llmedge`,
+		screenshot: 'work-llmedge.png',
+		selectors: ['.project-page__hero', '.project-sections', '.project-page__notes', '.project-diagram'],
+		expectedText: 'llmedge',
+	},
+	{
+		name: 'work-lightdiffusion-next',
+		url: `${baseUrl}/work/lightdiffusion-next`,
+		screenshot: 'work-lightdiffusion-next.png',
+		selectors: ['.project-page__hero', '.project-sections', '.project-page__notes', '.project-diagram'],
+		expectedText: 'LightDiffusion-Next',
+	},
+	{
+		name: 'work-easyreader',
+		url: `${baseUrl}/work/easyreader`,
+		screenshot: 'work-easyreader.png',
+		selectors: ['.project-page__hero', '.project-sections', '.project-page__notes', '.project-diagram'],
+		expectedText: 'EasyReader',
+	},
+	{
+		name: 'work-cchess',
+		url: `${baseUrl}/work/cchess`,
+		screenshot: 'work-cchess.png',
+		selectors: ['.project-page__hero', '.project-sections', '.project-page__notes', '.project-diagram'],
+		expectedText: 'CChess',
+	},
 ];
 
 await mkdir(artifactDir, { recursive: true });
 if (!providedBaseUrl) {
-  await access(distDir).catch(() => {
-    throw new Error('Missing dist/. Run "npm run build" before "npm run smoke:site", or use "npm run smoke:site:fresh".');
-  });
+	await access(distDir).catch(() => {
+		throw new Error('Missing dist/. Run "npm run build" before "npm run smoke:site", or use "npm run smoke:site:fresh".');
+	});
 }
 
 const preview = providedBaseUrl ? null : startPreviewServer();
 
 try {
-  await waitForServer(`${baseUrl}/`);
-  const failures = await runBrowserChecks();
+	await waitForServer(`${baseUrl}/`);
+	const failures = await runBrowserChecks();
 
-  if (failures.length > 0) {
-    console.error('Smoke check failed:');
-    for (const failure of failures) {
-      console.error(`- ${failure}`);
-    }
-    process.exitCode = 1;
-  } else {
-    console.log(`Smoke check passed against ${baseUrl}. Artifacts saved to ${artifactDir}`);
-  }
+	if (failures.length > 0) {
+		console.error('Smoke check failed:');
+		for (const failure of failures) {
+			console.error(`- ${failure}`);
+		}
+		process.exitCode = 1;
+	} else {
+		console.log(`Smoke check passed against ${baseUrl}. Artifacts saved to ${artifactDir}`);
+	}
 } finally {
-  stopPreviewServer(preview);
+	stopPreviewServer(preview);
 }
 
 function startPreviewServer() {
-  const spawned = spawn(process.execPath, [astroCli, 'preview', '--host', host, '--port', String(port)], {
-    cwd: repoRoot,
-    windowsHide: true,
-    stdio: ['ignore', 'pipe', 'pipe'],
-  });
+	const spawned = spawn(process.execPath, [astroCli, 'preview', '--host', host, '--port', String(port)], {
+		cwd: repoRoot,
+		windowsHide: true,
+		stdio: ['ignore', 'pipe', 'pipe'],
+	});
 
-  spawned.stdout.on('data', (chunk) => {
-    process.stdout.write(`[preview] ${chunk}`);
-  });
+	spawned.stdout.on('data', (chunk) => {
+		process.stdout.write(`[preview] ${chunk}`);
+	});
 
-  spawned.stderr.on('data', (chunk) => {
-    process.stderr.write(`[preview] ${chunk}`);
-  });
+	spawned.stderr.on('data', (chunk) => {
+		process.stderr.write(`[preview] ${chunk}`);
+	});
 
-  spawned.on('exit', (code) => {
-    if (code !== null && code !== 0) {
-      console.error(`Preview server exited early with code ${code}`);
-    }
-  });
+	spawned.on('exit', (code) => {
+		if (code !== null && code !== 0) {
+			console.error(`Preview server exited early with code ${code}`);
+		}
+	});
 
-  return spawned;
+	return spawned;
 }
 
 function stopPreviewServer(child) {
-  if (!child || child.killed) {
-    return;
-  }
+	if (!child || child.killed) {
+		return;
+	}
 
-  child.kill('SIGTERM');
+	child.kill('SIGTERM');
 }
 
 async function runBrowserChecks() {
-  const browser = await chromium.launch({ headless: true });
-  const page = await browser.newPage({ viewport: { width: 1440, height: 2200 } });
-  const failures = [];
+	const browser = await chromium.launch({ headless: true });
+	const page = await browser.newPage({ viewport: { width: 1440, height: 2200 } });
+	const failures = [];
 
-  try {
-    for (const route of routes) {
-      const routeErrors = [];
-      await waitForServer(route.url);
-      page.removeAllListeners('console');
-      page.removeAllListeners('pageerror');
+	try {
+		for (const route of routes) {
+			const routeErrors = [];
+			await waitForServer(route.url);
+			page.removeAllListeners('console');
+			page.removeAllListeners('pageerror');
 
-      page.on('console', (message) => {
-        if (message.type() === 'error' && !message.text().includes('favicon')) {
-          routeErrors.push(`console error on ${route.name}: ${message.text()}`);
-        }
-      });
+			page.on('console', (message) => {
+				if (message.type() === 'error' && !message.text().includes('favicon')) {
+					routeErrors.push(`console error on ${route.name}: ${message.text()}`);
+				}
+			});
 
-      page.on('pageerror', (error) => {
-        routeErrors.push(`page error on ${route.name}: ${error.message}`);
-      });
+			page.on('pageerror', (error) => {
+				routeErrors.push(`page error on ${route.name}: ${error.message}`);
+			});
 
-      const response = await gotoWithRetry(page, route.url);
+			const response = await gotoWithRetry(page, route.url);
 
-      if (!response || response.status() >= 400) {
-        failures.push(`${route.name} returned ${response ? response.status() : 'no response'}`);
-        continue;
-      }
+			if (!response || response.status() >= 400) {
+				failures.push(`${route.name} returned ${response ? response.status() : 'no response'}`);
+				continue;
+			}
 
-      for (const selector of route.selectors) {
-        const locator = page.locator(selector).first();
-        const count = await locator.count();
-        if (count === 0) {
-          failures.push(`${route.name} missing selector ${selector}`);
-          continue;
-        }
+			for (const selector of route.selectors) {
+				const locator = page.locator(selector).first();
+				const count = await locator.count();
+				if (count === 0) {
+					failures.push(`${route.name} missing selector ${selector}`);
+					continue;
+				}
 
-        await locator.waitFor({ state: 'visible', timeout: 10_000 });
-      }
+				await locator.waitFor({ state: 'visible', timeout: 10_000 });
+			}
 
-      if (route.expectedTitle) {
-        const title = await page.title();
-        if (title !== route.expectedTitle) {
-          failures.push(`${route.name} title was "${title}" instead of "${route.expectedTitle}"`);
-        }
-      }
+			if (route.expectedTitle) {
+				const title = await page.title();
+				if (title !== route.expectedTitle) {
+					failures.push(`${route.name} title was "${title}" instead of "${route.expectedTitle}"`);
+				}
+			}
 
-      if (route.expectedText) {
-        const bodyText = await page.locator('body').textContent();
-        if (!bodyText?.includes(route.expectedText)) {
-          failures.push(`${route.name} was missing expected text "${route.expectedText}"`);
-        }
-      }
+			if (route.expectedText) {
+				const bodyText = await page.locator('body').textContent();
+				if (!bodyText?.includes(route.expectedText)) {
+					failures.push(`${route.name} was missing expected text "${route.expectedText}"`);
+				}
+			}
 
-      if (routeErrors.length > 0) {
-        failures.push(...routeErrors);
-      }
+			if (routeErrors.length > 0) {
+				failures.push(...routeErrors);
+			}
 
-      await page.screenshot({
-        path: path.join(artifactDir, route.screenshot),
-        fullPage: Boolean(route.fullPage),
-      });
-    }
-  } finally {
-    await browser.close();
-  }
+			await page.screenshot({
+				path: path.join(artifactDir, route.screenshot),
+				fullPage: Boolean(route.fullPage),
+			});
+		}
+	} finally {
+		await browser.close();
+	}
 
-  return failures;
+	return failures;
 }
 
 async function waitForServer(url) {
-  const startedAt = Date.now();
+	const startedAt = Date.now();
 
-  while (Date.now() - startedAt < 20_000) {
-    try {
-      const response = await fetch(url);
-      if (response.ok) {
-        return;
-      }
-    } catch {
-      // Preview startup is asynchronous; retry until timeout.
-    }
+	while (Date.now() - startedAt < 20_000) {
+		try {
+			const response = await fetch(url);
+			if (response.ok) {
+				return;
+			}
+		} catch {
+			// Preview startup is asynchronous; retry until timeout.
+		}
 
-    await new Promise((resolve) => setTimeout(resolve, 250));
-  }
+		await new Promise((resolve) => setTimeout(resolve, 250));
+	}
 
-  throw new Error(`Timed out waiting for preview server at ${url}`);
+	throw new Error(`Timed out waiting for preview server at ${url}`);
 }
 
 async function gotoWithRetry(page, url) {
-  let response = await page.goto(url, { waitUntil: 'load', timeout: 30_000 });
+	let response = await page.goto(url, { waitUntil: 'load', timeout: 30_000 });
 
-  if (!response || response.status() >= 400) {
-    await new Promise((resolve) => setTimeout(resolve, 400));
-    response = await page.goto(url, { waitUntil: 'load', timeout: 30_000 });
-  }
+	if (!response || response.status() >= 400) {
+		await new Promise((resolve) => setTimeout(resolve, 400));
+		response = await page.goto(url, { waitUntil: 'load', timeout: 30_000 });
+	}
 
-  return response;
+	return response;
 }
 
 async function getFreePort() {
-  const net = await import('node:net');
+	const net = await import('node:net');
 
-  return await new Promise((resolve, reject) => {
-    const server = net.createServer();
-    server.unref();
-    server.on('error', reject);
-    server.listen(0, host, () => {
-      const address = server.address();
-      if (!address || typeof address === 'string') {
-        reject(new Error('Unable to determine a free port'));
-        return;
-      }
+	return await new Promise((resolve, reject) => {
+		const server = net.createServer();
+		server.unref();
+		server.on('error', reject);
+		server.listen(0, host, () => {
+			const address = server.address();
+			if (!address || typeof address === 'string') {
+				reject(new Error('Unable to determine a free port'));
+				return;
+			}
 
-      const { port: freePort } = address;
-      server.close((error) => {
-        if (error) {
-          reject(error);
-          return;
-        }
+			const { port: freePort } = address;
+			server.close((error) => {
+				if (error) {
+					reject(error);
+					return;
+				}
 
-        resolve(freePort);
-      });
-    });
-  });
+				resolve(freePort);
+			});
+		});
+	});
 }

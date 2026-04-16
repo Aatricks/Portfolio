@@ -1,7 +1,6 @@
 ---
 import { type CollectionEntry, getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Pill from '../../components/Pill.astro';
 
 interface Props {
 	entry: CollectionEntry<'work'>;
@@ -20,44 +19,55 @@ const { Content } = await render(entry);
 ---
 
 <BaseLayout title={`${entry.data.title} | Emilio Melis`} description={entry.data.description}>
-	<article class="project-page stack gap-15">
-		<header class="project-header wrapper">
-			<a class="back-link" href="/Portfolio/#selected-work">← Back to work</a>
-			<div class="header-content stack gap-8">
-				<div class="title-group stack gap-4">
-					<h1 class="title">{entry.data.title}</h1>
-					<p class="thesis">{entry.data.description}</p>
-				</div>
-				
-				<div class="meta-strip">
-					<div class="tags">
-						{entry.data.tags.map((t) => <Pill>{t}</Pill>)}
-					</div>
-					<div class="actions">
-						<a class="action-link primary" href={entry.data.repoUrl} target="_blank" rel="noopener noreferrer">View Repository</a>
+	<article class="project-page">
+		<header class="project-page__hero wrapper">
+			<a class="project-page__back" href="/Portfolio/#selected-work">Back to work</a>
+			<div class="project-page__hero-grid">
+				<div class="project-page__copy" data-reveal>
+					<p class="project-page__eyebrow">{entry.data.eyebrow}</p>
+					<h1>{entry.data.title}</h1>
+					<p class="project-page__thesis">{entry.data.thesis}</p>
+					<p class="project-page__description">{entry.data.description}</p>
+					<p class="project-page__stack">{entry.data.stackLine}</p>
+					<div class="project-page__actions">
+						<a href={entry.data.repoUrl} target="_blank" rel="noopener noreferrer">Repository</a>
 						{entry.data.demoUrl && (
-							<a class="action-link" href={entry.data.demoUrl} target="_blank" rel="noopener noreferrer">Live Demo</a>
+							<a href={entry.data.demoUrl} target="_blank" rel="noopener noreferrer">Live demo</a>
 						)}
+					</div>
+				</div>
+
+				<div class="project-page__diagram" data-reveal>
+					<div class="project-diagram" data-parallax="0.08">
+						<div class="project-diagram__rail"></div>
+						{entry.data.architecture.map((step, index) => (
+							<div class="project-diagram__step">
+								<span>{String(index + 1).padStart(2, '0')}</span>
+								<p>{step}</p>
+							</div>
+						))}
 					</div>
 				</div>
 			</div>
 		</header>
 
-		<main class="wrapper">
-			<div class="layout-grid">
-				<div class="content-col">
-					<div class="prose">
+		<main class="wrapper project-sections">
+			<div class="project-sections__grid">
+				<section class="project-highlights" data-reveal>
+					<p class="project-section__eyebrow">Highlights</p>
+					<ul>
+						{entry.data.highlights.map((highlight) => (
+							<li>{highlight}</li>
+						))}
+					</ul>
+				</section>
+
+				<section class="project-page__notes" data-reveal>
+					<p class="project-section__eyebrow">Engineering notes</p>
+					<div class="project-prose">
 						<Content />
 					</div>
-				</div>
-				
-				{entry.data.img && (
-					<aside class="media-col">
-						<div class="media-container">
-							<img src={entry.data.img} alt={entry.data.img_alt || ''} loading="eager" />
-						</div>
-					</aside>
-				)}
+				</section>
 			</div>
 		</main>
 	</article>
@@ -66,163 +76,220 @@ const { Content } = await render(entry);
 <style>
 	.project-page {
 		padding-top: 2rem;
-		padding-bottom: 6rem;
+		padding-bottom: 5rem;
 	}
 
-	.project-header {
-		border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+	.project-page__hero {
+		padding-top: 1.5rem;
 		padding-bottom: 3rem;
 	}
 
-	.back-link {
-		display: inline-block;
-		color: var(--gray-400);
-		font-size: 0.9rem;
-		margin-bottom: 3rem;
-		font-family: var(--font-brand);
+	.project-page__back {
+		display: inline-flex;
+		align-items: center;
+		margin-bottom: 2rem;
+		font-size: 0.8rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--gray-500);
 	}
 
-	.title {
-		font-size: clamp(2.5rem, 5vw, 4rem);
-		color: var(--gray-0);
-		letter-spacing: -0.03em;
-		margin: 0;
+	.project-page__hero-grid {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 2.5rem;
 	}
 
-	.thesis {
-		font-size: clamp(1.1rem, 2vw, 1.25rem);
+	.project-page__copy {
+		max-width: 44rem;
+	}
+
+	.project-page__eyebrow,
+	.project-section__eyebrow {
+		margin-bottom: 1rem;
+		font-size: 0.78rem;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: var(--gray-500);
+	}
+
+	.project-page h1 {
+		font-size: clamp(2.5rem, 5vw, 4.75rem);
+		line-height: 0.98;
+	}
+
+	.project-page__thesis {
+		margin-top: 1.25rem;
+		max-width: 38rem;
+		font-size: clamp(1.1rem, 1.9vw, 1.35rem);
+		line-height: 1.7;
+		color: var(--gray-100);
+	}
+
+	.project-page__description {
+		margin-top: 1rem;
+		max-width: 38rem;
+		font-size: 1rem;
+		line-height: 1.8;
 		color: var(--gray-300);
-		max-width: 48rem;
-		line-height: 1.6;
-		margin: 0;
 	}
 
-	.meta-strip {
-		display: flex;
-		flex-direction: column;
-		gap: 1.5rem;
-		padding-top: 1rem;
+	.project-page__stack {
+		margin-top: 1.25rem;
+		font-size: 0.82rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--gray-500);
 	}
 
-	.tags {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.5rem;
-	}
-
-	.actions {
+	.project-page__actions {
 		display: flex;
 		flex-wrap: wrap;
 		gap: 1rem;
+		margin-top: 2rem;
 	}
 
-	.action-link {
+	.project-page__actions a {
+		display: inline-flex;
+		padding-bottom: 0.55rem;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+		font-size: 0.8rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--gray-100);
+	}
+
+	.project-page__diagram {
+		align-self: start;
+	}
+
+	.project-diagram {
+		position: relative;
+		padding: 1.5rem;
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		border-radius: 1.75rem;
+		background:
+			radial-gradient(circle at top, rgba(114, 139, 255, 0.14), transparent 36%),
+			rgba(7, 10, 18, 0.9);
+		transform: translateY(var(--parallax-shift, 0px));
+		transition: transform 160ms linear;
+	}
+
+	.project-diagram__rail {
+		position: absolute;
+		top: 2rem;
+		bottom: 2rem;
+		left: 2.2rem;
+		width: 1px;
+		background: linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.04));
+	}
+
+	.project-diagram__step {
+		position: relative;
+		display: grid;
+		grid-template-columns: 2.75rem 1fr;
+		gap: 1rem;
+		padding: 1rem 0;
+	}
+
+	.project-diagram__step span {
+		position: relative;
+		z-index: 1;
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		padding: 0.75rem 1.25rem;
-		background: rgba(255, 255, 255, 0.03);
-		border: 1px solid rgba(255, 255, 255, 0.1);
-		border-radius: 4px;
+		width: 1.8rem;
+		height: 1.8rem;
+		border-radius: 999px;
+		background: rgba(214, 225, 255, 0.12);
+		border: 1px solid rgba(214, 225, 255, 0.2);
+		font-size: 0.68rem;
+		letter-spacing: 0.08em;
+		color: var(--gray-100);
+	}
+
+	.project-diagram__step p {
 		color: var(--gray-200);
-		font-size: 0.9rem;
-		font-family: var(--font-brand);
-		transition: all var(--theme-transition);
+		line-height: 1.75;
 	}
 
-	.action-link.primary {
-		background: var(--gray-0);
-		color: var(--gray-999);
-		border-color: var(--gray-0);
-		font-weight: 500;
+	.project-sections {
+		display: grid;
+		gap: 1rem;
 	}
 
-	.action-link:hover {
-		background: rgba(255, 255, 255, 0.08);
-		color: var(--gray-0);
-	}
-
-	.action-link.primary:hover {
-		background: var(--gray-200);
-		border-color: var(--gray-200);
-	}
-
-	.layout-grid {
+	.project-sections__grid {
 		display: grid;
 		grid-template-columns: 1fr;
-		gap: 3rem;
+		gap: 2.5rem;
 	}
 
-	.prose {
-		color: var(--gray-200);
-		font-size: 1.05rem;
+	.project-highlights ul {
+		display: grid;
+		gap: 1rem;
+		list-style: none;
+		padding: 0;
+	}
+
+	.project-highlights li {
+		padding-top: 1rem;
+		border-top: 1px solid rgba(255, 255, 255, 0.08);
 		line-height: 1.75;
-		max-width: 48rem;
+		color: var(--gray-200);
 	}
 
-	.prose :global(h2),
-	.prose :global(h3) {
-		color: var(--gray-0);
-		margin-top: 2.5rem;
-		margin-bottom: 1rem;
-		letter-spacing: -0.01em;
+	.project-prose {
+		display: grid;
+		gap: 1rem;
+		max-width: 46rem;
+		font-size: 1rem;
+		line-height: 1.85;
+		color: var(--gray-200);
 	}
 
-	.prose :global(h2) { font-size: 1.75rem; }
-	.prose :global(h3) { font-size: 1.35rem; }
-
-	.prose :global(p) {
-		margin-bottom: 1.25rem;
+	.project-prose :global(h2),
+	.project-prose :global(h3) {
+		margin-top: 1.5rem;
+		margin-bottom: 0.5rem;
+		font-size: 1.35rem;
 	}
 
-	.prose :global(ul),
-	.prose :global(ol) {
-		margin-bottom: 1.25rem;
+	.project-prose :global(p),
+	.project-prose :global(ul) {
+		margin: 0;
+	}
+
+	.project-prose :global(ul) {
 		padding-left: 1.25rem;
 	}
 
-	.prose :global(li) {
-		margin-bottom: 0.5rem;
-	}
-
-	.prose :global(code) {
+	.project-prose :global(code) {
+		padding: 0.1rem 0.35rem;
+		border-radius: 0.35rem;
 		background: rgba(255, 255, 255, 0.05);
-		padding: 0.2em 0.4em;
-		border-radius: 3px;
-		font-family: monospace;
-		font-size: 0.9em;
-		color: var(--accent-light);
-	}
-
-	.media-container {
-		border: 1px solid rgba(255, 255, 255, 0.05);
-		border-radius: 4px;
-		overflow: hidden;
-		background: rgba(0, 0, 0, 0.5);
-	}
-
-	.media-container img {
-		width: 100%;
-		height: auto;
-		display: block;
-		filter: contrast(1.1) brightness(0.9);
+		color: var(--gray-50);
 	}
 
 	@media (min-width: 64em) {
-		.meta-strip {
-			flex-direction: row;
-			justify-content: space-between;
-			align-items: center;
-		}
-
-		.layout-grid {
-			grid-template-columns: 1fr 1fr;
+		.project-page__hero-grid {
+			grid-template-columns: minmax(0, 1.05fr) minmax(22rem, 0.75fr);
 			align-items: start;
 		}
 
-		.media-col {
+		.project-page__diagram {
 			position: sticky;
-			top: 6rem;
+			top: 7rem;
+		}
+
+		.project-sections__grid {
+			grid-template-columns: minmax(18rem, 0.42fr) minmax(0, 1fr);
+			gap: 3rem;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.project-diagram {
+			transform: none;
 		}
 	}
 </style>
