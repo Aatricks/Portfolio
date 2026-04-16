@@ -1,0 +1,313 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import ProjectActions from './ProjectActions.astro';
+import ProjectMetrics from './ProjectMetrics.astro';
+import ProjectGallery from './ProjectGallery.astro';
+
+const { entry, Content } = Astro.props as {
+	entry: CollectionEntry<'work'>;
+	Content: any;
+};
+---
+
+<article class="project-page project-page--easyreader" data-project-theme="easyreader">
+	<header class="project-page__hero wrapper">
+		<a class="project-page__back" href="/Portfolio/#selected-work">Back to work</a>
+		<div class="project-page__hero-grid">
+			<div class="project-page__phone-column" data-parallax="0.04">
+				<div class="project-page__phone-frame">
+					<img src={entry.data.img} alt={entry.data.img_alt || ''} />
+				</div>
+			</div>
+			<div class="project-page__hero-copy">
+				<p class="project-page__eyebrow">{entry.data.eyebrow}</p>
+				<h1>{entry.data.title}</h1>
+				<p class="project-page__thesis">{entry.data.thesis}</p>
+				<p class="project-page__description">{entry.data.description}</p>
+				<div class="project-page__hero-points">
+					{entry.data.heroPoints.map((point) => (
+						<p>{point}</p>
+					))}
+				</div>
+				<p class="project-page__stack">{entry.data.stackLine}</p>
+				<ProjectActions
+					repoUrl={entry.data.repoUrl}
+					docsUrl={entry.data.docsUrl}
+					demoUrl={entry.data.demoUrl}
+				/>
+			</div>
+		</div>
+	</header>
+
+	<main class="wrapper project-page__body">
+		<ProjectMetrics metrics={entry.data.metrics} />
+
+		<section class="project-page__workflow">
+			<div class="project-page__workflow-copy" data-reveal>
+				<p class="project-page__section-label">Workflow framing</p>
+				<h2>A daily-use reading product, not a thin wrapper around summarization.</h2>
+				<p>
+					I built EasyReader around browsing, persistence, reader ergonomics, and multi-format ingestion
+					first. Local AI matters here because it supports the product flow instead of trying to replace the
+					app’s core job.
+				</p>
+			</div>
+			<div class="project-page__workflow-steps" data-reveal>
+				{entry.data.architecture.map((step, index) => (
+					<div class="project-page__workflow-step">
+						<span>{String(index + 1).padStart(2, '0')}</span>
+						<p>{step}</p>
+					</div>
+				))}
+			</div>
+		</section>
+
+		<div class="project-page__gallery-wrap">
+			<ProjectGallery items={entry.data.gallery} columns="single" />
+		</div>
+
+		<section class="project-page__highlights" data-reveal>
+			<p class="project-page__section-label">Product signals</p>
+			<div class="project-page__highlight-grid">
+				{entry.data.highlights.map((highlight) => (
+					<p>{highlight}</p>
+				))}
+			</div>
+		</section>
+
+		<section class="project-page__notes" data-reveal>
+			<p class="project-page__section-label">Engineering notes</p>
+			<div class="project-prose">
+				<Content />
+			</div>
+		</section>
+	</main>
+</article>
+
+<style>
+	.project-page--easyreader {
+		--project-accent: #83d1ff;
+		padding-top: 1.5rem;
+		padding-bottom: 5rem;
+	}
+
+	.project-page__hero {
+		padding-top: 1.5rem;
+		padding-bottom: 3rem;
+	}
+
+	.project-page__back,
+	.project-page__eyebrow,
+	.project-page__stack,
+	.project-page__section-label {
+		font-family: var(--font-mono);
+	}
+
+	.project-page__back {
+		display: inline-flex;
+		margin-bottom: 1.5rem;
+		font-size: 0.78rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--gray-500);
+	}
+
+	.project-page__hero-grid {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 1.6rem;
+		align-items: center;
+	}
+
+	.project-page__phone-column {
+		display: flex;
+		justify-content: center;
+	}
+
+	.project-page__phone-frame {
+		width: min(100%, 22rem);
+		padding: 0.9rem;
+		border-radius: 2.4rem;
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		background:
+			radial-gradient(circle at top, rgba(131, 209, 255, 0.18), transparent 42%),
+			rgba(7, 11, 18, 0.92);
+		box-shadow: var(--shadow-md);
+	}
+
+	.project-page__phone-frame img {
+		width: 100%;
+		aspect-ratio: 9 / 18;
+		object-fit: cover;
+		border-radius: 1.8rem;
+	}
+
+	.project-page__eyebrow,
+	.project-page__section-label {
+		font-size: 0.75rem;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: color-mix(in srgb, var(--project-accent) 42%, var(--gray-300));
+	}
+
+	.project-page h1 {
+		margin-top: 0.8rem;
+		font-size: clamp(2.8rem, 6vw, 5.1rem);
+		line-height: 0.96;
+		max-width: 10ch;
+	}
+
+	.project-page__thesis {
+		margin-top: 1.1rem;
+		max-width: 38rem;
+		font-size: clamp(1.08rem, 2vw, 1.32rem);
+		line-height: 1.75;
+		color: var(--gray-50);
+	}
+
+	.project-page__description {
+		margin-top: 0.95rem;
+		max-width: 38rem;
+		line-height: 1.85;
+		color: var(--gray-300);
+	}
+
+	.project-page__hero-points {
+		display: grid;
+		gap: 0.7rem;
+		margin: 1.2rem 0 0;
+	}
+
+	.project-page__hero-points p,
+	.project-page__workflow-copy p,
+	.project-page__workflow-step p,
+	.project-page__highlight-grid p {
+		line-height: 1.8;
+		color: var(--gray-200);
+	}
+
+	.project-page__stack {
+		margin: 1.4rem 0 1.6rem;
+		font-size: 0.78rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--gray-500);
+	}
+
+	.project-page__body {
+		display: grid;
+		gap: 2rem;
+	}
+
+	.project-page__gallery-wrap {
+		max-width: 26rem;
+		margin-inline: auto;
+	}
+
+	.project-page__workflow {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 1rem;
+	}
+
+	.project-page__workflow-copy,
+	.project-page__workflow-steps,
+	.project-page__highlights,
+	.project-page__notes {
+		padding: 1.3rem;
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		border-radius: 1.6rem;
+		background: rgba(255, 255, 255, 0.03);
+	}
+
+	.project-page__workflow-copy h2 {
+		margin: 0.8rem 0 1rem;
+		font-size: clamp(1.8rem, 4vw, 3rem);
+		line-height: 1.04;
+		max-width: 13ch;
+	}
+
+	.project-page__workflow-steps {
+		display: grid;
+		gap: 0.9rem;
+	}
+
+	.project-page__workflow-step {
+		display: grid;
+		grid-template-columns: 2.3rem 1fr;
+		gap: 0.9rem;
+		padding-top: 0.9rem;
+		border-top: 1px solid rgba(255, 255, 255, 0.08);
+	}
+
+	.project-page__workflow-step span {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 1.9rem;
+		height: 1.9rem;
+		border-radius: 999px;
+		background: rgba(131, 209, 255, 0.12);
+		border: 1px solid rgba(131, 209, 255, 0.22);
+		font-family: var(--font-mono);
+		font-size: 0.68rem;
+		color: var(--gray-50);
+	}
+
+	.project-page__highlight-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+		gap: 1rem;
+		margin-top: 1rem;
+	}
+
+	.project-page__highlight-grid p {
+		padding: 1rem;
+		border-radius: 1.2rem;
+		background: rgba(255, 255, 255, 0.03);
+		border: 1px solid rgba(255, 255, 255, 0.05);
+	}
+
+	.project-prose {
+		display: grid;
+		gap: 1rem;
+		margin-top: 1rem;
+		max-width: 52rem;
+		font-size: 1rem;
+		line-height: 1.85;
+		color: var(--gray-200);
+	}
+
+	.project-prose :global(h2),
+	.project-prose :global(h3) {
+		margin-top: 1.5rem;
+		font-size: 1.35rem;
+	}
+
+	.project-prose :global(p),
+	.project-prose :global(ul) {
+		margin: 0;
+	}
+
+	.project-prose :global(ul) {
+		padding-left: 1.2rem;
+	}
+
+	.project-prose :global(code) {
+		padding: 0.1rem 0.35rem;
+		border-radius: 0.35rem;
+		background: rgba(255, 255, 255, 0.06);
+		color: white;
+	}
+
+	@media (min-width: 68em) {
+		.project-page__hero-grid {
+			grid-template-columns: minmax(14rem, 0.56fr) minmax(0, 1fr);
+			gap: 2.6rem;
+		}
+
+		.project-page__workflow {
+			grid-template-columns: minmax(0, 0.9fr) minmax(18rem, 0.8fr);
+		}
+	}
+</style>

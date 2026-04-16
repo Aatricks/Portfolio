@@ -1,0 +1,283 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import ProjectActions from './ProjectActions.astro';
+import ProjectMetrics from './ProjectMetrics.astro';
+import ProjectGallery from './ProjectGallery.astro';
+
+const { entry, Content } = Astro.props as {
+	entry: CollectionEntry<'work'>;
+	Content: any;
+};
+---
+
+<article class="project-page project-page--lightdiffusion" data-project-theme="lightdiffusion-next">
+	<header class="project-page__hero wrapper">
+		<a class="project-page__back" href="/Portfolio/#selected-work">Back to work</a>
+		<div class="project-page__hero-shell">
+			<div class="project-page__command-bar">
+				<span>Pipeline orchestration</span>
+				<span>Queue / Preview / History / Deploy</span>
+			</div>
+			<div class="project-page__hero-grid">
+				<div class="project-page__hero-copy">
+					<p class="project-page__eyebrow">{entry.data.eyebrow}</p>
+					<h1>{entry.data.title}</h1>
+					<p class="project-page__thesis">{entry.data.thesis}</p>
+					<p class="project-page__description">{entry.data.description}</p>
+					<div class="project-page__hero-points">
+						{entry.data.heroPoints.map((point) => (
+							<p>{point}</p>
+						))}
+					</div>
+					<p class="project-page__stack">{entry.data.stackLine}</p>
+					<ProjectActions
+						repoUrl={entry.data.repoUrl}
+						docsUrl={entry.data.docsUrl}
+						demoUrl={entry.data.demoUrl}
+					/>
+				</div>
+
+				<div class="project-page__hero-media" data-parallax="0.05">
+					<img src={entry.data.img} alt={entry.data.img_alt || ''} />
+				</div>
+			</div>
+		</div>
+	</header>
+
+	<main class="wrapper project-page__body">
+		<ProjectMetrics metrics={entry.data.metrics} />
+
+		<section class="project-page__spotlight">
+			<div class="project-page__story" data-reveal>
+				<p class="project-page__section-label">Product shape</p>
+				<h2>Built like a local workstation, not a demo script.</h2>
+				<p>
+					I designed this system so the boundaries stay obvious: pipeline core, local server, browser UI,
+					queueing, previews, and deployment-friendly packaging. The point is not just image output. It is
+					maintainable execution routing under real local usage.
+				</p>
+			</div>
+			<div class="project-page__rail" data-reveal>
+				{entry.data.architecture.map((step) => (
+					<p>{step}</p>
+				))}
+			</div>
+		</section>
+
+		<ProjectGallery items={entry.data.gallery} columns="double" />
+
+		<section class="project-page__notes" data-reveal>
+			<p class="project-page__section-label">Engineering notes</p>
+			<div class="project-prose">
+				<Content />
+			</div>
+		</section>
+	</main>
+</article>
+
+<style>
+	.project-page--lightdiffusion {
+		--project-accent: #f4b458;
+		padding-top: 1.5rem;
+		padding-bottom: 5rem;
+	}
+
+	.project-page__hero {
+		padding-top: 1.5rem;
+		padding-bottom: 3rem;
+	}
+
+	.project-page__back,
+	.project-page__eyebrow,
+	.project-page__stack,
+	.project-page__command-bar,
+	.project-page__section-label {
+		font-family: var(--font-mono);
+	}
+
+	.project-page__back {
+		display: inline-flex;
+		margin-bottom: 1.5rem;
+		font-size: 0.78rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--gray-500);
+	}
+
+	.project-page__hero-shell {
+		padding: 1rem;
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		border-radius: 2rem;
+		background:
+			radial-gradient(circle at top left, rgba(244, 180, 88, 0.12), transparent 42%),
+			linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02)),
+			rgba(7, 9, 16, 0.9);
+	}
+
+	.project-page__command-bar {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+		padding: 0.35rem 0.1rem 1rem;
+		font-size: 0.72rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--gray-500);
+	}
+
+	.project-page__hero-grid {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 1.3rem;
+	}
+
+	.project-page__hero-copy {
+		padding: 0.6rem;
+	}
+
+	.project-page__eyebrow,
+	.project-page__section-label {
+		font-size: 0.75rem;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: color-mix(in srgb, var(--project-accent) 38%, var(--gray-300));
+	}
+
+	.project-page h1 {
+		margin-top: 0.9rem;
+		font-size: clamp(2.8rem, 6vw, 5.4rem);
+		line-height: 0.95;
+		max-width: 10ch;
+	}
+
+	.project-page__thesis {
+		margin-top: 1.2rem;
+		max-width: 38rem;
+		font-size: clamp(1.08rem, 2vw, 1.36rem);
+		line-height: 1.7;
+		color: var(--gray-50);
+	}
+
+	.project-page__description {
+		margin-top: 0.95rem;
+		max-width: 38rem;
+		line-height: 1.8;
+		color: var(--gray-300);
+	}
+
+	.project-page__hero-points {
+		display: grid;
+		gap: 0.7rem;
+		margin: 1.2rem 0 0;
+	}
+
+	.project-page__hero-points p,
+	.project-page__rail p,
+	.project-page__story p {
+		line-height: 1.8;
+		color: var(--gray-200);
+	}
+
+	.project-page__stack {
+		margin: 1.4rem 0 1.6rem;
+		font-size: 0.78rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--gray-500);
+	}
+
+	.project-page__hero-media {
+		overflow: hidden;
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		border-radius: 1.55rem;
+		box-shadow: var(--shadow-md);
+	}
+
+	.project-page__hero-media img {
+		width: 100%;
+		height: 100%;
+		min-height: 22rem;
+		object-fit: cover;
+	}
+
+	.project-page__body {
+		display: grid;
+		gap: 2rem;
+	}
+
+	.project-page__spotlight {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 1rem;
+	}
+
+	.project-page__story,
+	.project-page__rail,
+	.project-page__notes {
+		padding: 1.3rem;
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		border-radius: 1.6rem;
+		background: rgba(255, 255, 255, 0.03);
+	}
+
+	.project-page__story h2 {
+		margin: 0.8rem 0 1rem;
+		font-size: clamp(1.8rem, 4vw, 3rem);
+		line-height: 1.04;
+		max-width: 12ch;
+	}
+
+	.project-page__rail {
+		display: grid;
+		gap: 0.85rem;
+		align-content: start;
+	}
+
+	.project-page__rail p {
+		padding-top: 0.85rem;
+		border-top: 1px solid rgba(255, 255, 255, 0.08);
+	}
+
+	.project-prose {
+		display: grid;
+		gap: 1rem;
+		margin-top: 1rem;
+		max-width: 52rem;
+		font-size: 1rem;
+		line-height: 1.85;
+		color: var(--gray-200);
+	}
+
+	.project-prose :global(h2),
+	.project-prose :global(h3) {
+		margin-top: 1.5rem;
+		font-size: 1.35rem;
+	}
+
+	.project-prose :global(p),
+	.project-prose :global(ul) {
+		margin: 0;
+	}
+
+	.project-prose :global(ul) {
+		padding-left: 1.2rem;
+	}
+
+	.project-prose :global(code) {
+		padding: 0.1rem 0.35rem;
+		border-radius: 0.35rem;
+		background: rgba(255, 255, 255, 0.06);
+		color: white;
+	}
+
+	@media (min-width: 68em) {
+		.project-page__hero-grid {
+			grid-template-columns: minmax(0, 0.84fr) minmax(24rem, 1.05fr);
+			align-items: stretch;
+		}
+
+		.project-page__spotlight {
+			grid-template-columns: minmax(0, 0.9fr) minmax(18rem, 0.8fr);
+		}
+	}
+</style>

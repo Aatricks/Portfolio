@@ -1,0 +1,70 @@
+---
+interface GalleryItem {
+	src: string;
+	alt: string;
+	caption?: string;
+}
+
+interface Props {
+	items: GalleryItem[];
+	columns?: 'single' | 'double';
+}
+
+const { items, columns = 'double' } = Astro.props;
+---
+
+{items.length > 0 && (
+	<section class={`project-gallery project-gallery--${columns}`}>
+		{items.map((item) => (
+			<figure class="project-gallery__item" data-reveal>
+				<div class="project-gallery__frame">
+					<img src={item.src} alt={item.alt} loading="lazy" decoding="async" />
+				</div>
+				{item.caption && <figcaption>{item.caption}</figcaption>}
+			</figure>
+		))}
+	</section>
+)}
+
+<style>
+	.project-gallery {
+		display: grid;
+		gap: 1rem;
+	}
+
+	.project-gallery--double {
+		grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+	}
+
+	.project-gallery__item {
+		display: grid;
+		gap: 0.75rem;
+	}
+
+	.project-gallery__frame {
+		overflow: hidden;
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		border-radius: 1.6rem;
+		background: rgba(255, 255, 255, 0.03);
+		box-shadow: var(--shadow-sm);
+	}
+
+	.project-gallery__frame img {
+		width: 100%;
+		height: 100%;
+		min-height: 15rem;
+		object-fit: cover;
+	}
+
+	.project-gallery figcaption {
+		font-size: 0.92rem;
+		line-height: 1.6;
+		color: var(--gray-400);
+	}
+
+	@media (max-width: 40em) {
+		.project-gallery__frame img {
+			min-height: 12rem;
+		}
+	}
+</style>

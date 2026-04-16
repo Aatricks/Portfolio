@@ -1,0 +1,44 @@
+---
+interface Props {
+	repoUrl: string;
+	docsUrl?: string;
+	demoUrl?: string;
+}
+
+const { repoUrl, docsUrl, demoUrl } = Astro.props;
+---
+
+<div class="project-actions">
+	<a href={repoUrl} target="_blank" rel="noopener noreferrer">View code</a>
+	{docsUrl && <a href={docsUrl} target="_blank" rel="noopener noreferrer">Read docs</a>}
+	{demoUrl && <a href={demoUrl} target="_blank" rel="noopener noreferrer">Open demo</a>}
+</div>
+
+<style>
+	.project-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.9rem;
+	}
+
+	.project-actions a {
+		display: inline-flex;
+		align-items: center;
+		padding: 0.8rem 1rem;
+		border: 1px solid rgba(255, 255, 255, 0.12);
+		border-radius: 999px;
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--gray-50);
+		background: rgba(255, 255, 255, 0.03);
+		backdrop-filter: blur(16px);
+	}
+
+	.project-actions a:hover {
+		border-color: color-mix(in srgb, var(--project-accent, var(--accent-regular)) 55%, white);
+		color: white;
+		background: color-mix(in srgb, var(--project-accent, var(--accent-regular)) 16%, transparent);
+	}
+</style>

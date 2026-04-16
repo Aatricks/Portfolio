@@ -1,0 +1,53 @@
+---
+interface Metric {
+	label: string;
+	value: string;
+}
+
+interface Props {
+	metrics: Metric[];
+}
+
+const { metrics } = Astro.props;
+---
+
+{metrics.length > 0 && (
+	<section class="project-page__metrics" aria-label="Project metrics">
+		{metrics.map((metric) => (
+			<div class="project-metric">
+				<p class="project-metric__label">{metric.label}</p>
+				<p class="project-metric__value">{metric.value}</p>
+			</div>
+		))}
+	</section>
+)}
+
+<style>
+	.project-page__metrics {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+		gap: 0.85rem;
+	}
+
+	.project-metric {
+		padding: 1rem 1rem 1.15rem;
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		border-radius: 1.25rem;
+		background: rgba(255, 255, 255, 0.03);
+	}
+
+	.project-metric__label {
+		font-family: var(--font-mono);
+		font-size: 0.72rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--gray-500);
+	}
+
+	.project-metric__value {
+		margin-top: 0.55rem;
+		font-size: 1rem;
+		line-height: 1.55;
+		color: var(--gray-50);
+	}
+</style>

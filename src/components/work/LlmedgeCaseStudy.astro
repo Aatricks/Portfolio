@@ -1,0 +1,339 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import ProjectActions from './ProjectActions.astro';
+import ProjectMetrics from './ProjectMetrics.astro';
+import ProjectGallery from './ProjectGallery.astro';
+
+const { entry, Content } = Astro.props as {
+	entry: CollectionEntry<'work'>;
+	Content: any;
+};
+---
+
+<article class="project-page project-page--llmedge" data-project-theme="llmedge">
+	<header class="project-page__hero wrapper">
+		<a class="project-page__back" href="/Portfolio/#selected-work">Back to work</a>
+		<div class="project-page__hero-grid">
+			<div class="project-page__hero-copy">
+				<p class="project-page__eyebrow">{entry.data.eyebrow}</p>
+				<h1>{entry.data.title}</h1>
+				<p class="project-page__thesis">{entry.data.thesis}</p>
+				<p class="project-page__description">{entry.data.description}</p>
+				<ul class="project-page__hero-points">
+					{entry.data.heroPoints.map((point) => (
+						<li>{point}</li>
+					))}
+				</ul>
+				<p class="project-page__stack">{entry.data.stackLine}</p>
+				<ProjectActions
+					repoUrl={entry.data.repoUrl}
+					docsUrl={entry.data.docsUrl}
+					demoUrl={entry.data.demoUrl}
+				/>
+			</div>
+
+			<div class="project-page__blueprint" data-parallax="0.07">
+				<p class="project-page__panel-label">Runtime map</p>
+				<div class="project-page__blueprint-steps">
+					{entry.data.architecture.map((step, index) => (
+						<div class="project-page__blueprint-step">
+							<span>{String(index + 1).padStart(2, '0')}</span>
+							<p>{step}</p>
+						</div>
+					))}
+				</div>
+			</div>
+		</div>
+	</header>
+
+	<main class="wrapper project-page__body">
+		<ProjectMetrics metrics={entry.data.metrics} />
+
+		<section class="project-page__split project-page__split--first">
+			<div class="project-page__narrative" data-reveal>
+				<p class="project-page__section-label">Why it matters</p>
+				<h2>Android hardware is uneven. The runtime cannot be.</h2>
+				<p>
+					I built `llmedge` as infrastructure, not as a one-model demo. The core point is that it absorbs
+					backend quirks, artifact lifecycle, and JNI cost so the Android apps I build on top of it do not
+					have to.
+				</p>
+				<ul class="project-page__bullet-list">
+					{entry.data.highlights.map((highlight) => (
+						<li>{highlight}</li>
+					))}
+				</ul>
+			</div>
+			<ProjectGallery items={entry.data.gallery} columns="single" />
+		</section>
+
+		<section class="project-page__notes" data-reveal>
+			<p class="project-page__section-label">Engineering notes</p>
+			<div class="project-prose">
+				<Content />
+			</div>
+		</section>
+	</main>
+</article>
+
+<style>
+	.project-page--llmedge {
+		--project-accent: #79a7ff;
+		--project-accent-soft: rgba(121, 167, 255, 0.18);
+		padding-top: 1.5rem;
+		padding-bottom: 5rem;
+	}
+
+	.project-page__hero {
+		padding-top: 1.5rem;
+		padding-bottom: 3rem;
+	}
+
+	.project-page__back,
+	.project-page__eyebrow,
+	.project-page__stack,
+	.project-page__panel-label,
+	.project-page__section-label {
+		font-family: var(--font-mono);
+	}
+
+	.project-page__back {
+		display: inline-flex;
+		margin-bottom: 1.5rem;
+		font-size: 0.78rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--gray-500);
+	}
+
+	.project-page__hero-grid {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 2rem;
+	}
+
+	.project-page__hero-copy {
+		max-width: 44rem;
+	}
+
+	.project-page__eyebrow,
+	.project-page__section-label,
+	.project-page__panel-label {
+		font-size: 0.75rem;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: color-mix(in srgb, var(--project-accent) 40%, var(--gray-300));
+	}
+
+	.project-page h1 {
+		margin-top: 0.85rem;
+		font-size: clamp(2.9rem, 6vw, 5.6rem);
+		line-height: 0.95;
+		max-width: 10ch;
+	}
+
+	.project-page__thesis {
+		margin-top: 1.25rem;
+		max-width: 42rem;
+		font-size: clamp(1.08rem, 2vw, 1.38rem);
+		line-height: 1.7;
+		color: var(--gray-50);
+	}
+
+	.project-page__description {
+		margin-top: 1rem;
+		max-width: 39rem;
+		font-size: 1rem;
+		line-height: 1.8;
+		color: var(--gray-300);
+	}
+
+	.project-page__hero-points,
+	.project-page__bullet-list {
+		display: grid;
+		gap: 0.8rem;
+		padding: 0;
+		list-style: none;
+	}
+
+	.project-page__hero-points {
+		margin-top: 1.4rem;
+		max-width: 42rem;
+	}
+
+	.project-page__hero-points li,
+	.project-page__bullet-list li {
+		padding-left: 1rem;
+		border-left: 1px solid rgba(255, 255, 255, 0.1);
+		line-height: 1.7;
+		color: var(--gray-200);
+	}
+
+	.project-page__stack {
+		margin-top: 1.5rem;
+		margin-bottom: 1.8rem;
+		font-size: 0.78rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--gray-500);
+	}
+
+	.project-page__blueprint {
+		position: relative;
+		padding: 1.4rem;
+		border: 1px solid rgba(121, 167, 255, 0.24);
+		border-radius: 1.8rem;
+		background:
+			linear-gradient(180deg, rgba(121, 167, 255, 0.1), rgba(121, 167, 255, 0.02)),
+			radial-gradient(circle at top, rgba(121, 167, 255, 0.16), transparent 48%),
+			rgba(8, 11, 21, 0.94);
+		box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+	}
+
+	.project-page__blueprint::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background-image:
+			linear-gradient(rgba(121, 167, 255, 0.07) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(121, 167, 255, 0.07) 1px, transparent 1px);
+		background-size: 1.1rem 1.1rem;
+		mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.95), transparent);
+		pointer-events: none;
+	}
+
+	.project-page__panel-label {
+		position: relative;
+		z-index: 1;
+		margin-bottom: 1rem;
+	}
+
+	.project-page__blueprint-steps {
+		position: relative;
+		z-index: 1;
+		display: grid;
+		gap: 0.9rem;
+	}
+
+	.project-page__blueprint-step {
+		display: grid;
+		grid-template-columns: 2.6rem 1fr;
+		gap: 1rem;
+		padding: 0.9rem 0;
+		border-top: 1px solid rgba(255, 255, 255, 0.08);
+	}
+
+	.project-page__blueprint-step span {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 2rem;
+		height: 2rem;
+		border-radius: 999px;
+		border: 1px solid rgba(121, 167, 255, 0.28);
+		background: rgba(121, 167, 255, 0.12);
+		font-family: var(--font-mono);
+		font-size: 0.68rem;
+		color: var(--gray-50);
+	}
+
+	.project-page__blueprint-step p {
+		line-height: 1.75;
+		color: var(--gray-200);
+	}
+
+	.project-page__body {
+		display: grid;
+		gap: 2rem;
+	}
+
+	.project-page__split {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 1.4rem;
+		align-items: start;
+	}
+
+	.project-page__narrative {
+		display: grid;
+		gap: 1rem;
+		padding: 1.4rem;
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		border-radius: 1.6rem;
+		background: rgba(255, 255, 255, 0.03);
+	}
+
+	.project-page__narrative h2 {
+		font-size: clamp(1.8rem, 4vw, 3.2rem);
+		line-height: 1.02;
+		max-width: 12ch;
+	}
+
+	.project-page__narrative p {
+		max-width: 40rem;
+		line-height: 1.8;
+		color: var(--gray-300);
+	}
+
+	.project-page__notes {
+		padding: 1.4rem;
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		border-radius: 1.8rem;
+		background: rgba(255, 255, 255, 0.03);
+	}
+
+	.project-prose {
+		display: grid;
+		gap: 1rem;
+		margin-top: 1rem;
+		max-width: 52rem;
+		font-size: 1rem;
+		line-height: 1.85;
+		color: var(--gray-200);
+	}
+
+	.project-prose :global(h2),
+	.project-prose :global(h3) {
+		margin-top: 1.5rem;
+		font-size: 1.35rem;
+	}
+
+	.project-prose :global(p),
+	.project-prose :global(ul) {
+		margin: 0;
+	}
+
+	.project-prose :global(ul) {
+		padding-left: 1.2rem;
+	}
+
+	.project-prose :global(code) {
+		padding: 0.1rem 0.35rem;
+		border-radius: 0.35rem;
+		background: rgba(255, 255, 255, 0.06);
+		color: white;
+	}
+
+	@media (min-width: 68em) {
+		.project-page__hero-grid {
+			grid-template-columns: minmax(0, 1.05fr) minmax(22rem, 0.85fr);
+			gap: 2.5rem;
+			align-items: start;
+		}
+
+		.project-page__blueprint {
+			position: sticky;
+			top: 7rem;
+		}
+
+		.project-page__split {
+			grid-template-columns: minmax(0, 0.82fr) minmax(20rem, 1fr);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.project-page__blueprint {
+			transform: none;
+		}
+	}
+</style>

@@ -9,11 +9,15 @@ interface Props {
 const { project, variant = 'secondary' } = Astro.props;
 const { data, id } = project;
 const href = `/Portfolio/work/${id.replace(/\.md$/, '')}`;
+const leadMetric = data.metrics[0];
 ---
 
-<a class={`project-preview ${variant}`} href={href} data-reveal>
+<a class={`project-preview ${variant} project-preview--${data.themeKey}`} href={href} data-reveal>
 	<div class="project-preview__copy">
-		<p class="project-preview__eyebrow">{data.eyebrow}</p>
+		<div class="project-preview__meta">
+			<p class="project-preview__eyebrow">{data.eyebrow}</p>
+			{leadMetric && <p class="project-preview__metric">{leadMetric.label}: {leadMetric.value}</p>}
+		</div>
 		<div class="project-preview__header">
 			<h3 class="project-preview__title">{data.title}</h3>
 			<span class="project-preview__arrow" aria-hidden="true">→</span>
@@ -47,11 +51,26 @@ const href = `/Portfolio/work/${id.replace(/\.md$/, '')}`;
 		gap: 1rem;
 	}
 
+	.project-preview__meta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.8rem 1rem;
+		align-items: center;
+	}
+
 	.project-preview__eyebrow {
 		font-size: 0.74rem;
 		letter-spacing: 0.14em;
 		text-transform: uppercase;
 		color: var(--gray-500);
+	}
+
+	.project-preview__metric {
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--gray-400);
 	}
 
 	.project-preview__header {
@@ -127,6 +146,30 @@ const href = `/Portfolio/work/${id.replace(/\.md$/, '')}`;
 	.project-preview:hover .project-preview__media img {
 		transform: scale(1.03);
 		filter: contrast(1.07) brightness(0.95);
+	}
+
+	.project-preview--llmedge .project-preview__media {
+		background:
+			radial-gradient(circle at top, rgba(121, 167, 255, 0.2), transparent 42%),
+			rgba(8, 11, 19, 0.92);
+	}
+
+	.project-preview--lightdiffusion-next .project-preview__media {
+		background:
+			radial-gradient(circle at top, rgba(244, 180, 88, 0.18), transparent 42%),
+			rgba(8, 11, 19, 0.92);
+	}
+
+	.project-preview--easyreader .project-preview__media {
+		background:
+			radial-gradient(circle at top, rgba(131, 209, 255, 0.16), transparent 42%),
+			rgba(8, 11, 19, 0.92);
+	}
+
+	.project-preview--cchess .project-preview__media {
+		background:
+			radial-gradient(circle at top, rgba(98, 211, 215, 0.16), transparent 42%),
+			rgba(8, 11, 19, 0.92);
 	}
 
 	.secondary .project-preview__title {
