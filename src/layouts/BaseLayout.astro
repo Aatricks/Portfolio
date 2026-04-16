@@ -25,6 +25,13 @@ const { title, description } = Astro.props;
 			const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 			const revealNodes = Array.from(document.querySelectorAll<HTMLElement>('[data-reveal]'));
 			const parallaxNodes = Array.from(document.querySelectorAll<HTMLElement>('[data-parallax]'));
+			const debounce = <T extends (...args: never[]) => void>(callback: T, delay = 150) => {
+				let timeoutId: number | undefined;
+				return (...args: Parameters<T>) => {
+					window.clearTimeout(timeoutId);
+					timeoutId = window.setTimeout(() => callback(...args), delay);
+				};
+			};
 			const parallaxState = parallaxNodes.map((node) => ({
 				node,
 				speed: Number(node.getAttribute('data-parallax')) || 0.08,
@@ -120,11 +127,13 @@ const { title, description } = Astro.props;
 			applyParallax(getScrollPosition());
 			emitScrollState(getScrollPosition(), lenis?.limit ?? 0, 0);
 
-			window.addEventListener('resize', () => {
+			const handleResize = debounce(() => {
 				refreshParallax(getScrollPosition());
 				applyParallax(getScrollPosition());
 				emitScrollState(getScrollPosition(), lenis?.limit ?? 0, 0);
 			});
+
+			window.addEventListener('resize', handleResize);
 
 			window.addEventListener('load', () => {
 				refreshParallax(getScrollPosition());
@@ -142,21 +151,10 @@ const { title, description } = Astro.props;
 				height: 100vh;
 				z-index: -1;
 				background-color: var(--gray-999);
-				background-image: 
-					radial-gradient(circle at 20% 20%, rgba(120, 140, 255, 0.12), transparent 22%),
-					radial-gradient(circle at 80% 10%, rgba(103, 222, 255, 0.09), transparent 18%),
-					radial-gradient(circle at 50% 120%, rgba(255, 255, 255, 0.04), transparent 30%),
-					linear-gradient(180deg, rgba(5, 8, 17, 0.96), rgba(4, 6, 12, 1));
-			}
-
-			.backgrounds::after {
-				content: '';
-				position: absolute;
-				inset: 0;
-				background-image: radial-gradient(rgba(255, 255, 255, 0.09) 0.6px, transparent 0.6px);
-				background-size: 28px 28px;
-				mask-image: linear-gradient(180deg, rgba(255, 255, 255, 0.22), transparent 72%);
-				opacity: 0.3;
+				background-image: url('/Portfolio/assets/backgrounds/site-shell-dark.webp');
+				background-size: cover;
+				background-position: center;
+				background-repeat: no-repeat;
 			}
 
 			.content-wrapper {

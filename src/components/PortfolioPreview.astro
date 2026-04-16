@@ -21,7 +21,7 @@ const href = `/Portfolio/work/${id.replace(/\.md$/, '')}`;
 		<p class="project-preview__thesis">{data.thesis}</p>
 		<p class="project-preview__stack">{data.stackLine}</p>
 	</div>
-	<div class="project-preview__media" data-parallax="0.06">
+	<div class="project-preview__media">
 		<img src={data.img} alt={data.img_alt || ''} loading="lazy" decoding="async" />
 	</div>
 </a>
@@ -99,8 +99,6 @@ const href = `/Portfolio/work/${id.replace(/\.md$/, '')}`;
 
 	.project-preview__media {
 		position: relative;
-		transform: translateY(var(--parallax-shift, 0px));
-		transition: transform 160ms linear;
 		border: 1px solid rgba(255, 255, 255, 0.07);
 		border-radius: 1.5rem;
 		overflow: hidden;

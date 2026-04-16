@@ -97,6 +97,13 @@ const secondary = featuredProjects.slice(1);
 	const heroCanvas = canvas instanceof HTMLCanvasElement ? canvas : null;
 	const context = heroCanvas?.getContext('2d') ?? null;
 	const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+	const debounce = <T extends (...args: never[]) => void>(callback: T, delay = 150) => {
+		let timeoutId: number | undefined;
+		return (...args: Parameters<T>) => {
+			window.clearTimeout(timeoutId);
+			timeoutId = window.setTimeout(() => callback(...args), delay);
+		};
+	};
 
 	if (heroCanvas && context) {
 		const nodes = [];
@@ -158,6 +165,8 @@ const secondary = featuredProjects.slice(1);
 			});
 
 			context.lineWidth = 1;
+			// This remains intentionally O(N^2) because density is capped at 12-18 nodes.
+			// If the network gets denser, replace this with spatial partitioning first.
 			for (let sourceIndex = 0; sourceIndex < positions.length; sourceIndex += 1) {
 				const source = positions[sourceIndex];
 
@@ -222,7 +231,7 @@ const secondary = featuredProjects.slice(1);
 		};
 
 		resizeCanvas();
-		window.addEventListener('resize', resizeCanvas);
+		window.addEventListener('resize', debounce(resizeCanvas));
 		window.addEventListener('site:scroll', handleScrollState);
 
 		if (!reducedMotion.matches) {
