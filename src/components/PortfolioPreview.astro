@@ -9,25 +9,16 @@ interface Props {
 const { project, variant = 'secondary' } = Astro.props;
 const { data, id } = project;
 const href = `/Portfolio/work/${id.replace(/\.md$/, '')}`;
-const leadMetric = data.metrics[0];
-const altMetric = data.metrics[1];
 ---
 
 <article class={`pp pp--${variant} pp--${data.themeKey}`} data-reveal>
 	<a class="pp__link" href={href}>
 		<div class="pp__head">
-			<div class="pp__meta">
-				<span class="pp__eyebrow">{data.eyebrow}</span>
-				<span class="pp__sep" aria-hidden="true">·</span>
-				<span class="pp__id">/{data.themeKey}</span>
-			</div>
-
+			<span class="pp__eyebrow">{data.eyebrow}</span>
 			<h3 class="pp__title">
-				<span>{data.title}</span>
+				<span transition:name={`title-${data.themeKey}`}>{data.title}</span>
 				<span class="pp__arrow" aria-hidden="true">↗</span>
 			</h3>
-
-			<p class="pp__thesis">{data.thesis}</p>
 		</div>
 
 		<div class="pp__media">
@@ -36,31 +27,10 @@ const altMetric = data.metrics[1];
 					<img src={data.img} alt={data.img_alt || ''} loading="lazy" decoding="async" />
 				</div>
 			</div>
-			<div class="pp__media-tag" aria-hidden="true">
-				<span class="dot dot--ok"></span>
-				<span>live</span>
-			</div>
 		</div>
 
 		<div class="pp__foot">
-			<dl class="pp__metrics">
-				{leadMetric && (
-					<div class="pp__metric">
-						<dt>{leadMetric.label}</dt>
-						<dd>{leadMetric.value}</dd>
-					</div>
-				)}
-				{altMetric && variant === 'dominant' && (
-					<div class="pp__metric">
-						<dt>{altMetric.label}</dt>
-						<dd>{altMetric.value}</dd>
-					</div>
-				)}
-				<div class="pp__metric pp__metric--stack">
-					<dt>stack</dt>
-					<dd>{data.stackLine}</dd>
-				</div>
-			</dl>
+			<span class="pp__stack">{data.stackLine}</span>
 		</div>
 	</a>
 </article>
@@ -124,29 +94,14 @@ const altMetric = data.metrics[1];
 		transform: translateX(0);
 	}
 
-	.pp__meta {
-		display: inline-flex;
-		gap: 0.5rem;
-		align-items: baseline;
+	.pp__eyebrow {
+		display: inline-block;
 		font-family: var(--font-mono);
 		font-size: 0.7rem;
-		letter-spacing: 0.14em;
+		letter-spacing: 0.16em;
 		text-transform: uppercase;
-		color: var(--mute);
-		margin-bottom: 0.85rem;
-	}
-
-	.pp__eyebrow {
 		color: var(--pp-accent);
-		letter-spacing: 0.14em;
-	}
-
-	.pp__sep {
-		color: var(--mute-soft);
-	}
-
-	.pp__id {
-		color: var(--mute);
+		margin-bottom: 0.85rem;
 	}
 
 	.pp__title {
@@ -155,11 +110,17 @@ const altMetric = data.metrics[1];
 		gap: 0.5rem;
 		font-family: var(--font-display);
 		font-weight: 400;
+		font-variation-settings: 'opsz' 144, 'SOFT' 30, 'WONK' 0;
 		font-size: clamp(2rem, 4.2vw, 3.4rem);
 		line-height: 1.04;
 		letter-spacing: -0.022em;
 		color: var(--ink);
 		margin-bottom: 1rem;
+		transition: font-variation-settings 360ms var(--ease);
+	}
+
+	.pp__link:hover .pp__title {
+		font-variation-settings: 'opsz' 144, 'SOFT' 90, 'WONK' 1;
 	}
 
 	.pp__arrow {
@@ -172,13 +133,6 @@ const altMetric = data.metrics[1];
 	.pp__link:hover .pp__arrow {
 		color: var(--pp-accent);
 		transform: translate(4px, -4px);
-	}
-
-	.pp__thesis {
-		max-width: 38rem;
-		font-size: 1.04rem;
-		line-height: 1.65;
-		color: var(--ink-soft);
 	}
 
 	.pp__media {
@@ -230,62 +184,15 @@ const altMetric = data.metrics[1];
 		transform: scale(1.025);
 	}
 
-	.pp__media-tag {
-		position: absolute;
-		bottom: 0.8rem;
-		left: 0.8rem;
-		display: inline-flex;
-		align-items: center;
-		gap: 0.4rem;
-		padding: 0.3rem 0.55rem;
-		background: var(--paper);
-		border: 1px solid var(--rule);
-		font-family: var(--font-mono);
-		font-size: 0.65rem;
-		letter-spacing: 0.1em;
-		text-transform: uppercase;
-		color: var(--ink-soft);
-	}
-
 	.pp__foot {
-		display: grid;
-		gap: 0.8rem;
+		display: block;
 	}
 
-	.pp__metrics {
-		display: grid;
-		grid-template-columns: 1fr;
-		gap: 0.8rem 1.5rem;
-		margin: 0;
-		padding-top: 0.85rem;
-		border-top: 1px dashed var(--rule);
-	}
-
-	.pp__metric {
-		display: grid;
-		grid-template-columns: 7rem 1fr;
-		align-items: baseline;
-		gap: 0.7rem;
-	}
-
-	.pp__metric dt {
+	.pp__stack {
 		font-family: var(--font-mono);
-		font-size: 0.66rem;
-		letter-spacing: 0.16em;
-		text-transform: uppercase;
+		font-size: 0.78rem;
 		color: var(--mute);
-	}
-
-	.pp__metric dd {
-		margin: 0;
-		font-family: var(--font-mono);
-		font-size: 0.82rem;
-		color: var(--ink);
-		line-height: 1.45;
-	}
-
-	.pp__metric--stack dd {
-		color: var(--ink-soft);
+		line-height: 1.5;
 	}
 
 	/* Dominant variant — side-by-side */

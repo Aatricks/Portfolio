@@ -56,25 +56,24 @@ const languages = [
 	{ code: 'ru', name: 'Русский', level: 'B1' },
 ];
 
-const renderBar = (level: number) => {
-	const filled = '▮'.repeat(Math.max(0, Math.min(level, 10)));
-	const empty = '▯'.repeat(Math.max(0, 10 - Math.min(level, 10)));
-	return filled + empty;
-};
 ---
 
-<div class="stack-grid" data-reveal>
+<div class="stack-grid" data-reveal-stagger>
 	{groups.map((group) => (
-		<section class="stack-group">
+		<section class="stack-group" data-reveal>
 			<header class="stack-group__head">
 				<p class="stack-group__label">{group.label}</p>
 				{group.caption && <p class="stack-group__caption">{group.caption}</p>}
 			</header>
-			<ul class="stack-group__list">
+			<ul class="stack-group__list" data-reveal-stagger>
 				{group.entries.map((entry) => (
-					<li class="stack-row">
+					<li class="stack-row" data-reveal>
 						<span class="stack-row__name">{entry.name}</span>
-						<span class="stack-row__bar" aria-hidden="true">{renderBar(entry.level)}</span>
+						<span
+							class="stack-row__bar"
+							aria-hidden="true"
+							style={`--bar-fill: ${(entry.level / 10) * 100}%;`}
+						></span>
 						<span class="stack-row__lvl" aria-label={`${entry.level} of 10`}>{entry.level}/10</span>
 						{entry.note && <span class="stack-row__note">— {entry.note}</span>}
 					</li>
@@ -139,8 +138,8 @@ const renderBar = (level: number) => {
 
 	.stack-row {
 		display: grid;
-		grid-template-columns: 11rem auto auto 1fr;
-		align-items: baseline;
+		grid-template-columns: minmax(7rem, max-content) minmax(3rem, 1fr) auto minmax(0, 1.4fr);
+		align-items: center;
 		gap: 0.6rem 0.85rem;
 		padding: 0.45rem 0;
 		font-size: 0.92rem;
@@ -154,14 +153,41 @@ const renderBar = (level: number) => {
 		font-weight: 400;
 		color: var(--ink);
 		letter-spacing: -0.01em;
+		align-self: baseline;
 	}
 
 	.stack-row__bar {
-		font-family: var(--font-mono);
-		font-size: 0.6rem;
-		color: var(--accent);
-		letter-spacing: 0.04em;
-		opacity: 0.9;
+		position: relative;
+		display: block;
+		height: 2px;
+		width: 100%;
+		background: var(--rule);
+		overflow: hidden;
+	}
+
+	.stack-row__bar::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: 0;
+		bottom: 0;
+		width: var(--bar-fill, 0%);
+		background: var(--accent);
+		transform: scaleX(0);
+		transform-origin: left;
+		transition: transform 720ms var(--ease);
+		transition-delay: calc(140ms + var(--reveal-i, 0) * 70ms);
+	}
+
+	:global(.js [data-reveal].is-visible) .stack-row__bar::after {
+		transform: scaleX(1);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.stack-row__bar::after {
+			transform: scaleX(1);
+			transition: none;
+		}
 	}
 
 	.stack-row__lvl {
@@ -180,9 +206,8 @@ const renderBar = (level: number) => {
 
 	.stack-langs {
 		margin-top: 3rem;
-		padding: 1.6rem 1.4rem;
-		border: 1px solid var(--rule);
-		background: var(--paper-soft);
+		padding: 1.6rem 0 0;
+		border-top: 1px dashed var(--rule);
 	}
 
 	.stack-langs__label {
@@ -199,8 +224,8 @@ const renderBar = (level: number) => {
 		margin: 0;
 		padding: 0;
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
-		gap: 0.6rem 1.5rem;
+		grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+		gap: 0.7rem 1.6rem;
 	}
 
 	.stack-langs__item {
@@ -239,11 +264,11 @@ const renderBar = (level: number) => {
 	@media (max-width: 48em) {
 		.stack-row {
 			grid-template-columns: 1fr auto;
-			row-gap: 0.2rem;
+			row-gap: 0.3rem;
 		}
 		.stack-row__bar {
 			grid-column: 1 / -1;
-			text-align: left;
+			width: 100%;
 		}
 		.stack-row__note {
 			grid-column: 1 / -1;
@@ -251,10 +276,33 @@ const renderBar = (level: number) => {
 		}
 	}
 
+	@media (min-width: 52em) and (max-width: 68em) {
+		.stack-grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 2.4rem 2.6rem;
+		}
+		.stack-row {
+			grid-template-columns: minmax(6rem, max-content) minmax(2.5rem, 1fr) auto;
+		}
+		.stack-row__note {
+			grid-column: 1 / -1;
+			padding-left: 0;
+			margin-top: -0.15rem;
+		}
+	}
+
 	@media (min-width: 68em) {
 		.stack-grid {
-			grid-template-columns: repeat(3, 1fr);
+			grid-template-columns: repeat(3, minmax(0, 1fr));
 			gap: 2.5rem;
+		}
+		.stack-row {
+			grid-template-columns: minmax(6rem, max-content) minmax(2.5rem, 1fr) auto;
+		}
+		.stack-row__note {
+			grid-column: 1 / -1;
+			padding-left: 0;
+			margin-top: -0.15rem;
 		}
 	}
 </style>

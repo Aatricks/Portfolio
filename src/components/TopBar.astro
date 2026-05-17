@@ -25,13 +25,77 @@ const navLinks = [
 		</nav>
 
 		<div class="topbar__tail">
+			<button
+				class="topbar__menu"
+				data-menu-toggle
+				type="button"
+				aria-label="Open navigation"
+				aria-expanded="false"
+				aria-controls="topbar-mobile-nav"
+			>
+				<span class="topbar__menu-bars" aria-hidden="true">
+					<span></span><span></span>
+				</span>
+			</button>
 			<button class="topbar__theme" data-theme-toggle type="button" aria-label="Toggle color theme" aria-pressed="false">
 				<span class="topbar__theme-icon topbar__theme-icon--sun" aria-hidden="true">☀</span>
 				<span class="topbar__theme-icon topbar__theme-icon--moon" aria-hidden="true">☾</span>
 			</button>
 		</div>
 	</div>
+
+	<nav
+		id="topbar-mobile-nav"
+		class="topbar__mobile"
+		aria-label="Primary, condensed"
+		hidden
+	>
+		<div class="wrapper topbar__mobile-inner">
+			{navLinks.map((link) => (
+				<a class="topbar__mobile-link" href={link.href} data-menu-close>
+					<span class="topbar__mobile-mark">{link.mark}</span>
+					<span class="topbar__mobile-label">{link.label}</span>
+					<span class="topbar__mobile-arrow" aria-hidden="true">→</span>
+				</a>
+			))}
+		</div>
+	</nav>
 </header>
+
+<script>
+	const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+	const panel = document.getElementById('topbar-mobile-nav');
+	if (toggle && panel) {
+		const setOpen = (open: boolean) => {
+			toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+			toggle.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+			if (open) {
+				panel.hidden = false;
+				requestAnimationFrame(() => panel.classList.add('is-open'));
+			} else {
+				panel.classList.remove('is-open');
+				const onEnd = () => {
+					panel.hidden = true;
+					panel.removeEventListener('transitionend', onEnd);
+				};
+				panel.addEventListener('transitionend', onEnd);
+			}
+		};
+		toggle.addEventListener('click', () => {
+			const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+			setOpen(!isOpen);
+		});
+		panel.querySelectorAll('[data-menu-close]').forEach((link) => {
+			link.addEventListener('click', () => setOpen(false));
+		});
+		document.addEventListener('keydown', (e) => {
+			if (e.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+				setOpen(false);
+				toggle.focus();
+			}
+		});
+	}
+</script>
 
 <style>
 	.topbar {
@@ -70,6 +134,14 @@ const navLinks = [
 		font-size: 0.7rem;
 		letter-spacing: 0.04em;
 		font-weight: 500;
+		background: transparent;
+		color: var(--ink);
+		transition:
+			background-color var(--theme-transition),
+			color var(--theme-transition);
+	}
+
+	.topbar__brand:hover .topbar__mark {
 		background: var(--ink);
 		color: var(--paper);
 	}
@@ -131,7 +203,115 @@ const navLinks = [
 	.topbar__tail {
 		display: flex;
 		align-items: center;
-		gap: 0.9rem;
+		gap: 0.6rem;
+	}
+
+	.topbar__menu {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 2rem;
+		height: 2rem;
+		border: 1px solid var(--rule);
+		background: transparent;
+		color: var(--ink);
+		cursor: pointer;
+		font-family: var(--font-mono);
+		transition: border-color var(--theme-transition), color var(--theme-transition);
+	}
+
+	.topbar__menu:hover {
+		border-color: var(--accent);
+		color: var(--accent);
+	}
+
+	.topbar__menu-bars {
+		position: relative;
+		display: inline-block;
+		width: 0.95rem;
+		height: 0.5rem;
+	}
+
+	.topbar__menu-bars span {
+		position: absolute;
+		left: 0;
+		right: 0;
+		height: 1px;
+		background: currentColor;
+		transition: transform 240ms var(--ease), opacity 220ms var(--ease);
+	}
+
+	.topbar__menu-bars span:first-child { top: 0; }
+	.topbar__menu-bars span:last-child { bottom: 0; }
+
+	.topbar__menu[aria-expanded='true'] .topbar__menu-bars span:first-child {
+		top: 50%;
+		transform: translateY(-50%) rotate(45deg);
+	}
+	.topbar__menu[aria-expanded='true'] .topbar__menu-bars span:last-child {
+		bottom: 50%;
+		transform: translateY(50%) rotate(-45deg);
+	}
+
+	.topbar__mobile {
+		border-top: 1px solid var(--rule-soft);
+		background: color-mix(in srgb, var(--paper) 94%, transparent);
+		backdrop-filter: blur(14px);
+		-webkit-backdrop-filter: blur(14px);
+		max-height: 0;
+		overflow: hidden;
+		opacity: 0;
+		transition: max-height 320ms var(--ease), opacity 220ms var(--ease);
+	}
+
+	.topbar__mobile.is-open {
+		max-height: 28rem;
+		opacity: 1;
+	}
+
+	.topbar__mobile-inner {
+		display: grid;
+		gap: 0.1rem;
+		padding-block: 0.6rem;
+	}
+
+	.topbar__mobile-link {
+		display: grid;
+		grid-template-columns: 2rem 1fr auto;
+		align-items: baseline;
+		gap: 0.7rem;
+		padding: 0.85rem 0.4rem;
+		color: var(--ink);
+		border-bottom: 1px dashed var(--rule-soft);
+		transition: color var(--theme-transition), padding-left var(--theme-transition);
+	}
+
+	.topbar__mobile-link:last-child { border-bottom: 0; }
+
+	.topbar__mobile-link:hover,
+	.topbar__mobile-link:focus-visible {
+		color: var(--accent);
+		padding-left: 0.7rem;
+	}
+
+	.topbar__mobile-mark {
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		color: var(--mute);
+		font-variant-numeric: tabular-nums;
+	}
+
+	.topbar__mobile-label {
+		font-family: var(--font-display);
+		font-size: 1.25rem;
+		letter-spacing: -0.01em;
+	}
+
+	.topbar__mobile-arrow {
+		font-family: var(--font-mono);
+		font-size: 0.85rem;
+		color: var(--mute);
+		opacity: 0.7;
 	}
 
 	.topbar__theme {
@@ -181,6 +361,18 @@ const navLinks = [
 	@media (min-width: 52em) {
 		.topbar__nav {
 			display: inline-flex;
+		}
+		.topbar__menu {
+			display: none;
+		}
+		.topbar__mobile {
+			display: none !important;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.topbar__mobile {
+			transition: none;
 		}
 	}
 </style>

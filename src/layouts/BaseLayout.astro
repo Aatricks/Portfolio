@@ -1,4 +1,5 @@
 ---
+import { ClientRouter } from 'astro:transitions';
 import MainHead from '../components/MainHead.astro';
 import Footer from '../components/Footer.astro';
 import TopBar from '../components/TopBar.astro';
@@ -14,6 +15,7 @@ const { title, description } = Astro.props;
 <html lang="en">
 	<head>
 		<MainHead title={title} description={description} />
+		<ClientRouter />
 	</head>
 	<body>
 		<a class="skip-link" href="#main">Skip to main content</a>

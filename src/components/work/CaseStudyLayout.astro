@@ -3,6 +3,7 @@ import type { CollectionEntry } from 'astro:content';
 import ProjectActions from './ProjectActions.astro';
 import ProjectMetrics from './ProjectMetrics.astro';
 import ProjectGallery from './ProjectGallery.astro';
+import ProjectGlyph from './ProjectGlyph.astro';
 
 interface Props {
 	entry: CollectionEntry<'work'>;
@@ -27,6 +28,14 @@ const {
 } = Astro.props;
 const { data } = entry;
 const publishYear = data.publishDate.getFullYear();
+const publishMonth = String(data.publishDate.getMonth() + 1).padStart(2, '0');
+const stackComponents = data.stackLine.split('/').map((s: string) => s.trim()).filter(Boolean).length;
+const publishIso = data.publishDate.toISOString().slice(0, 10);
+const buildLabel = [
+	`build ${publishYear}.${publishMonth}`,
+	`stack · ${stackComponents} components`,
+	`published ${publishIso}`,
+];
 ---
 
 <article
@@ -40,20 +49,21 @@ const publishYear = data.publishDate.getFullYear();
 			<nav class="project-page__nav">
 				<a class="project-page__back" href={backHref}>
 					<span aria-hidden="true">←</span>
-					<span>back to work</span>
+					<span>back</span>
 				</a>
-				<span class="project-page__breadcrumb" aria-hidden="true">
-					/work / {themeKey} / {publishYear}
-				</span>
 			</nav>
 
 			<div class="project-page__hero-grid">
 				<div class="project-page__hero-copy">
-					<p class="section-marker project-page__marker">
-						{data.status === 'flagship' ? 'flagship' : 'side work'}
-					</p>
-					<p class="project-page__eyebrow">{data.eyebrow}</p>
-					<h1 class="project-page__title">{data.title}</h1>
+					<ul class="project-page__ribbon" aria-label="Build metadata">
+						{buildLabel.map((part, i) => (
+							<li>
+								<span>{part}</span>
+								{i < buildLabel.length - 1 && <span class="project-page__ribbon-sep" aria-hidden="true">·</span>}
+							</li>
+						))}
+					</ul>
+					<h1 class="project-page__title"><span transition:name={`title-${themeKey}`}>{data.title}</span></h1>
 					<p class="project-page__thesis">{data.thesis}</p>
 
 					<div class="project-page__actions">
@@ -66,7 +76,10 @@ const publishYear = data.publishDate.getFullYear();
 				</div>
 
 				<aside class="project-page__hero-spec" data-parallax="0.04" data-reveal-stagger>
-					<p class="label project-page__hero-spec-label">{hint || `${themeKey}.spec`}</p>
+					<header class="project-page__hero-spec-top" data-parallax="-0.018">
+						<p class="label project-page__hero-spec-label">{hint || `${themeKey}.spec`}</p>
+						<ProjectGlyph themeKey={themeKey} label={`${themeKey} glyph`} />
+					</header>
 					<div class="project-page__hero-spec-body">
 						{data.heroPoints.slice(0, 3).map((point, i) => (
 							<div class="project-page__hero-spec-row" data-reveal>
@@ -75,7 +88,7 @@ const publishYear = data.publishDate.getFullYear();
 							</div>
 						))}
 					</div>
-					<footer class="project-page__hero-spec-foot">
+					<footer class="project-page__hero-spec-foot" data-parallax="-0.014">
 						<span>stack</span>
 						<span class="project-page__hero-spec-stack">{data.stackLine}</span>
 					</footer>
@@ -90,9 +103,6 @@ const publishYear = data.publishDate.getFullYear();
 		<section class="project-page__split">
 			<div class="project-page__narrative" data-reveal>
 				<p class="section-marker">why it matters</p>
-				<h2 class="project-page__section-h">
-					<em>{data.title}</em> — {data.description}
-				</h2>
 				<ul class="project-page__bullets" data-reveal-stagger>
 					{data.highlights.map((highlight) => (
 						<li data-reveal>{highlight}</li>
@@ -213,6 +223,38 @@ const publishYear = data.publishDate.getFullYear();
 		margin-bottom: 1rem;
 	}
 
+	.project-page__ribbon {
+		list-style: none;
+		padding: 0;
+		margin: 0 0 1.1rem;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+		font-family: var(--font-mono);
+		font-size: 0.68rem;
+		letter-spacing: 0.12em;
+		text-transform: lowercase;
+		color: var(--mute);
+		border-top: 1px solid var(--rule-soft);
+		border-bottom: 1px solid var(--rule-soft);
+		padding-block: 0.55rem;
+	}
+
+	.project-page__ribbon li {
+		display: inline-flex;
+		gap: 0.4rem;
+		align-items: baseline;
+	}
+
+	.project-page__ribbon li span:first-child {
+		color: var(--ink-soft);
+	}
+
+	.project-page__ribbon-sep {
+		color: var(--mute-soft);
+		margin-left: 0.4rem;
+	}
+
 	.project-page__eyebrow {
 		font-family: var(--font-mono);
 		font-size: 0.74rem;
@@ -224,13 +266,25 @@ const publishYear = data.publishDate.getFullYear();
 
 	.project-page__title {
 		font-family: var(--font-display);
-		font-size: clamp(2.8rem, 7vw, 5.6rem);
+		font-size: clamp(2.8rem, 8.5vw, 6.4rem);
 		font-weight: 400;
 		font-variation-settings: 'opsz' 144, 'SOFT' 30, 'WONK' 1;
-		line-height: 0.96;
-		letter-spacing: -0.028em;
+		line-height: 0.94;
+		letter-spacing: -0.03em;
 		color: var(--ink);
-		margin-bottom: 1.25rem;
+		margin-bottom: 1.4rem;
+		transition: font-variation-settings 380ms var(--ease);
+	}
+
+	.project-page__title:hover,
+	.project-page__title:focus-within {
+		font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1;
+	}
+
+	@media (min-width: 80em) {
+		.project-page__title {
+			margin-inline-start: -3.5rem;
+		}
 	}
 
 	.project-page__thesis {
@@ -259,9 +313,22 @@ const publishYear = data.publishDate.getFullYear();
 		padding-block: 1rem;
 	}
 
-	.project-page__hero-spec-label {
+	.project-page__hero-spec-top {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: 1rem;
 		padding-inline: 0.1rem;
 		margin-bottom: 0.9rem;
+	}
+
+	.project-page__hero-spec-top .glyph {
+		max-width: 6.5rem;
+		flex-shrink: 0;
+	}
+
+	.project-page__hero-spec-label {
+		margin: 0;
 	}
 
 	.project-page__hero-spec-body {

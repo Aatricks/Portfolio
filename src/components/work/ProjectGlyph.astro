@@ -1,0 +1,97 @@
+---
+interface Props {
+	themeKey: string;
+	label?: string;
+}
+
+const { themeKey, label } = Astro.props;
+---
+
+{themeKey === 'llmedge' && (
+	<svg class="glyph" viewBox="0 0 90 36" role="img" aria-label={label || 'backend latency'}>
+		<line x1="4" y1="32" x2="48" y2="32" stroke="currentColor" stroke-opacity="0.25" stroke-width="1" />
+		<g stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="square">
+			<line x1="10" y1="32" x2="10" y2="22"><animate attributeName="y2" from="32" to="22" dur="0.6s" fill="freeze" begin="0.1s" /></line>
+			<line x1="22" y1="32" x2="22" y2="14"><animate attributeName="y2" from="32" to="14" dur="0.6s" fill="freeze" begin="0.25s" /></line>
+			<line x1="34" y1="32" x2="34" y2="6"><animate attributeName="y2" from="32" to="6" dur="0.6s" fill="freeze" begin="0.4s" /></line>
+		</g>
+		<text x="54" y="14" font-size="6" fill="currentColor" font-family="var(--font-mono)" opacity="0.7">opencl</text>
+		<text x="54" y="22" font-size="6" fill="currentColor" font-family="var(--font-mono)" opacity="0.55">vulkan</text>
+		<text x="54" y="30" font-size="6" fill="currentColor" font-family="var(--font-mono)" opacity="0.4">cpu</text>
+	</svg>
+)}
+
+{themeKey === 'cchess' && (
+	<svg class="glyph" viewBox="0 0 90 36" role="img" aria-label={label || 'minimax tree'}>
+		<g stroke="currentColor" stroke-width="0.8" fill="none">
+			<line x1="45" y1="6" x2="20" y2="18" />
+			<line x1="45" y1="6" x2="45" y2="18" />
+			<line x1="45" y1="6" x2="70" y2="18" />
+			<line x1="20" y1="18" x2="10" y2="30" />
+			<line x1="20" y1="18" x2="30" y2="30" />
+			<line x1="45" y1="18" x2="38" y2="30" />
+			<line x1="45" y1="18" x2="52" y2="30" />
+			<line x1="70" y1="18" x2="60" y2="30" />
+			<line x1="70" y1="18" x2="80" y2="30" />
+		</g>
+		<g fill="currentColor">
+			<circle cx="45" cy="6" r="1.8" />
+			<circle cx="20" cy="18" r="1.4" opacity="0.5" />
+			<circle cx="45" cy="18" r="1.8" />
+			<circle cx="70" cy="18" r="1.4" opacity="0.5" />
+			<circle cx="10" cy="30" r="1.1" opacity="0.35" />
+			<circle cx="30" cy="30" r="1.1" opacity="0.35" />
+			<circle cx="38" cy="30" r="1.4" opacity="0.7" />
+			<circle cx="52" cy="30" r="1.1" opacity="0.35" />
+			<circle cx="60" cy="30" r="1.1" opacity="0.35" />
+			<circle cx="80" cy="30" r="1.1" opacity="0.35" />
+		</g>
+	</svg>
+)}
+
+{themeKey === 'lightdiffusion-next' && (
+	<svg class="glyph" viewBox="0 0 90 36" role="img" aria-label={label || 'denoise steps'}>
+		{Array.from({ length: 9 }).map((_, i) => (
+			<rect
+				x={4 + i * 9.5}
+				y={4 + i * 2.4}
+				width={6}
+				height={28 - i * 2.4}
+				fill="currentColor"
+				opacity={0.15 + i * 0.09}
+			>
+				<animate attributeName="opacity" from="0" to={0.15 + i * 0.09} dur="0.5s" fill="freeze" begin={`${i * 0.06}s`} />
+			</rect>
+		))}
+	</svg>
+)}
+
+{themeKey === 'easyreader' && (
+	<svg class="glyph" viewBox="0 0 90 36" role="img" aria-label={label || 'optical axis'}>
+		<g stroke="currentColor" stroke-width="1" fill="none">
+			<line x1="6" y1="18" x2="84" y2="18" stroke-opacity="0.35" />
+			<line x1="6" y1="13" x2="6" y2="23" />
+			<line x1="84" y1="13" x2="84" y2="23" />
+			<line x1="25" y1="15" x2="25" y2="21" stroke-opacity="0.5" />
+			<line x1="45" y1="15" x2="45" y2="21" stroke-opacity="0.5" />
+			<line x1="65" y1="15" x2="65" y2="21" stroke-opacity="0.5" />
+		</g>
+		<g fill="currentColor">
+			<circle cx="58" cy="18" r="3.2">
+				<animate attributeName="cx" from="6" to="58" dur="0.8s" fill="freeze" begin="0.15s" />
+			</circle>
+		</g>
+		<text x="6" y="32" font-size="5" fill="currentColor" opacity="0.55" font-family="var(--font-mono)">opsz 9</text>
+		<text x="74" y="32" font-size="5" fill="currentColor" opacity="0.55" font-family="var(--font-mono)">144</text>
+	</svg>
+)}
+
+<style>
+	.glyph {
+		display: block;
+		width: 100%;
+		height: auto;
+		max-width: 14rem;
+		color: var(--project-accent, var(--accent));
+	}
+</style>

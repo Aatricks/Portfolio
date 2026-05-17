@@ -1,77 +1,79 @@
 ---
+import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+const work = await getCollection('work');
+const recent = work
+	.filter((p) => p.data.status !== 'archive')
+	.sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime())
+	.slice(0, 4);
+
+const path = Astro.url.pathname;
 ---
 
 <BaseLayout title="404 · not found" description="The route you requested does not exist on this site.">
 	<section class="notfound wrapper">
-		<div class="notfound__grid">
-			<div class="notfound__copy">
-				<p class="section-marker">err · 404 · not_found</p>
-				<h1 class="notfound__title">
-					This route doesn't <em>compile</em>.
-				</h1>
-				<p class="notfound__lede">
-					The page you tried to load isn't part of this build. Could be a stale link, a typo,
-					or a section I haven't shipped yet.
-				</p>
+		<p class="section-marker">err · 404 · not_found</p>
+		<h1 class="notfound__title">
+			This route doesn't <em>compile</em>.
+		</h1>
+		<p class="notfound__lede">
+			Could be a stale link, a typo, or a section I haven't shipped yet.
+		</p>
 
-				<div class="notfound__actions">
-					<a class="notfound__btn notfound__btn--solid" href="/Portfolio/">
-						<span>→ /</span>
-						<span>back to home</span>
+		<div class="notfound__repl" role="presentation">
+			<span class="notfound__prompt" aria-hidden="true">portfolio<span class="notfound__prompt-sep">:</span>~$</span>
+			<span class="notfound__cmd"><span class="notfound__cmd-bin">stat</span> {path}</span>
+			<span class="notfound__cursor" aria-hidden="true"></span>
+		</div>
+		<p class="notfound__stderr">
+			stat: cannot stat '<em>{path}</em>': No such file or directory
+		</p>
+
+		<div class="notfound__suggest">
+			<p class="label">try one of these</p>
+			<ul class="notfound__list">
+				{recent.map((p) => (
+					<li>
+						<a href={`/Portfolio/work/${p.id}`} class="notfound__row">
+							<span class="notfound__row-arrow" aria-hidden="true">→</span>
+							<span class="notfound__row-path">/work/{p.id}</span>
+							<span class="notfound__row-eyebrow">{p.data.eyebrow}</span>
+						</a>
+					</li>
+				))}
+				<li>
+					<a href="/Portfolio/" class="notfound__row notfound__row--home">
+						<span class="notfound__row-arrow" aria-hidden="true">↩</span>
+						<span class="notfound__row-path">/</span>
+						<span class="notfound__row-eyebrow">home</span>
 					</a>
-					<a class="notfound__btn" href="/Portfolio/#work">
-						<span>→</span>
-						<span>see selected work</span>
-					</a>
-				</div>
-			</div>
-
-			<aside class="notfound__terminal" aria-hidden="true">
-				<header class="notfound__terminal-head">
-					<span class="notfound__terminal-dot"></span>
-					<span class="notfound__terminal-dot"></span>
-					<span class="notfound__terminal-dot"></span>
-					<span class="notfound__terminal-title">portfolio$ <span class="cursor">_</span></span>
-				</header>
-				<pre class="notfound__terminal-body">{`$ curl -sI ${Astro.url.pathname}
-HTTP/1.1 404 Not Found
-content-type: text/plain
-x-vibes: this isn't the page you're looking for
-
-$ git log -- ${Astro.url.pathname}
-fatal: no such path
-
-$ cd /Portfolio && ls work/
-llmedge/  lightdiffusion-next/  easyreader/  cchess/
-
-$ _`}</pre>
-			</aside>
+				</li>
+			</ul>
 		</div>
 	</section>
 </BaseLayout>
 
 <style>
 	.notfound {
-		padding-block: 6rem 8rem;
-	}
-
-	.notfound__grid {
-		display: grid;
-		grid-template-columns: 1fr;
-		gap: 3rem;
-		align-items: center;
+		padding-block: clamp(5rem, 11vw, 9rem) clamp(5rem, 9vw, 8rem);
+		max-width: 56rem;
 	}
 
 	.notfound__title {
 		font-family: var(--font-display);
-		font-size: clamp(2.8rem, 8vw, 5.5rem);
+		font-size: clamp(2.8rem, 8vw, 5.4rem);
 		font-weight: 400;
 		font-variation-settings: 'opsz' 144, 'SOFT' 30, 'WONK' 1;
 		line-height: 0.96;
-		letter-spacing: -0.025em;
-		margin: 1.25rem 0;
-		max-width: 14ch;
+		letter-spacing: -0.028em;
+		margin: 1.2rem 0 1.6rem;
+		max-width: 16ch;
+		transition: font-variation-settings 380ms var(--ease);
+	}
+
+	.notfound__title:hover {
+		font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1;
 	}
 
 	.notfound__title em {
@@ -80,113 +82,117 @@ $ _`}</pre>
 	}
 
 	.notfound__lede {
-		max-width: 38rem;
+		max-width: 36rem;
 		font-size: 1.05rem;
 		line-height: 1.65;
 		color: var(--ink-soft);
-		margin-bottom: 2rem;
+		margin-bottom: 2.4rem;
 	}
 
-	.notfound__actions {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.6rem;
-	}
-
-	.notfound__btn {
+	.notfound__repl {
 		display: inline-flex;
-		align-items: center;
-		gap: 0.6rem;
-		padding: 0.75rem 1.1rem;
+		gap: 0.55rem;
+		align-items: baseline;
 		font-family: var(--font-mono);
-		font-size: 0.74rem;
-		letter-spacing: 0.08em;
-		text-transform: lowercase;
-		border: 1px solid var(--rule);
+		font-size: 0.88rem;
 		color: var(--ink);
-		transition:
-			color var(--theme-transition),
-			border-color var(--theme-transition),
-			background-color var(--theme-transition);
+		padding: 0.4rem 0;
+		border-bottom: 1px dashed var(--rule);
 	}
 
-	.notfound__btn:hover {
-		border-color: var(--accent);
-		color: var(--accent);
-	}
-
-	.notfound__btn--solid {
-		background: var(--ink);
-		color: var(--paper);
-		border-color: var(--ink);
-	}
-
-	.notfound__btn--solid:hover {
-		background: var(--accent);
-		border-color: var(--accent);
-		color: var(--paper);
-	}
-
-	.notfound__terminal {
-		background: var(--paper-soft);
-		border: 1px solid var(--rule);
-		font-family: var(--font-mono);
-		font-size: 0.8rem;
-		line-height: 1.55;
-		overflow: hidden;
-	}
-
-	.notfound__terminal-head {
-		display: flex;
-		align-items: center;
-		gap: 0.4rem;
-		padding: 0.6rem 0.85rem;
-		border-bottom: 1px solid var(--rule);
-		background: var(--paper-deep);
-		font-size: 0.7rem;
+	.notfound__prompt {
 		color: var(--mute);
 	}
 
-	.notfound__terminal-dot {
-		width: 0.5rem;
-		height: 0.5rem;
-		border-radius: 999px;
-		background: var(--rule);
-	}
-
-	.notfound__terminal-title {
-		margin-left: auto;
-		color: var(--ink-soft);
-	}
-
-	.cursor {
+	.notfound__prompt-sep {
 		color: var(--accent);
-		animation: blink 1.05s steps(1) infinite;
 	}
 
-	@keyframes blink {
+	.notfound__cmd-bin {
+		color: var(--accent);
+	}
+
+	.notfound__cursor {
+		display: inline-block;
+		width: 0.55em;
+		height: 1em;
+		background: var(--accent);
+		opacity: 0.7;
+		transform: translateY(0.15em);
+		animation: nf-blink 1.05s steps(1) infinite;
+	}
+
+	@keyframes nf-blink {
 		50% {
 			opacity: 0;
 		}
 	}
 
-	.notfound__terminal-body {
-		margin: 0;
-		padding: 1rem 1.1rem;
-		color: var(--ink-soft);
-		white-space: pre;
-		overflow-x: auto;
+	.notfound__stderr {
+		font-family: var(--font-mono);
+		font-size: 0.82rem;
+		color: var(--mute);
+		margin-top: 0.55rem;
 	}
 
-	@media (min-width: 64em) {
-		.notfound__grid {
-			grid-template-columns: minmax(0, 1.1fr) minmax(22rem, 0.9fr);
-			gap: 4rem;
-		}
+	.notfound__stderr em {
+		font-style: normal;
+		color: var(--accent);
+	}
+
+	.notfound__suggest {
+		margin-top: 3rem;
+		display: grid;
+		gap: 0.85rem;
+	}
+
+	.notfound__list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+	}
+
+	.notfound__row {
+		display: grid;
+		grid-template-columns: 1.4rem minmax(0, 1fr) auto;
+		align-items: baseline;
+		gap: 0.6rem 1.2rem;
+		padding-block: 0.85rem;
+		border-bottom: 1px solid var(--rule-soft);
+		color: var(--ink);
+		font-family: var(--font-mono);
+		font-size: 0.92rem;
+		transition: background-color 220ms var(--ease), color 220ms var(--ease);
+	}
+
+	.notfound__row:hover {
+		background: color-mix(in srgb, var(--paper-soft) 65%, transparent);
+		color: var(--accent);
+	}
+
+	.notfound__row-arrow {
+		color: var(--mute);
+	}
+
+	.notfound__row:hover .notfound__row-arrow {
+		color: var(--accent);
+	}
+
+	.notfound__row-eyebrow {
+		font-size: 0.7rem;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--mute);
+		text-align: right;
+	}
+
+	.notfound__row--home {
+		border-bottom: 0;
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.cursor {
+		.notfound__cursor {
 			animation: none;
 		}
 	}

@@ -16,15 +16,6 @@ const additionalProjects = work
 const flagship = featuredProjects[0];
 const secondary = featuredProjects.slice(1);
 
-const buildDate = new Date().toISOString().slice(0, 10);
-const buildHash = buildDate.replace(/-/g, '').slice(2);
-
-const heroSpecs = [
-	['LOC', 'Tours, FR · 47.39°N 0.69°E'],
-	['BUILD', `${buildDate} · #${buildHash}`],
-	['STATUS', 'open to roles · summer 2026'],
-];
-
 const aboutFacts = [
 	{ label: 'now', value: 'CS engineering @ Polytech Tours · 2022–2027' },
 	{ label: 'next', value: 'AI research intern · HEC Montréal · summer 2026' },
@@ -38,6 +29,72 @@ const sideNotes = [
 	{ mark: '⌂', text: '3D printing — machine maintenance + functional parts for embedded projects.' },
 	{ mark: 'λ', text: 'fr / en / es / it / ru — diplomacy training at C-MIMUN.' },
 ];
+
+// ---- Build-time GitHub activity strip ----
+const NINETY_DAYS = 91;
+const todayUtc = new Date();
+todayUtc.setUTCHours(0, 0, 0, 0);
+const ninetyDays = Array.from({ length: NINETY_DAYS }, (_, i) => {
+	const d = new Date(todayUtc);
+	d.setUTCDate(d.getUTCDate() - (NINETY_DAYS - 1 - i));
+	return d.toISOString().slice(0, 10);
+});
+const counts = new Map<string, number>(ninetyDays.map((d) => [d, 0]));
+let totalCommits = 0;
+let lastPushed: string | null = null;
+
+try {
+	const res = await fetch(
+		'https://api.github.com/users/Aatricks/events/public?per_page=100',
+		{
+			signal: AbortSignal.timeout(5000),
+			headers: { 'user-agent': 'portfolio-build', accept: 'application/vnd.github+json' },
+		},
+	);
+	if (res.ok) {
+		const events = (await res.json()) as Array<any>;
+		for (const e of events) {
+			if (e?.type !== 'PushEvent') continue;
+			// public events strip the commits array; fall back to size or 1
+			const commitCount =
+				(Array.isArray(e?.payload?.commits) && e.payload.commits.length) ||
+				(typeof e?.payload?.size === 'number' && e.payload.size) ||
+				1;
+			const day = String(e.created_at).slice(0, 10);
+			const prev = counts.get(day);
+			if (prev !== undefined) {
+				counts.set(day, prev + commitCount);
+				totalCommits += commitCount;
+				if (!lastPushed || e.created_at > lastPushed) {
+					lastPushed = e.created_at;
+				}
+			}
+		}
+	}
+} catch {
+	// Network failure or rate limit — strip renders empty (still informative).
+}
+
+const maxCount = Math.max(1, ...Array.from(counts.values()));
+const activityGrid = ninetyDays.map((d) => {
+	const c = counts.get(d) ?? 0;
+	return {
+		date: d,
+		count: c,
+		opacity: c === 0 ? 0.08 : 0.22 + (c / maxCount) * 0.78,
+	};
+});
+
+function relativeAgo(iso: string | null): string {
+	if (!iso) return 'no recent push';
+	const sec = (Date.now() - new Date(iso).getTime()) / 1000;
+	if (sec < 60) return 'just now';
+	if (sec < 3600) return `${Math.floor(sec / 60)}m ago`;
+	if (sec < 86400) return `${Math.floor(sec / 3600)}h ago`;
+	if (sec < 86400 * 7) return `${Math.floor(sec / 86400)}d ago`;
+	return `${Math.floor(sec / (86400 * 7))}w ago`;
+}
+const lastPushedAgo = relativeAgo(lastPushed);
 ---
 
 <BaseLayout
@@ -49,42 +106,34 @@ const sideNotes = [
 		<div class="hero__bg" aria-hidden="true" data-parallax="0.05"></div>
 
 		<div class="wrapper hero__inner" data-reveal-stagger>
-			<div class="hero__strip" data-reveal>
-				{heroSpecs.map(([k, v], i) => (
-					<span class="hero__spec">
-						<span class="hero__spec-key">{k}</span>
-						<span class="hero__spec-val">{v}</span>
-						{i < heroSpecs.length - 1 && <span class="hero__spec-sep" aria-hidden="true">·</span>}
-					</span>
-				))}
-			</div>
-
 			<div class="hero__main">
-				<p class="hero__eyebrow" data-reveal>
-					<span aria-hidden="true">§ 00 · whoami</span>
-				</p>
 				<h1 class="hero__title" id="hero-title" data-reveal>
 					Emilio&nbsp;Melis.<br />
 					builds <em>edge&nbsp;AI</em> that<br />
-					runs <em>where it&nbsp;lives</em>.
+					runs <em class="hero__title-mark"><span class="hero__title-text">where it&nbsp;lives</span><svg
+							class="hero__title-stroke"
+							viewBox="0 0 320 18"
+							aria-hidden="true"
+							preserveAspectRatio="none"
+						><path
+								d="M3 13 C 38 4, 84 15, 128 9 C 172 4, 218 17, 262 11 C 286 8, 302 14, 318 5"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+							/></svg></em>.
 				</h1>
 				<p class="hero__lede" data-reveal>
-					Engineering student specializing in algorithmic optimization and AI on constrained
-					hardware. I write the C/C++ that makes models fit, the Kotlin/JNI that ships them,
-					and the sensor fusion that keeps them honest.
+					Native runtimes, sensor fusion, AI on constrained hardware.
 				</p>
 
 				<div class="hero__actions" data-reveal>
 					<a class="btn btn--solid" href="#work">
-						<span>Selected work</span>
+						<span>Work</span>
 						<span aria-hidden="true">→</span>
 					</a>
-					<a class="btn btn--ghost" href="https://github.com/Aatricks" target="_blank" rel="noopener noreferrer">
-						<span>github.com/Aatricks</span>
-						<span aria-hidden="true">↗</span>
-					</a>
 					<a class="btn btn--ghost" href="/Portfolio/CV-English.pdf">
-						<span>CV.pdf</span>
+						<span>CV</span>
 						<span aria-hidden="true">↓</span>
 					</a>
 				</div>
@@ -97,16 +146,9 @@ const sideNotes = [
 		<div class="wrapper">
 			<header class="section__head" data-reveal>
 				<p class="section-marker">01 · selected work</p>
-				<div class="section__title-row">
-					<h2 id="work-title" class="section__title">
-						Systems I built and <em>shipped</em>.
-					</h2>
-					<p class="section__lede">
-						Four projects that map the surface I work across: native runtimes, generation
-						stacks, Android product, and engine-level C. Each one is the proof for a specific
-						claim on the CV.
-					</p>
-				</div>
+				<h2 id="work-title" class="section__title">
+					Systems I built and <em>shipped</em>.
+				</h2>
 			</header>
 
 			<div id="selected-work" class="work">
@@ -140,21 +182,9 @@ const sideNotes = [
 
 			<div class="about__grid">
 				<div class="about__prose" data-reveal>
-					<p>
-						I build software that runs locally — under tight memory, on heterogeneous
-						hardware, with backends that fail differently on every device. My recent work
-						sits at the seam between <strong>native runtimes</strong> (C/C++, JNI, Vulkan)
-						and the <strong>product layers</strong> that ship them.
-					</p>
-					<p>
-						Before AI took over my repo list, the same instinct showed up in signal
-						processing: a navigation stack for an autonomous submarine, with mathematically
-						implemented Kalman filters fusing raw IMU data into a heading I could trust.
-						That, more than any model, is what I want to keep doing.
-					</p>
-					<p>
-						Aerospace, automotive, ADAS — anywhere the runtime has to be honest about the
-						hardware. That is where I want this work to land.
+					<p class="about__pull">
+						Native runtimes, embedded control, sensor fusion — anywhere the runtime
+						has to be <strong>honest about the hardware</strong>.
 					</p>
 
 					<dl class="about__facts">
@@ -165,10 +195,29 @@ const sideNotes = [
 							</div>
 						))}
 					</dl>
+
+					<div class="about__activity" data-reveal aria-label="GitHub activity, last 90 days">
+						<div class="about__activity-head">
+							<span class="label">last 90 days · github</span>
+							<span class="about__activity-meta">
+								last push <em>{lastPushedAgo}</em> · {totalCommits} commits visible
+							</span>
+						</div>
+						<svg class="about__activity-strip" viewBox={`0 0 ${activityGrid.length * 3} 14`} preserveAspectRatio="none" aria-hidden="true">
+							{activityGrid.map((cell, i) => (
+								<rect x={i * 3} y={2} width={2} height={10} fill="currentColor" opacity={cell.opacity}>
+									<title>{cell.date}: {cell.count} commit{cell.count === 1 ? '' : 's'}</title>
+								</rect>
+							))}
+						</svg>
+						<div class="about__activity-axis" aria-hidden="true">
+							<span>90d ago</span>
+							<span>today</span>
+						</div>
+					</div>
 				</div>
 
-				<aside class="about__notes" data-reveal aria-label="Marginalia">
-					<p class="about__notes-label">— marginalia</p>
+				<aside class="about__notes" data-reveal aria-label="Side notes">
 					{sideNotes.map((note) => (
 						<div class="about__note">
 							<span class="about__note-mark" aria-hidden="true">{note.mark}</span>
@@ -210,10 +259,7 @@ const sideNotes = [
 						<li class="project-index__row" data-reveal>
 							<a href={`/Portfolio/work/${project.id}`} class="project-index__link">
 								<span class="project-index__num">{String(i + 1).padStart(2, '0')}</span>
-								<div class="project-index__copy">
-									<p class="project-index__eyebrow">{project.data.eyebrow}</p>
-									<h3 class="project-index__title">{project.data.title}</h3>
-								</div>
+								<h3 class="project-index__title">{project.data.title}</h3>
 								<span class="project-index__stack">{project.data.stackLine}</span>
 								<span class="project-index__arrow" aria-hidden="true">→</span>
 							</a>
@@ -325,6 +371,47 @@ const sideNotes = [
 		color: var(--accent);
 		font-style: italic;
 		font-variation-settings: 'opsz' 144, 'SOFT' 90, 'WONK' 1;
+		transition: font-variation-settings 420ms var(--ease);
+	}
+
+	.hero__title em:hover {
+		font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1;
+	}
+
+	.hero__title-mark {
+		position: relative;
+		display: inline-block;
+		isolation: isolate;
+	}
+
+	.hero__title-stroke {
+		position: absolute;
+		left: -2%;
+		right: -2%;
+		bottom: -0.18em;
+		width: 104%;
+		height: 0.32em;
+		color: var(--accent);
+		opacity: 0.85;
+		pointer-events: none;
+		overflow: visible;
+	}
+
+	.hero__title-stroke path {
+		stroke-dasharray: 360;
+		stroke-dashoffset: 360;
+		transition: stroke-dashoffset 1100ms var(--ease) 320ms;
+	}
+
+	:global(.js [data-reveal].is-visible) .hero__title-stroke path {
+		stroke-dashoffset: 0;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.hero__title-stroke path {
+			stroke-dashoffset: 0;
+			transition: none;
+		}
 	}
 
 	.hero__lede {
@@ -449,16 +536,28 @@ const sideNotes = [
 
 	.about__prose {
 		display: grid;
-		gap: 1.2rem;
+		gap: 2rem;
 		max-width: 44rem;
 		font-size: 1.05rem;
-		line-height: 1.75;
+		line-height: 1.65;
 		color: var(--ink-soft);
 	}
 
-	.about__prose p strong {
+	.about__pull {
+		font-family: var(--font-display);
+		font-size: clamp(1.5rem, 2.8vw, 2.2rem);
+		font-style: italic;
+		line-height: 1.28;
+		letter-spacing: -0.014em;
 		color: var(--ink);
-		font-weight: 500;
+		font-variation-settings: 'opsz' 144, 'SOFT' 80, 'WONK' 0;
+		max-width: 32rem;
+	}
+
+	.about__pull strong {
+		font-style: normal;
+		color: var(--accent);
+		font-weight: 400;
 	}
 
 	.about__facts {
@@ -491,30 +590,10 @@ const sideNotes = [
 	}
 
 	.about__notes {
-		position: relative;
-		padding: 1.6rem 1.4rem 1.4rem;
-		border: 1px solid var(--rule);
-		background: var(--paper);
 		display: grid;
 		gap: 1.1rem;
-	}
-
-	.about__notes::before {
-		content: '';
-		position: absolute;
-		top: -1px;
-		left: 1.2rem;
-		width: 2rem;
-		height: 2px;
-		background: var(--accent);
-	}
-
-	.about__notes-label {
-		font-family: var(--font-mono);
-		font-size: 0.7rem;
-		letter-spacing: 0.18em;
-		text-transform: uppercase;
-		color: var(--mute);
+		padding-top: 1.2rem;
+		border-top: 1px dashed var(--rule);
 	}
 
 	.about__note {
@@ -531,6 +610,53 @@ const sideNotes = [
 		color: var(--accent);
 		font-size: 1rem;
 		line-height: 1.2;
+	}
+
+	.about__activity {
+		margin-top: 1.6rem;
+		padding-top: 1.4rem;
+		border-top: 1px dashed var(--rule);
+		color: var(--ink);
+		display: grid;
+		gap: 0.55rem;
+	}
+
+	.about__activity-head {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		gap: 0.5rem 1.25rem;
+		align-items: baseline;
+	}
+
+	.about__activity-meta {
+		font-family: var(--font-mono);
+		font-size: 0.72rem;
+		letter-spacing: 0.04em;
+		color: var(--mute);
+	}
+
+	.about__activity-meta em {
+		font-style: normal;
+		color: var(--ink-soft);
+		font-family: var(--font-mono);
+	}
+
+	.about__activity-strip {
+		width: 100%;
+		height: 1.6rem;
+		color: var(--accent);
+		display: block;
+	}
+
+	.about__activity-axis {
+		display: flex;
+		justify-content: space-between;
+		font-family: var(--font-mono);
+		font-size: 0.66rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--mute-soft);
 	}
 
 	/* ====================== PROJECT INDEX ====================== */
@@ -586,19 +712,6 @@ const sideNotes = [
 		color: var(--mute);
 		letter-spacing: 0.08em;
 		font-variant-numeric: tabular-nums;
-	}
-
-	.project-index__copy {
-		display: grid;
-		gap: 0.25rem;
-	}
-
-	.project-index__eyebrow {
-		font-family: var(--font-mono);
-		font-size: 0.7rem;
-		letter-spacing: 0.16em;
-		text-transform: uppercase;
-		color: var(--mute);
 	}
 
 	.project-index__title {

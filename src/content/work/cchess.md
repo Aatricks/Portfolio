@@ -23,10 +23,6 @@ heroPoints:
   - Keeps the code close to the machine, with explicit state handling and minimal abstraction overhead.
   - Centers the engine around search, pruning, and evaluation rather than framework structure.
   - Stays focused on deterministic behavior and debuggable control flow.
-gallery:
-  - src: /Portfolio/assets/CChess.webp
-    alt: CChess cover art showing a robotic hand and chess piece
-    caption: The visual is simple, but the project itself is about implementing search and evaluation logic directly in plain C.
 architecture:
   - Board state and move logic stay explicit so search behavior remains understandable and debuggable.
   - Minimax and alpha-beta pruning form the decision core for move selection.
