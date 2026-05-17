@@ -6,39 +6,71 @@ interface Props {
 }
 
 const { repoUrl, docsUrl, demoUrl } = Astro.props;
+
+const links = [
+	{ href: repoUrl, label: 'source', glyph: '↗' },
+	docsUrl && { href: docsUrl, label: 'docs', glyph: '↗' },
+	demoUrl && { href: demoUrl, label: 'demo', glyph: '▶' },
+].filter(Boolean) as { href: string; label: string; glyph: string }[];
 ---
 
-<div class="project-actions">
-	<a href={repoUrl} target="_blank" rel="noopener noreferrer">View code</a>
-	{docsUrl && <a href={docsUrl} target="_blank" rel="noopener noreferrer">Read docs</a>}
-	{demoUrl && <a href={demoUrl} target="_blank" rel="noopener noreferrer">Open demo</a>}
+<div class="actions">
+	{links.map((link) => (
+		<a class="actions__link" href={link.href} target="_blank" rel="noopener noreferrer">
+			<span>{link.label}</span>
+			<span class="actions__glyph" aria-hidden="true">{link.glyph}</span>
+		</a>
+	))}
 </div>
 
 <style>
-	.project-actions {
+	.actions {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 0.9rem;
+		gap: 0.6rem;
 	}
 
-	.project-actions a {
+	.actions__link {
 		display: inline-flex;
 		align-items: center;
-		padding: 0.8rem 1rem;
-		border: 1px solid rgba(255, 255, 255, 0.12);
-		border-radius: 999px;
+		gap: 0.5rem;
+		padding: 0.65rem 0.95rem;
 		font-family: var(--font-mono);
-		font-size: 0.75rem;
-		letter-spacing: 0.12em;
-		text-transform: uppercase;
-		color: var(--gray-50);
-		background: rgba(255, 255, 255, 0.03);
-		backdrop-filter: blur(16px);
+		font-size: 0.74rem;
+		letter-spacing: 0.08em;
+		text-transform: lowercase;
+		color: var(--ink);
+		border: 1px solid var(--rule);
+		background: transparent;
+		transition:
+			border-color var(--theme-transition),
+			color var(--theme-transition),
+			background-color var(--theme-transition);
 	}
 
-	.project-actions a:hover {
-		border-color: color-mix(in srgb, var(--project-accent, var(--accent-regular)) 55%, white);
-		color: white;
-		background: color-mix(in srgb, var(--project-accent, var(--accent-regular)) 16%, transparent);
+	.actions__link:first-child {
+		background: var(--ink);
+		color: var(--paper);
+		border-color: var(--ink);
+	}
+
+	.actions__link:first-child:hover {
+		background: var(--project-accent, var(--accent));
+		border-color: var(--project-accent, var(--accent));
+	}
+
+	.actions__link:hover {
+		color: var(--project-accent, var(--accent));
+		border-color: var(--project-accent, var(--accent));
+	}
+
+	.actions__glyph {
+		opacity: 0.7;
+		transition: transform 220ms var(--ease), opacity 220ms var(--ease);
+	}
+
+	.actions__link:hover .actions__glyph {
+		transform: translate(2px, -2px);
+		opacity: 1;
 	}
 </style>

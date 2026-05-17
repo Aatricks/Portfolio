@@ -1,0 +1,516 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import ProjectActions from './ProjectActions.astro';
+import ProjectMetrics from './ProjectMetrics.astro';
+import ProjectGallery from './ProjectGallery.astro';
+
+interface Props {
+	entry: CollectionEntry<'work'>;
+	Content: any;
+	accent: string;
+	accentDark?: string;
+	themeKey: string;
+	hint?: string;
+	backHref?: string;
+	galleryColumns?: 'single' | 'double';
+}
+
+const {
+	entry,
+	Content,
+	accent,
+	accentDark,
+	themeKey,
+	hint = '',
+	backHref = '/Portfolio/#work',
+	galleryColumns = 'double',
+} = Astro.props;
+const { data } = entry;
+const publishYear = data.publishDate.getFullYear();
+---
+
+<article
+	class={`project-page project-page--${themeKey}`}
+	data-project-theme={themeKey}
+	style={`--proj: ${accent}; --proj-dark: ${accentDark ?? accent};`}
+>
+	<header class="project-page__hero">
+		<div class="wrapper project-page__hero-inner">
+			<nav class="project-page__nav">
+				<a class="project-page__back" href={backHref}>
+					<span aria-hidden="true">←</span>
+					<span>back to work</span>
+				</a>
+				<span class="project-page__breadcrumb" aria-hidden="true">
+					/work / {themeKey} / {publishYear}
+				</span>
+			</nav>
+
+			<div class="project-page__hero-grid">
+				<div class="project-page__hero-copy">
+					<p class="section-marker project-page__marker">
+						{data.status === 'flagship' ? 'flagship · §' : 'side work · §'}
+					</p>
+					<p class="project-page__eyebrow">{data.eyebrow}</p>
+					<h1 class="project-page__title">{data.title}</h1>
+					<p class="project-page__thesis">{data.thesis}</p>
+
+					<div class="project-page__actions">
+						<ProjectActions
+							repoUrl={data.repoUrl}
+							docsUrl={data.docsUrl}
+							demoUrl={data.demoUrl}
+						/>
+					</div>
+				</div>
+
+				<aside class="project-page__hero-spec" data-parallax="0.04">
+					<header class="project-page__hero-spec-head">
+						<span class="project-page__hero-spec-dot" aria-hidden="true"></span>
+						<span>{hint || `~/${themeKey}.spec`}</span>
+						<span class="project-page__hero-spec-id" aria-hidden="true">
+							v{publishYear.toString().slice(-2)}.{((data.publishDate.getMonth() + 1) * 10).toString().padStart(2, '0')}
+						</span>
+					</header>
+					<div class="project-page__hero-spec-body">
+						{data.heroPoints.slice(0, 3).map((point, i) => (
+							<div class="project-page__hero-spec-row">
+								<span class="project-page__hero-spec-key">[{String(i + 1).padStart(2, '0')}]</span>
+								<p>{point}</p>
+							</div>
+						))}
+					</div>
+					<footer class="project-page__hero-spec-foot">
+						<span>stack</span>
+						<span class="project-page__hero-spec-stack">{data.stackLine}</span>
+					</footer>
+				</aside>
+			</div>
+		</div>
+	</header>
+
+	<div class="wrapper project-page__body">
+		<ProjectMetrics metrics={data.metrics} />
+
+		<section class="project-page__split">
+			<div class="project-page__narrative" data-reveal>
+				<p class="section-marker">why it matters</p>
+				<h2 class="project-page__section-h">
+					<em>{data.title}</em> — {data.description}
+				</h2>
+				<ul class="project-page__bullets">
+					{data.highlights.map((highlight) => (
+						<li>{highlight}</li>
+					))}
+				</ul>
+			</div>
+
+			<aside class="project-page__arch" data-reveal>
+				<p class="section-marker">architecture</p>
+				<ol class="project-page__arch-list">
+					{data.architecture.map((step, i) => (
+						<li>
+							<span class="project-page__arch-num">{String(i + 1).padStart(2, '0')}</span>
+							<p>{step}</p>
+						</li>
+					))}
+				</ol>
+			</aside>
+		</section>
+
+		{data.gallery.length > 0 && (
+			<section class="project-page__gallery" data-reveal>
+				<p class="section-marker">visuals</p>
+				<ProjectGallery items={data.gallery} columns={galleryColumns} />
+			</section>
+		)}
+
+		<section class="project-page__notes" data-reveal>
+			<p class="section-marker">engineering notes</p>
+			<div class="project-prose">
+				<Content />
+			</div>
+		</section>
+	</div>
+</article>
+
+<style>
+	.project-page {
+		--project-accent: var(--proj);
+		padding-bottom: 5rem;
+	}
+
+	[data-theme='dark'] .project-page {
+		--project-accent: var(--proj-dark, var(--proj));
+	}
+
+	/* ---------------- HERO ---------------- */
+	.project-page__hero {
+		padding-block: 3rem 4rem;
+		border-bottom: 1px solid var(--rule-soft);
+		position: relative;
+		background:
+			linear-gradient(
+				180deg,
+				color-mix(in srgb, var(--project-accent) 6%, transparent),
+				transparent 65%
+			);
+	}
+
+	.project-page__hero::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background-image:
+			linear-gradient(to right, var(--rule-soft) 1px, transparent 1px);
+		background-size: 1.25rem 100%;
+		mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.35), transparent 80%);
+		pointer-events: none;
+		opacity: 0.6;
+	}
+
+	.project-page__hero-inner {
+		position: relative;
+	}
+
+	.project-page__nav {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 1rem;
+		margin-bottom: 2.5rem;
+		font-family: var(--font-mono);
+		font-size: 0.72rem;
+		letter-spacing: 0.08em;
+		color: var(--mute);
+	}
+
+	.project-page__back {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		color: var(--ink-soft);
+		text-transform: lowercase;
+	}
+
+	.project-page__back:hover {
+		color: var(--project-accent);
+	}
+
+	.project-page__breadcrumb {
+		color: var(--mute-soft);
+		font-size: 0.68rem;
+		text-transform: lowercase;
+	}
+
+	.project-page__hero-grid {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 2.5rem;
+	}
+
+	.project-page__marker {
+		margin-bottom: 1rem;
+	}
+
+	.project-page__eyebrow {
+		font-family: var(--font-mono);
+		font-size: 0.74rem;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--project-accent);
+		margin-bottom: 0.85rem;
+	}
+
+	.project-page__title {
+		font-family: var(--font-display);
+		font-size: clamp(2.8rem, 7vw, 5.6rem);
+		font-weight: 400;
+		font-variation-settings: 'opsz' 144, 'SOFT' 30, 'WONK' 1;
+		line-height: 0.96;
+		letter-spacing: -0.028em;
+		color: var(--ink);
+		margin-bottom: 1.25rem;
+	}
+
+	.project-page__thesis {
+		max-width: 42rem;
+		font-size: clamp(1.08rem, 1.8vw, 1.32rem);
+		line-height: 1.55;
+		color: var(--ink-soft);
+		font-family: var(--font-display);
+		font-style: italic;
+		font-weight: 400;
+		margin-bottom: 2rem;
+	}
+
+	.project-page__actions {
+		display: flex;
+	}
+
+	/* hero spec block */
+	.project-page__hero-spec {
+		background: var(--paper-soft);
+		border: 1px solid var(--rule);
+		font-family: var(--font-mono);
+		font-size: 0.78rem;
+		line-height: 1.5;
+		color: var(--ink-soft);
+	}
+
+	.project-page__hero-spec-head {
+		display: flex;
+		align-items: center;
+		gap: 0.55rem;
+		padding: 0.6rem 0.85rem;
+		border-bottom: 1px solid var(--rule);
+		background: var(--paper-deep);
+		color: var(--ink);
+		font-size: 0.72rem;
+	}
+
+	.project-page__hero-spec-dot {
+		width: 0.45rem;
+		height: 0.45rem;
+		border-radius: 999px;
+		background: var(--project-accent);
+	}
+
+	.project-page__hero-spec-id {
+		margin-left: auto;
+		color: var(--mute);
+		letter-spacing: 0.04em;
+	}
+
+	.project-page__hero-spec-body {
+		display: grid;
+		gap: 0.85rem;
+		padding: 1rem 1.1rem;
+	}
+
+	.project-page__hero-spec-row {
+		display: grid;
+		grid-template-columns: 2.4rem 1fr;
+		gap: 0.5rem;
+	}
+
+	.project-page__hero-spec-row p {
+		font-family: var(--font-body);
+		font-size: 0.92rem;
+		line-height: 1.55;
+		color: var(--ink-soft);
+	}
+
+	.project-page__hero-spec-key {
+		color: var(--project-accent);
+		font-size: 0.72rem;
+	}
+
+	.project-page__hero-spec-foot {
+		display: flex;
+		align-items: baseline;
+		gap: 0.7rem;
+		padding: 0.7rem 1.1rem;
+		border-top: 1px dashed var(--rule);
+		font-size: 0.7rem;
+		color: var(--mute);
+		text-transform: uppercase;
+		letter-spacing: 0.12em;
+	}
+
+	.project-page__hero-spec-stack {
+		color: var(--ink-soft);
+		font-size: 0.72rem;
+		text-transform: none;
+		letter-spacing: 0.02em;
+	}
+
+	/* ---------------- BODY ---------------- */
+	.project-page__body {
+		display: grid;
+		gap: 4.5rem;
+		padding-top: 3.5rem;
+	}
+
+	.project-page__split {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 2.5rem;
+		align-items: start;
+	}
+
+	.project-page__narrative {
+		display: grid;
+		gap: 1.25rem;
+	}
+
+	.project-page__section-h {
+		font-family: var(--font-display);
+		font-size: clamp(1.7rem, 3.4vw, 2.6rem);
+		font-weight: 400;
+		line-height: 1.06;
+		letter-spacing: -0.018em;
+		max-width: 24ch;
+		color: var(--ink);
+	}
+
+	.project-page__section-h em {
+		color: var(--project-accent);
+		font-style: italic;
+	}
+
+	.project-page__bullets {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: grid;
+		gap: 0.85rem;
+	}
+
+	.project-page__bullets li {
+		position: relative;
+		padding-left: 1.4rem;
+		font-size: 1rem;
+		line-height: 1.6;
+		color: var(--ink-soft);
+	}
+
+	.project-page__bullets li::before {
+		content: '▸';
+		position: absolute;
+		left: 0;
+		top: 0.05em;
+		color: var(--project-accent);
+		font-family: var(--font-mono);
+		font-size: 0.85em;
+	}
+
+	.project-page__arch {
+		padding: 1.6rem 1.4rem;
+		background: var(--paper-soft);
+		border: 1px solid var(--rule);
+		position: relative;
+	}
+
+	.project-page__arch::before {
+		content: '';
+		position: absolute;
+		top: -1px;
+		left: 1.2rem;
+		width: 2rem;
+		height: 2px;
+		background: var(--project-accent);
+	}
+
+	.project-page__arch-list {
+		list-style: none;
+		padding: 0;
+		margin-top: 1rem;
+		display: grid;
+		gap: 0;
+	}
+
+	.project-page__arch-list li {
+		display: grid;
+		grid-template-columns: 2.5rem 1fr;
+		gap: 0.85rem;
+		padding-block: 0.85rem;
+		border-bottom: 1px dashed var(--rule);
+	}
+
+	.project-page__arch-list li:last-child {
+		border-bottom: 0;
+	}
+
+	.project-page__arch-num {
+		font-family: var(--font-mono);
+		font-size: 0.72rem;
+		color: var(--project-accent);
+		letter-spacing: 0.04em;
+		font-variant-numeric: tabular-nums;
+		padding-top: 0.15rem;
+	}
+
+	.project-page__arch-list li p {
+		font-size: 0.95rem;
+		line-height: 1.55;
+		color: var(--ink-soft);
+	}
+
+	/* gallery / notes */
+	.project-page__gallery,
+	.project-page__notes {
+		display: grid;
+		gap: 1.5rem;
+	}
+
+	.project-page__notes {
+		max-width: 56rem;
+		padding-top: 2.5rem;
+		border-top: 1px solid var(--rule);
+	}
+
+	.project-prose {
+		font-size: 1.02rem;
+		line-height: 1.75;
+		color: var(--ink-soft);
+		display: grid;
+		gap: 1rem;
+	}
+
+	.project-prose :global(h2) {
+		font-family: var(--font-display);
+		font-size: 1.6rem;
+		font-weight: 400;
+		font-style: italic;
+		font-variation-settings: 'opsz' 144, 'SOFT' 70, 'WONK' 1;
+		color: var(--ink);
+		margin-top: 2rem;
+		margin-bottom: 0.4rem;
+		letter-spacing: -0.012em;
+	}
+
+	.project-prose :global(h3) {
+		font-family: var(--font-display);
+		font-size: 1.25rem;
+		font-weight: 400;
+		color: var(--ink);
+		margin-top: 1.5rem;
+	}
+
+	.project-prose :global(p),
+	.project-prose :global(ul) {
+		margin: 0;
+	}
+
+	.project-prose :global(ul) {
+		padding-left: 1.2rem;
+	}
+
+	.project-prose :global(strong) {
+		color: var(--ink);
+		font-weight: 500;
+	}
+
+	.project-prose :global(code) {
+		font-family: var(--font-mono);
+		font-size: 0.88em;
+		padding: 0.08rem 0.32rem;
+		background: var(--paper-deep);
+		border: 1px solid var(--rule);
+		color: var(--ink);
+	}
+
+	@media (min-width: 64em) {
+		.project-page__hero-grid {
+			grid-template-columns: minmax(0, 1.1fr) minmax(20rem, 0.85fr);
+			align-items: start;
+			gap: 4rem;
+		}
+
+		.project-page__split {
+			grid-template-columns: minmax(0, 1.1fr) minmax(18rem, 0.85fr);
+			gap: 3.5rem;
+		}
+	}
+</style>

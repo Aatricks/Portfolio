@@ -22,8 +22,8 @@ const routes = [
 		screenshot: 'home.png',
 		fullPage: true,
 		selectors: ['.hero', '.hero__canvas', '#selected-work', '.secondary-grid', '#about', 'footer'],
-		expectedTitle: 'Emilio Melis | Edge AI Systems Engineer',
-		expectedText: 'Edge AI. Native Performance.',
+		expectedTitle: 'Emilio Melis · edge AI & native systems',
+		expectedText: 'Emilio Melis',
 	},
 	{
 		name: 'work-llmedge',

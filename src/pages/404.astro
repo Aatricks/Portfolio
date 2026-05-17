@@ -1,8 +1,193 @@
 ---
-import Hero from '../components/Hero.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="Not Found" description="404 Error — this page was not found">
-	<Hero title="Page Not Found" tagline="Not found" />
+<BaseLayout title="404 · not found" description="The route you requested does not exist on this site.">
+	<section class="notfound wrapper">
+		<div class="notfound__grid">
+			<div class="notfound__copy">
+				<p class="section-marker">err · 404 · not_found</p>
+				<h1 class="notfound__title">
+					This route doesn't <em>compile</em>.
+				</h1>
+				<p class="notfound__lede">
+					The page you tried to load isn't part of this build. Could be a stale link, a typo,
+					or a section I haven't shipped yet.
+				</p>
+
+				<div class="notfound__actions">
+					<a class="notfound__btn notfound__btn--solid" href="/Portfolio/">
+						<span>→ /</span>
+						<span>back to home</span>
+					</a>
+					<a class="notfound__btn" href="/Portfolio/#work">
+						<span>→</span>
+						<span>see selected work</span>
+					</a>
+				</div>
+			</div>
+
+			<aside class="notfound__terminal" aria-hidden="true">
+				<header class="notfound__terminal-head">
+					<span class="notfound__terminal-dot"></span>
+					<span class="notfound__terminal-dot"></span>
+					<span class="notfound__terminal-dot"></span>
+					<span class="notfound__terminal-title">portfolio$ <span class="cursor">_</span></span>
+				</header>
+				<pre class="notfound__terminal-body">{`$ curl -sI ${Astro.url.pathname}
+HTTP/1.1 404 Not Found
+content-type: text/plain
+x-vibes: this isn't the page you're looking for
+
+$ git log -- ${Astro.url.pathname}
+fatal: no such path
+
+$ cd /Portfolio && ls work/
+llmedge/  lightdiffusion-next/  easyreader/  cchess/
+
+$ _`}</pre>
+			</aside>
+		</div>
+	</section>
 </BaseLayout>
+
+<style>
+	.notfound {
+		padding-block: 6rem 8rem;
+	}
+
+	.notfound__grid {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 3rem;
+		align-items: center;
+	}
+
+	.notfound__title {
+		font-family: var(--font-display);
+		font-size: clamp(2.8rem, 8vw, 5.5rem);
+		font-weight: 400;
+		font-variation-settings: 'opsz' 144, 'SOFT' 30, 'WONK' 1;
+		line-height: 0.96;
+		letter-spacing: -0.025em;
+		margin: 1.25rem 0;
+		max-width: 14ch;
+	}
+
+	.notfound__title em {
+		color: var(--accent);
+		font-style: italic;
+	}
+
+	.notfound__lede {
+		max-width: 38rem;
+		font-size: 1.05rem;
+		line-height: 1.65;
+		color: var(--ink-soft);
+		margin-bottom: 2rem;
+	}
+
+	.notfound__actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.6rem;
+	}
+
+	.notfound__btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.6rem;
+		padding: 0.75rem 1.1rem;
+		font-family: var(--font-mono);
+		font-size: 0.74rem;
+		letter-spacing: 0.08em;
+		text-transform: lowercase;
+		border: 1px solid var(--rule);
+		color: var(--ink);
+		transition:
+			color var(--theme-transition),
+			border-color var(--theme-transition),
+			background-color var(--theme-transition);
+	}
+
+	.notfound__btn:hover {
+		border-color: var(--accent);
+		color: var(--accent);
+	}
+
+	.notfound__btn--solid {
+		background: var(--ink);
+		color: var(--paper);
+		border-color: var(--ink);
+	}
+
+	.notfound__btn--solid:hover {
+		background: var(--accent);
+		border-color: var(--accent);
+		color: var(--paper);
+	}
+
+	.notfound__terminal {
+		background: var(--paper-soft);
+		border: 1px solid var(--rule);
+		font-family: var(--font-mono);
+		font-size: 0.8rem;
+		line-height: 1.55;
+		overflow: hidden;
+	}
+
+	.notfound__terminal-head {
+		display: flex;
+		align-items: center;
+		gap: 0.4rem;
+		padding: 0.6rem 0.85rem;
+		border-bottom: 1px solid var(--rule);
+		background: var(--paper-deep);
+		font-size: 0.7rem;
+		color: var(--mute);
+	}
+
+	.notfound__terminal-dot {
+		width: 0.5rem;
+		height: 0.5rem;
+		border-radius: 999px;
+		background: var(--rule);
+	}
+
+	.notfound__terminal-title {
+		margin-left: auto;
+		color: var(--ink-soft);
+	}
+
+	.cursor {
+		color: var(--accent);
+		animation: blink 1.05s steps(1) infinite;
+	}
+
+	@keyframes blink {
+		50% {
+			opacity: 0;
+		}
+	}
+
+	.notfound__terminal-body {
+		margin: 0;
+		padding: 1rem 1.1rem;
+		color: var(--ink-soft);
+		white-space: pre;
+		overflow-x: auto;
+	}
+
+	@media (min-width: 64em) {
+		.notfound__grid {
+			grid-template-columns: minmax(0, 1.1fr) minmax(22rem, 0.9fr);
+			gap: 4rem;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.cursor {
+			animation: none;
+		}
+	}
+</style>

@@ -14,57 +14,71 @@ const { items, columns = 'double' } = Astro.props;
 ---
 
 {items.length > 0 && (
-	<section class={`project-gallery project-gallery--${columns}`}>
-		{items.map((item) => (
-			<figure class="project-gallery__item" data-reveal>
-				<div class="project-gallery__frame">
+	<section class={`gallery gallery--${columns}`}>
+		{items.map((item, i) => (
+			<figure class="gallery__item" data-reveal>
+				<div class="gallery__frame">
+					<span class="gallery__id" aria-hidden="true">fig {String(i + 1).padStart(2, '0')}</span>
 					<img src={item.src} alt={item.alt} loading="lazy" decoding="async" />
 				</div>
-				{item.caption && <figcaption>{item.caption}</figcaption>}
+				{item.caption && <figcaption class="gallery__caption">{item.caption}</figcaption>}
 			</figure>
 		))}
 	</section>
 )}
 
 <style>
-	.project-gallery {
+	.gallery {
 		display: grid;
-		gap: 1rem;
+		gap: 2rem;
 	}
 
-	.project-gallery--double {
-		grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+	.gallery--double {
+		grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
 	}
 
-	.project-gallery__item {
+	.gallery__item {
 		display: grid;
-		gap: 0.75rem;
+		gap: 0.85rem;
+		margin: 0;
 	}
 
-	.project-gallery__frame {
+	.gallery__frame {
+		position: relative;
 		overflow: hidden;
-		border: 1px solid rgba(255, 255, 255, 0.08);
-		border-radius: 1.6rem;
-		background: rgba(255, 255, 255, 0.03);
-		box-shadow: var(--shadow-sm);
+		border: 1px solid var(--rule);
+		background: var(--paper-soft);
 	}
 
-	.project-gallery__frame img {
+	.gallery__id {
+		position: absolute;
+		top: 0.5rem;
+		left: 0.6rem;
+		padding: 0.18rem 0.45rem;
+		font-family: var(--font-mono);
+		font-size: 0.62rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--ink-soft);
+		background: var(--paper);
+		border: 1px solid var(--rule);
+		z-index: 1;
+	}
+
+	.gallery__frame img {
 		width: 100%;
-		height: 100%;
-		min-height: 15rem;
-		object-fit: cover;
+		height: auto;
+		display: block;
 	}
 
-	.project-gallery figcaption {
-		font-size: 0.92rem;
-		line-height: 1.6;
-		color: var(--gray-400);
-	}
-
-	@media (max-width: 40em) {
-		.project-gallery__frame img {
-			min-height: 12rem;
-		}
+	.gallery__caption {
+		font-family: var(--font-display);
+		font-style: italic;
+		font-size: 0.95rem;
+		line-height: 1.55;
+		color: var(--mute);
+		max-width: 44rem;
+		padding-left: 0.85rem;
+		border-left: 1px solid var(--rule);
 	}
 </style>

@@ -6,6 +6,10 @@ dist/
 
 # dependencies
 node_modules/
+bun.lock
+
+# session-local logs
+.remember/
 
 # logs
 npm-debug.log*

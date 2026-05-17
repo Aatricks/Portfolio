@@ -92,3 +92,5 @@ The system is most interesting where product concerns and backend concerns meet:
 ## Result
 
 This project demonstrates that I can handle both sides of systems-heavy AI work: low-level edge runtime engineering and broader local tooling where performance, architecture, and usability all need to hold together.
+
+The earlier `LightDiffusion` iteration this project descends from was **selected for its technical rigor at the Ready Tensor CV Projects Expo 2024**, with a measured ~30% inference time reduction over open-source standards through scheduler and VRAM-level tensor allocation work.

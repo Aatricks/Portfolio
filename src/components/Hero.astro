@@ -10,63 +10,59 @@ interface Props {
 const { align = 'center', tagline, title, title2, variant = 'display' } = Astro.props;
 ---
 
-<div class:list={['hero stack gap-4', align, variant]}>
-	<div class="stack gap-2">
-		<h1 class="title">{title}</h1>
-		{title2 && <h1 class="title muted">{title2}</h1>}
-		{tagline && <p class="tagline">{tagline}</p>}
-	</div>
+<header class:list={['hero-block', `hero-block--${align}`, `hero-block--${variant}`]}>
+	<p class="hero-block__mark">§ 00 · status</p>
+	<h1 class="hero-block__title">
+		<span>{title}</span>
+		{title2 && <span class="hero-block__title--muted">{title2}</span>}
+	</h1>
+	{tagline && <p class="hero-block__tag">{tagline}</p>}
 	<slot />
-</div>
+</header>
 
 <style>
-	.hero {
-		font-size: var(--text-lg);
+	.hero-block {
+		display: grid;
+		gap: 1.5rem;
+		padding-block: 6rem 5rem;
 		text-align: center;
-		display: flex;
-		justify-content: center;
-		align-items: center;
+		justify-items: center;
 	}
 
-	.title {
-		font-size: clamp(2.4rem, 6vw, 4.75rem);
-		color: var(--gray-0);
-		text-align: center;
-		letter-spacing: -0.055em;
-		line-height: 0.95;
-		max-width: 12ch;
-		text-wrap: balance;
+	.hero-block--start {
+		text-align: left;
+		justify-items: start;
 	}
 
-	.title.muted {
-		color: var(--gray-300);
+	.hero-block__mark {
+		font-family: var(--font-mono);
+		font-size: 0.72rem;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: var(--mute);
 	}
 
-	.tagline {
-		max-width: 38rem;
-		margin-inline: auto;
-		color: var(--gray-300);
+	.hero-block__title {
+		font-family: var(--font-display);
+		font-size: clamp(2.6rem, 7vw, 5rem);
+		font-weight: 400;
+		line-height: 0.98;
+		letter-spacing: -0.025em;
+		max-width: 14ch;
+		color: var(--ink);
 	}
 
-	.page .title {
-		font-size: clamp(2.45rem, 4.35vw, 3.85rem);
-		max-width: 16ch;
+	.hero-block__title--muted {
+		display: block;
+		color: var(--mute);
+		font-style: italic;
+		font-size: 0.72em;
 	}
 
-	@media (min-width: 50em) {
-		.hero {
-			font-size: var(--text-xl);
-		}
-
-		.start {
-			text-align: start;
-			align-items: flex-start;
-		}
-
-		.start .title,
-		.start .tagline {
-			margin-inline: unset;
-			text-align: start;
-		}
+	.hero-block__tag {
+		max-width: 40rem;
+		font-size: 1.05rem;
+		line-height: 1.65;
+		color: var(--ink-soft);
 	}
 </style>

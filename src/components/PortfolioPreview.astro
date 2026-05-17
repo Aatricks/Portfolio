@@ -10,203 +10,307 @@ const { project, variant = 'secondary' } = Astro.props;
 const { data, id } = project;
 const href = `/Portfolio/work/${id.replace(/\.md$/, '')}`;
 const leadMetric = data.metrics[0];
+const altMetric = data.metrics[1];
 ---
 
-<a class={`project-preview ${variant} project-preview--${data.themeKey}`} href={href} data-reveal>
-	<div class="project-preview__copy">
-		<div class="project-preview__meta">
-			<p class="project-preview__eyebrow">{data.eyebrow}</p>
-			{leadMetric && <p class="project-preview__metric">{leadMetric.label}: {leadMetric.value}</p>}
+<article class={`pp pp--${variant} pp--${data.themeKey}`} data-reveal>
+	<a class="pp__link" href={href}>
+		<div class="pp__head">
+			<div class="pp__meta">
+				<span class="pp__eyebrow">{data.eyebrow}</span>
+				<span class="pp__sep" aria-hidden="true">·</span>
+				<span class="pp__id">/{data.themeKey}</span>
+			</div>
+
+			<h3 class="pp__title">
+				<span>{data.title}</span>
+				<span class="pp__arrow" aria-hidden="true">↗</span>
+			</h3>
+
+			<p class="pp__thesis">{data.thesis}</p>
 		</div>
-		<div class="project-preview__header">
-			<h3 class="project-preview__title">{data.title}</h3>
-			<span class="project-preview__arrow" aria-hidden="true">→</span>
+
+		<div class="pp__media">
+			<div class="pp__media-frame">
+				<img src={data.img} alt={data.img_alt || ''} loading="lazy" decoding="async" />
+			</div>
+			<div class="pp__media-tag" aria-hidden="true">
+				<span class="dot dot--ok"></span>
+				<span>live</span>
+			</div>
 		</div>
-		<p class="project-preview__thesis">{data.thesis}</p>
-		<p class="project-preview__stack">{data.stackLine}</p>
-	</div>
-	<div class="project-preview__media">
-		<img src={data.img} alt={data.img_alt || ''} loading="lazy" decoding="async" />
-	</div>
-</a>
+
+		<div class="pp__foot">
+			<dl class="pp__metrics">
+				{leadMetric && (
+					<div class="pp__metric">
+						<dt>{leadMetric.label}</dt>
+						<dd>{leadMetric.value}</dd>
+					</div>
+				)}
+				{altMetric && variant === 'dominant' && (
+					<div class="pp__metric">
+						<dt>{altMetric.label}</dt>
+						<dd>{altMetric.value}</dd>
+					</div>
+				)}
+				<div class="pp__metric pp__metric--stack">
+					<dt>stack</dt>
+					<dd>{data.stackLine}</dd>
+				</div>
+			</dl>
+		</div>
+	</a>
+</article>
 
 <style>
-	.project-preview {
+	.pp {
+		--pp-accent: var(--accent);
+		border-bottom: 1px solid var(--rule);
+	}
+
+	.pp--llmedge {
+		--pp-accent: #2b6cb0;
+	}
+	.pp--lightdiffusion-next {
+		--pp-accent: #b8421a;
+	}
+	.pp--easyreader {
+		--pp-accent: #2f7a3a;
+	}
+	.pp--cchess {
+		--pp-accent: #6b2b8a;
+	}
+
+	[data-theme='dark'] .pp--llmedge {
+		--pp-accent: #79a7ff;
+	}
+	[data-theme='dark'] .pp--lightdiffusion-next {
+		--pp-accent: #f4b458;
+	}
+	[data-theme='dark'] .pp--easyreader {
+		--pp-accent: #7ad88a;
+	}
+	[data-theme='dark'] .pp--cchess {
+		--pp-accent: #b288d4;
+	}
+
+	.pp__link {
 		display: grid;
 		grid-template-columns: 1fr;
-		gap: 1.5rem;
-		text-decoration: none;
-		padding: 1.5rem 0;
-		border-top: 1px solid rgba(255, 255, 255, 0.07);
-		color: inherit;
+		gap: 1.6rem;
+		padding-block: 2.4rem;
+		color: var(--ink);
+		position: relative;
 	}
 
-	.project-preview.secondary {
-		min-height: 100%;
+	.pp__link::before {
+		content: '';
+		position: absolute;
+		left: -1rem;
+		top: 2.4rem;
+		bottom: 2.4rem;
+		width: 2px;
+		background: var(--pp-accent);
+		opacity: 0;
+		transition: opacity 320ms var(--ease), left 320ms var(--ease);
 	}
 
-	.project-preview__copy {
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
+	.pp__link:hover::before {
+		opacity: 1;
+		left: -1.4rem;
 	}
 
-	.project-preview__meta {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.8rem 1rem;
-		align-items: center;
-	}
-
-	.project-preview__eyebrow {
-		font-size: 0.74rem;
-		letter-spacing: 0.14em;
-		text-transform: uppercase;
-		color: var(--gray-500);
-	}
-
-	.project-preview__metric {
+	.pp__meta {
+		display: inline-flex;
+		gap: 0.5rem;
+		align-items: baseline;
 		font-family: var(--font-mono);
 		font-size: 0.7rem;
-		letter-spacing: 0.08em;
+		letter-spacing: 0.14em;
 		text-transform: uppercase;
-		color: var(--gray-400);
+		color: var(--mute);
+		margin-bottom: 0.85rem;
 	}
 
-	.project-preview__header {
+	.pp__eyebrow {
+		color: var(--pp-accent);
+		letter-spacing: 0.14em;
+	}
+
+	.pp__sep {
+		color: var(--mute-soft);
+	}
+
+	.pp__id {
+		color: var(--mute);
+	}
+
+	.pp__title {
 		display: flex;
-		align-items: flex-end;
-		justify-content: space-between;
-		gap: 1rem;
+		align-items: baseline;
+		gap: 0.5rem;
+		font-family: var(--font-display);
+		font-weight: 400;
+		font-size: clamp(2rem, 4.2vw, 3.4rem);
+		line-height: 1.04;
+		letter-spacing: -0.022em;
+		color: var(--ink);
+		margin-bottom: 1rem;
 	}
 
-	.project-preview__title {
-		font-size: clamp(1.7rem, 3vw, 2.75rem);
+	.pp__arrow {
+		font-family: var(--font-mono);
+		font-size: 0.85em;
+		color: var(--mute);
+		transition: color 220ms var(--ease), transform 320ms var(--ease);
 	}
 
-	.project-preview__arrow {
-		font-size: 1.1rem;
-		color: var(--gray-400);
-		transform: translateX(-0.35rem);
-		transition:
-			transform var(--theme-transition),
-			color var(--theme-transition),
-			opacity var(--theme-transition);
-		opacity: 0.5;
+	.pp__link:hover .pp__arrow {
+		color: var(--pp-accent);
+		transform: translate(4px, -4px);
 	}
 
-	.project-preview:hover .project-preview__arrow {
-		transform: translateX(0);
-		color: var(--gray-0);
-		opacity: 1;
-	}
-
-	.project-preview__thesis {
-		max-width: 34rem;
+	.pp__thesis {
+		max-width: 38rem;
 		font-size: 1.04rem;
 		line-height: 1.65;
-		color: var(--gray-200);
+		color: var(--ink-soft);
 	}
 
-	.project-preview__stack {
-		max-width: 34rem;
-		font-size: 0.86rem;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-		color: var(--gray-500);
-	}
-
-	.project-preview__media {
+	.pp__media {
 		position: relative;
-		border: 1px solid rgba(255, 255, 255, 0.07);
-		border-radius: 1.5rem;
-		overflow: hidden;
-		background:
-			radial-gradient(circle at top, rgba(114, 139, 255, 0.16), transparent 40%),
-			rgba(8, 11, 19, 0.9);
+		order: -1;
 	}
 
-	.project-preview__media::after {
+	.pp__media-frame {
+		overflow: hidden;
+		border: 1px solid var(--rule);
+		background: var(--paper-soft);
+		aspect-ratio: 16 / 10;
+		position: relative;
+	}
+
+	.pp__media-frame::after {
 		content: '';
 		position: absolute;
 		inset: 0;
-		background: linear-gradient(180deg, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.3));
+		background: linear-gradient(
+			135deg,
+			color-mix(in srgb, var(--pp-accent) 10%, transparent),
+			transparent 60%
+		);
 		pointer-events: none;
+		opacity: 0.5;
+		transition: opacity 320ms var(--ease);
 	}
 
-	.project-preview__media img {
+	.pp__link:hover .pp__media-frame::after {
+		opacity: 1;
+	}
+
+	.pp__media-frame img {
 		width: 100%;
 		height: 100%;
-		min-height: 16rem;
 		object-fit: cover;
-		filter: contrast(1.05) brightness(0.82);
-		transition: transform 0.7s ease, filter 0.7s ease;
+		transition: transform 800ms var(--ease);
 	}
 
-	.project-preview:hover .project-preview__media img {
-		transform: scale(1.03);
-		filter: contrast(1.07) brightness(0.95);
+	.pp__link:hover .pp__media-frame img {
+		transform: scale(1.025);
 	}
 
-	.project-preview--llmedge .project-preview__media {
-		background:
-			radial-gradient(circle at top, rgba(121, 167, 255, 0.2), transparent 42%),
-			rgba(8, 11, 19, 0.92);
+	.pp__media-tag {
+		position: absolute;
+		bottom: 0.8rem;
+		left: 0.8rem;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		padding: 0.3rem 0.55rem;
+		background: var(--paper);
+		border: 1px solid var(--rule);
+		font-family: var(--font-mono);
+		font-size: 0.65rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--ink-soft);
 	}
 
-	.project-preview--lightdiffusion-next .project-preview__media {
-		background:
-			radial-gradient(circle at top, rgba(244, 180, 88, 0.18), transparent 42%),
-			rgba(8, 11, 19, 0.92);
-	}
-
-	.project-preview--easyreader .project-preview__media {
-		background:
-			radial-gradient(circle at top, rgba(131, 209, 255, 0.16), transparent 42%),
-			rgba(8, 11, 19, 0.92);
+	.pp__foot {
 		display: grid;
-		place-items: center;
-		padding: 1rem;
+		gap: 0.8rem;
 	}
 
-	.project-preview--easyreader .project-preview__media img {
-		width: auto;
-		max-width: 100%;
-		max-height: 16rem;
-		min-height: 0;
-		object-fit: contain;
-		border-radius: 1rem;
+	.pp__metrics {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 0.8rem 1.5rem;
+		margin: 0;
+		padding-top: 0.85rem;
+		border-top: 1px dashed var(--rule);
 	}
 
-	.project-preview--cchess .project-preview__media {
-		background:
-			radial-gradient(circle at top, rgba(98, 211, 215, 0.16), transparent 42%),
-			rgba(8, 11, 19, 0.92);
+	.pp__metric {
+		display: grid;
+		grid-template-columns: 7rem 1fr;
+		align-items: baseline;
+		gap: 0.7rem;
 	}
 
-	.secondary .project-preview__title {
-		font-size: clamp(1.45rem, 2vw, 1.9rem);
+	.pp__metric dt {
+		font-family: var(--font-mono);
+		font-size: 0.66rem;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--mute);
 	}
 
-	.secondary .project-preview__thesis,
-	.secondary .project-preview__stack {
-		max-width: 100%;
+	.pp__metric dd {
+		margin: 0;
+		font-family: var(--font-mono);
+		font-size: 0.82rem;
+		color: var(--ink);
+		line-height: 1.45;
 	}
 
-	.secondary .project-preview__media img {
-		min-height: 12rem;
+	.pp__metric--stack dd {
+		color: var(--ink-soft);
 	}
 
+	/* Dominant variant — side-by-side */
 	@media (min-width: 64em) {
-		.project-preview.dominant {
-			grid-template-columns: minmax(0, 0.95fr) minmax(26rem, 0.9fr);
+		.pp--dominant .pp__link {
+			grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
 			gap: 3rem;
-			align-items: center;
-			padding: 2.5rem 0 1.5rem;
+			align-items: start;
 		}
+		.pp--dominant .pp__media {
+			order: 0;
+		}
+		.pp--dominant .pp__head {
+			padding-top: 0.6rem;
+		}
+		.pp--dominant .pp__foot {
+			grid-column: 1 / -1;
+		}
+	}
 
-		.project-preview.secondary {
-			align-content: start;
+	/* Secondary variant — alternates rows */
+	@media (min-width: 64em) {
+		.pp--secondary .pp__link {
+			grid-template-columns: minmax(0, 0.55fr) minmax(0, 0.45fr);
+			column-gap: 3rem;
+			align-items: start;
+		}
+		.pp--secondary .pp__media {
+			order: 0;
+		}
+		.pp--secondary .pp__foot {
+			grid-column: 1 / -1;
+		}
+		.pp--secondary:nth-of-type(even) .pp__media {
+			order: 2;
 		}
 	}
 </style>

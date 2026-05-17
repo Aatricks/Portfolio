@@ -1,0 +1,260 @@
+---
+interface StackEntry {
+	name: string;
+	level: number; // 1..10
+	note?: string;
+}
+
+interface StackGroup {
+	label: string;
+	caption?: string;
+	entries: StackEntry[];
+}
+
+const groups: StackGroup[] = [
+	{
+		label: 'languages & systems',
+		caption: 'where the time goes',
+		entries: [
+			{ name: 'C / C++', level: 9, note: 'native runtimes, JNI bridges, Kalman' },
+			{ name: 'Kotlin', level: 9, note: 'Android, Compose, Hilt, Room' },
+			{ name: 'Python', level: 9, note: 'PyTorch, FastAPI, scripting' },
+			{ name: 'Rust', level: 6, note: 'AoC, side experiments' },
+			{ name: 'Java', level: 6, note: 'JVM internals, early Android work' },
+			{ name: 'Linux', level: 9, note: 'Arch, NixOS, kernel troubleshooting' },
+		],
+	},
+	{
+		label: 'ai & inference',
+		caption: 'model-side discipline',
+		entries: [
+			{ name: 'PyTorch', level: 8, note: 'diffusion pipelines, optimization' },
+			{ name: 'llama.cpp', level: 8, note: 'GGUF, JNI, on-device LLM' },
+			{ name: 'stable-diffusion.cpp', level: 7, note: 'mobile + desktop pipelines' },
+			{ name: 'whisper.cpp / bark.cpp', level: 7, note: 'on-device STT + TTS' },
+			{ name: 'Vulkan / OpenCL', level: 7, note: 'compute, shader-side optimization' },
+			{ name: 'ONNX', level: 6, note: 'embedding utilities, RAG' },
+		],
+	},
+	{
+		label: 'embedded & signal',
+		caption: 'what brought me here',
+		entries: [
+			{ name: 'Sensor fusion', level: 8, note: 'IMU + Kalman, control loops' },
+			{ name: 'Arduino / ARM', level: 7, note: 'prototyping, peripherals' },
+			{ name: 'Computer vision', level: 7, note: 'training + classical pipeline' },
+			{ name: '3D modelling / print', level: 7, note: 'functional parts, prototyping' },
+		],
+	},
+];
+
+const languages = [
+	{ code: 'fr', name: 'Français', level: 'C2 · native' },
+	{ code: 'en', name: 'English', level: 'C1 · fluent' },
+	{ code: 'es', name: 'Español', level: 'B2' },
+	{ code: 'it', name: 'Italiano', level: 'B2' },
+	{ code: 'ru', name: 'Русский', level: 'B1' },
+];
+
+const renderBar = (level: number) => {
+	const filled = '▮'.repeat(Math.max(0, Math.min(level, 10)));
+	const empty = '▯'.repeat(Math.max(0, 10 - Math.min(level, 10)));
+	return filled + empty;
+};
+---
+
+<div class="stack-grid" data-reveal>
+	{groups.map((group) => (
+		<section class="stack-group">
+			<header class="stack-group__head">
+				<p class="stack-group__label">{group.label}</p>
+				{group.caption && <p class="stack-group__caption">{group.caption}</p>}
+			</header>
+			<ul class="stack-group__list">
+				{group.entries.map((entry) => (
+					<li class="stack-row">
+						<span class="stack-row__name">{entry.name}</span>
+						<span class="stack-row__bar" aria-hidden="true">{renderBar(entry.level)}</span>
+						<span class="stack-row__lvl" aria-label={`${entry.level} of 10`}>{entry.level}/10</span>
+						{entry.note && <span class="stack-row__note">— {entry.note}</span>}
+					</li>
+				))}
+			</ul>
+		</section>
+	))}
+</div>
+
+<aside class="stack-langs" data-reveal aria-labelledby="langs-title">
+	<p class="stack-langs__label" id="langs-title">— spoken</p>
+	<ul class="stack-langs__list">
+		{languages.map((lang) => (
+			<li class="stack-langs__item">
+				<span class="stack-langs__code">{lang.code}</span>
+				<span class="stack-langs__name">{lang.name}</span>
+				<span class="stack-langs__level">{lang.level}</span>
+			</li>
+		))}
+	</ul>
+</aside>
+
+<style>
+	.stack-grid {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 2.4rem;
+	}
+
+	.stack-group__head {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 1rem;
+		padding-bottom: 0.8rem;
+		margin-bottom: 0.6rem;
+		border-bottom: 1px solid var(--rule);
+	}
+
+	.stack-group__label {
+		font-family: var(--font-mono);
+		font-size: 0.74rem;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--accent);
+	}
+
+	.stack-group__caption {
+		font-family: var(--font-display);
+		font-style: italic;
+		font-size: 0.95rem;
+		color: var(--mute);
+	}
+
+	.stack-group__list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		gap: 0.35rem;
+	}
+
+	.stack-row {
+		display: grid;
+		grid-template-columns: 11rem auto auto 1fr;
+		align-items: baseline;
+		gap: 0.6rem 0.85rem;
+		padding: 0.45rem 0;
+		font-size: 0.92rem;
+		line-height: 1.5;
+		color: var(--ink-soft);
+	}
+
+	.stack-row__name {
+		font-family: var(--font-display);
+		font-size: 1.05rem;
+		font-weight: 400;
+		color: var(--ink);
+		letter-spacing: -0.01em;
+	}
+
+	.stack-row__bar {
+		font-family: var(--font-mono);
+		font-size: 0.6rem;
+		color: var(--accent);
+		letter-spacing: 0.04em;
+		opacity: 0.9;
+	}
+
+	.stack-row__lvl {
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		color: var(--mute);
+		font-variant-numeric: tabular-nums;
+	}
+
+	.stack-row__note {
+		font-family: var(--font-mono);
+		font-size: 0.78rem;
+		color: var(--mute);
+		text-align: left;
+	}
+
+	.stack-langs {
+		margin-top: 3rem;
+		padding: 1.6rem 1.4rem;
+		border: 1px solid var(--rule);
+		background: var(--paper-soft);
+	}
+
+	.stack-langs__label {
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: var(--mute);
+		margin-bottom: 0.85rem;
+	}
+
+	.stack-langs__list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+		gap: 0.6rem 1.5rem;
+	}
+
+	.stack-langs__item {
+		display: grid;
+		grid-template-columns: auto 1fr auto;
+		align-items: baseline;
+		gap: 0.5rem;
+	}
+
+	.stack-langs__code {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 1.8rem;
+		padding: 0.05rem 0.35rem;
+		border: 1px solid var(--rule);
+		font-family: var(--font-mono);
+		font-size: 0.62rem;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		color: var(--accent);
+	}
+
+	.stack-langs__name {
+		font-family: var(--font-display);
+		font-size: 1rem;
+		color: var(--ink);
+	}
+
+	.stack-langs__level {
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		color: var(--mute);
+	}
+
+	@media (max-width: 48em) {
+		.stack-row {
+			grid-template-columns: 1fr auto;
+			row-gap: 0.2rem;
+		}
+		.stack-row__bar {
+			grid-column: 1 / -1;
+			text-align: left;
+		}
+		.stack-row__note {
+			grid-column: 1 / -1;
+			padding-left: 0;
+		}
+	}
+
+	@media (min-width: 68em) {
+		.stack-grid {
+			grid-template-columns: repeat(3, 1fr);
+			gap: 2.5rem;
+		}
+	}
+</style>

@@ -66,4 +66,4 @@ That is what I wanted from the project: a small codebase where the important par
 
 ## Result
 
-`CChess` is a straightforward systems project centered on logic, search, and implementation discipline. It is smaller than the AI work, but it shows the same preference for explicit control over opaque abstraction.
+`CChess` is a straightforward systems project centered on logic, search, and implementation discipline. It is smaller than the AI work, but it shows the same preference for explicit control over opaque abstraction — the same instinct that drove the IMU sensor fusion and Kalman filter work on the autonomous submarine prototype I built in C++.

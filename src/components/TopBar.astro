@@ -1,0 +1,204 @@
+---
+const navLinks = [
+	{ href: '/Portfolio/#work', label: 'Work', mark: '01' },
+	{ href: '/Portfolio/#about', label: 'About', mark: '02' },
+	{ href: '/Portfolio/#stack', label: 'Stack', mark: '03' },
+	{ href: '/Portfolio/#contact', label: 'Contact', mark: '04' },
+];
+---
+
+<header class="topbar">
+	<div class="topbar__inner wrapper">
+		<a class="topbar__brand" href="/Portfolio/" aria-label="Emilio Melis — home">
+			<span class="topbar__mark" aria-hidden="true">EM</span>
+			<span class="topbar__name">Emilio&nbsp;Melis</span>
+			<span class="topbar__handle">/ aatricks</span>
+		</a>
+
+		<nav class="topbar__nav" aria-label="Primary">
+			{navLinks.map((link) => (
+				<a class="topbar__link" href={link.href}>
+					<span class="topbar__link-mark">{link.mark}</span>
+					<span>{link.label}</span>
+				</a>
+			))}
+		</nav>
+
+		<div class="topbar__tail">
+			<span class="topbar__status">
+				<span class="dot dot--ok" aria-hidden="true"></span>
+				<span>open to roles · summer 2026</span>
+			</span>
+			<button class="topbar__theme" data-theme-toggle type="button" aria-label="Toggle color theme" aria-pressed="false">
+				<span class="topbar__theme-icon topbar__theme-icon--sun" aria-hidden="true">☀</span>
+				<span class="topbar__theme-icon topbar__theme-icon--moon" aria-hidden="true">☾</span>
+			</button>
+		</div>
+	</div>
+</header>
+
+<style>
+	.topbar {
+		position: sticky;
+		top: 0;
+		z-index: 50;
+		background: color-mix(in srgb, var(--paper) 90%, transparent);
+		backdrop-filter: blur(14px);
+		-webkit-backdrop-filter: blur(14px);
+		border-bottom: 1px solid var(--rule-soft);
+	}
+
+	.topbar__inner {
+		display: grid;
+		grid-template-columns: auto 1fr auto;
+		align-items: center;
+		gap: 1.5rem;
+		padding-block: 0.85rem;
+	}
+
+	.topbar__brand {
+		display: inline-flex;
+		align-items: baseline;
+		gap: 0.55rem;
+		color: var(--ink);
+	}
+
+	.topbar__mark {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 1.85rem;
+		height: 1.85rem;
+		border: 1px solid var(--ink);
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		letter-spacing: 0.04em;
+		font-weight: 500;
+		background: var(--ink);
+		color: var(--paper);
+	}
+
+	.topbar__name {
+		font-family: var(--font-display);
+		font-size: 1.02rem;
+		font-weight: 500;
+		letter-spacing: -0.005em;
+	}
+
+	.topbar__handle {
+		font-family: var(--font-mono);
+		font-size: 0.72rem;
+		color: var(--mute);
+		text-transform: lowercase;
+	}
+
+	.topbar__nav {
+		display: none;
+		justify-content: center;
+		gap: 1.6rem;
+	}
+
+	.topbar__link {
+		display: inline-flex;
+		align-items: baseline;
+		gap: 0.4rem;
+		font-family: var(--font-mono);
+		font-size: 0.78rem;
+		letter-spacing: 0.02em;
+		color: var(--ink-soft);
+		position: relative;
+	}
+
+	.topbar__link::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: -0.5rem;
+		height: 1px;
+		background: var(--accent);
+		transform: scaleX(0);
+		transform-origin: left;
+		transition: transform 280ms var(--ease);
+	}
+
+	.topbar__link:hover::after {
+		transform: scaleX(1);
+	}
+
+	.topbar__link-mark {
+		font-size: 0.62rem;
+		color: var(--mute);
+		font-variant-numeric: tabular-nums;
+	}
+
+	.topbar__tail {
+		display: flex;
+		align-items: center;
+		gap: 0.9rem;
+	}
+
+	.topbar__status {
+		display: none;
+		align-items: center;
+		gap: 0.45rem;
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		letter-spacing: 0.04em;
+		color: var(--mute);
+		text-transform: lowercase;
+	}
+
+	.topbar__theme {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 2rem;
+		height: 2rem;
+		border: 1px solid var(--rule);
+		background: transparent;
+		color: var(--ink);
+		cursor: pointer;
+		font-family: var(--font-mono);
+		position: relative;
+		transition: border-color var(--theme-transition), background var(--theme-transition);
+	}
+
+	.topbar__theme:hover {
+		border-color: var(--accent);
+		color: var(--accent);
+	}
+
+	.topbar__theme-icon {
+		position: absolute;
+		inset: 0;
+		display: grid;
+		place-items: center;
+		font-size: 0.9rem;
+		transition: opacity 220ms var(--ease), transform 220ms var(--ease);
+	}
+
+	.topbar__theme-icon--moon {
+		opacity: 0;
+		transform: rotate(-45deg);
+	}
+
+	[data-theme='dark'] .topbar__theme-icon--sun {
+		opacity: 0;
+		transform: rotate(45deg);
+	}
+
+	[data-theme='dark'] .topbar__theme-icon--moon {
+		opacity: 1;
+		transform: rotate(0);
+	}
+
+	@media (min-width: 52em) {
+		.topbar__nav {
+			display: inline-flex;
+		}
+		.topbar__status {
+			display: inline-flex;
+		}
+	}
+</style>

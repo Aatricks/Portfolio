@@ -1,89 +1,169 @@
 ---
 const currentYear = new Date().getFullYear();
+const buildDate = new Date().toISOString().slice(0, 10);
+
+const channels = [
+	{ label: 'mail', value: 'melis.emilio1@gmail.com', href: 'mailto:melis.emilio1@gmail.com' },
+	{ label: 'git', value: 'github.com/Aatricks', href: 'https://github.com/Aatricks' },
+	{
+		label: 'in',
+		value: 'linkedin.com/in/emilio-melis',
+		href: 'https://www.linkedin.com/in/emilio-melis-14a801338/',
+	},
+	{ label: 'cv', value: 'CV-English.pdf', href: '/Portfolio/CV-English.pdf' },
+];
+
+const signature = [
+	'  ___ __  __  ',
+	' | __|  \\/  | ',
+	' | _|| |\\/| | ',
+	' |___|_|  |_| ',
+];
 ---
 
-<footer id="contact" class="wrapper">
-	<div class="footer-content">
-		<div class="group">
-			<p class="tagline">Edge AI, native runtimes, and local-first software.</p>
-			<div class="contact-links">
-				<a href="mailto:melis.emilio1@gmail.com" class="contact-link">Email</a>
-				<span class="separator">/</span>
-				<a href="https://github.com/Aatricks" class="contact-link" target="_blank" rel="noopener noreferrer">GitHub</a>
-				<span class="separator">/</span>
-				<a href="https://www.linkedin.com/in/emilio-melis-14a801338/" class="contact-link" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-				<span class="separator">/</span>
-				<a href="/Portfolio/CV-English.pdf" class="contact-link">Resume</a>
-			</div>
+<footer id="contact" class="footer">
+	<div class="wrapper footer__inner">
+		<div class="footer__head">
+			<p class="section-marker">§ 04 · contact</p>
+			<h2 class="footer__title">
+				Reach out — <em>about embedded AI roles,</em> a paper,<br />
+				or a build that needs a native pair of hands.
+			</h2>
 		</div>
-		<p class="meta">© {currentYear} Emilio Melis</p>
+
+		<div class="footer__grid">
+			<dl class="footer__channels">
+				{channels.map((channel) => (
+					<div class="footer__channel">
+						<dt>{channel.label}</dt>
+						<dd>
+							<a href={channel.href} class="footer__link" target={channel.href.startsWith('http') ? '_blank' : undefined} rel={channel.href.startsWith('http') ? 'noopener noreferrer' : undefined}>
+								<span>{channel.value}</span>
+								<span aria-hidden="true">↗</span>
+							</a>
+						</dd>
+					</div>
+				))}
+			</dl>
+
+			<pre class="footer__signature" aria-hidden="true">{signature.join('\n')}</pre>
+		</div>
+
+		<hr class="rule" />
+
+		<div class="footer__meta">
+			<span>© {currentYear} Emilio Melis · Tours, France</span>
+			<span class="footer__build">build {buildDate} · astro · self-hosted on gh-pages</span>
+		</div>
 	</div>
 </footer>
 
 <style>
-	footer {
+	.footer {
 		margin-top: 6rem;
-		padding-top: 3rem;
-		padding-bottom: 3rem;
-		border-top: 1px solid rgba(255, 255, 255, 0.05);
+		padding-block: 4rem 3rem;
+		background: var(--paper-soft);
+		border-top: 1px solid var(--rule);
 	}
 
-	.footer-content {
-		display: flex;
-		flex-direction: column;
-		gap: 2rem;
+	.footer__inner {
+		display: grid;
+		gap: 2.5rem;
 	}
 
-	.group {
-		display: flex;
-		flex-direction: column;
+	.footer__head {
+		display: grid;
 		gap: 1rem;
+		max-width: 52rem;
 	}
 
-	.tagline {
-		color: var(--gray-0);
-		font-size: 1rem;
-		font-weight: 500;
-		max-width: 28rem;
+	.footer__title {
+		font-family: var(--font-display);
+		font-size: clamp(1.6rem, 3.4vw, 2.4rem);
+		line-height: 1.12;
+		letter-spacing: -0.015em;
+		font-weight: 400;
 	}
 
-	.contact-links {
+	.footer__grid {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 2.5rem;
+		align-items: end;
+	}
+
+	.footer__channels {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+		gap: 1.25rem 2rem;
+		margin: 0;
+	}
+
+	.footer__channel dt {
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: var(--mute);
+		margin-bottom: 0.35rem;
+	}
+
+	.footer__channel dd {
+		margin: 0;
+	}
+
+	.footer__link {
+		display: inline-flex;
+		align-items: baseline;
+		gap: 0.4rem;
+		font-family: var(--font-mono);
+		font-size: 0.92rem;
+		color: var(--ink);
+		border-bottom: 1px solid var(--rule);
+		padding-bottom: 2px;
+	}
+
+	.footer__link:hover {
+		color: var(--accent);
+		border-color: var(--accent);
+	}
+
+	.footer__link span:last-child {
+		font-family: var(--font-body);
+		opacity: 0.5;
+		transition: transform 220ms var(--ease), opacity 220ms var(--ease);
+	}
+
+	.footer__link:hover span:last-child {
+		transform: translate(2px, -2px);
+		opacity: 1;
+	}
+
+	.footer__signature {
+		font-family: var(--font-mono);
+		font-size: 0.66rem;
+		line-height: 1.2;
+		color: var(--mute-soft);
+		margin: 0;
+		justify-self: end;
+		white-space: pre;
+		opacity: 0.7;
+	}
+
+	.footer__meta {
 		display: flex;
-		align-items: center;
-		gap: 0.75rem;
+		justify-content: space-between;
 		flex-wrap: wrap;
+		gap: 0.75rem;
+		font-family: var(--font-mono);
+		font-size: 0.72rem;
+		letter-spacing: 0.04em;
+		color: var(--mute);
 	}
 
-	.contact-link {
-		color: var(--gray-300);
-		text-decoration: none;
-		font-size: 0.95rem;
-		transition: color var(--theme-transition);
-	}
-
-	.contact-link:hover {
-		color: var(--gray-0);
-	}
-
-	.separator {
-		color: var(--gray-700);
-		font-size: 0.9rem;
-	}
-
-	.meta {
-		color: var(--gray-500);
-		font-size: 0.85rem;
-	}
-
-	@media (min-width: 50em) {
-		.footer-content {
-			flex-direction: row;
-			justify-content: space-between;
-			align-items: flex-end;
-		}
-		
-		.group {
-			gap: 0.75rem;
+	@media (min-width: 52em) {
+		.footer__grid {
+			grid-template-columns: 1fr auto;
 		}
 	}
 </style>
