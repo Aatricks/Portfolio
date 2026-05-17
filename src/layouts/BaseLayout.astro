@@ -25,8 +25,19 @@ const { title, description } = Astro.props;
 
 		<script>
 			const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+			const pointerFine = window.matchMedia('(pointer: fine)');
+			const wideViewport = window.matchMedia('(min-width: 64em)');
 			const revealNodes = Array.from(document.querySelectorAll<HTMLElement>('[data-reveal]'));
 			const parallaxNodes = Array.from(document.querySelectorAll<HTMLElement>('[data-parallax]'));
+
+			// Assign sequential index to each [data-reveal] within a [data-reveal-stagger] container
+			// so CSS can apply a cascading transition-delay via calc(var(--reveal-i) * 70ms).
+			document.querySelectorAll<HTMLElement>('[data-reveal-stagger]').forEach((container) => {
+				const children = container.querySelectorAll<HTMLElement>('[data-reveal]');
+				children.forEach((child, index) => {
+					child.style.setProperty('--reveal-i', String(index));
+				});
+			});
 
 			const markPending = () => {
 				const viewportBottom = window.innerHeight;
@@ -59,6 +70,7 @@ const { title, description } = Astro.props;
 				revealNodes.forEach((node) => observer.observe(node));
 			}
 
+			// data-parallax accepts negative speeds (reverse drift for depth); fallback 0.05 only on NaN/0.
 			const parallaxState = parallaxNodes.map((node) => ({
 				node,
 				speed: Number(node.getAttribute('data-parallax')) || 0.05,
@@ -67,6 +79,9 @@ const { title, description } = Astro.props;
 
 			let viewportHeight = window.innerHeight || 1;
 			let ticking = false;
+
+			const parallaxAllowed = () =>
+				!prefersReducedMotion.matches && pointerFine.matches && wideViewport.matches;
 
 			const refreshParallax = () => {
 				viewportHeight = window.innerHeight || 1;
@@ -77,8 +92,14 @@ const { title, description } = Astro.props;
 				});
 			};
 
+			const resetParallax = () => {
+				parallaxState.forEach((entry) => entry.node.style.setProperty('--parallax-shift', '0px'));
+			};
+
 			const applyParallax = () => {
-				if (prefersReducedMotion.matches) {
+				if (!parallaxAllowed()) {
+					resetParallax();
+					ticking = false;
 					return;
 				}
 				const scrollPosition = window.scrollY || 0;
@@ -115,6 +136,12 @@ const { title, description } = Astro.props;
 				refreshParallax();
 				applyParallax();
 			});
+			const onMediaChange = () => {
+				refreshParallax();
+				applyParallax();
+			};
+			pointerFine.addEventListener('change', onMediaChange);
+			wideViewport.addEventListener('change', onMediaChange);
 
 			const themeToggle = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
 			if (themeToggle) {

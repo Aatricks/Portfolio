@@ -12,42 +12,31 @@ const channels = [
 	},
 	{ label: 'cv', value: 'CV-English.pdf', href: '/Portfolio/CV-English.pdf' },
 ];
-
-const signature = [
-	'  ___ __  __  ',
-	' | __|  \\/  | ',
-	' | _|| |\\/| | ',
-	' |___|_|  |_| ',
-];
 ---
 
 <footer id="contact" class="footer">
 	<div class="wrapper footer__inner">
 		<div class="footer__head">
-			<p class="section-marker">§ 04 · contact</p>
+			<p class="section-marker">04 · contact</p>
 			<h2 class="footer__title">
 				Reach out — <em>about embedded AI roles,</em> a paper,<br />
 				or a build that needs a native pair of hands.
 			</h2>
 		</div>
 
-		<div class="footer__grid">
-			<dl class="footer__channels">
-				{channels.map((channel) => (
-					<div class="footer__channel">
-						<dt>{channel.label}</dt>
-						<dd>
-							<a href={channel.href} class="footer__link" target={channel.href.startsWith('http') ? '_blank' : undefined} rel={channel.href.startsWith('http') ? 'noopener noreferrer' : undefined}>
-								<span>{channel.value}</span>
-								<span aria-hidden="true">↗</span>
-							</a>
-						</dd>
-					</div>
-				))}
-			</dl>
-
-			<pre class="footer__signature" aria-hidden="true">{signature.join('\n')}</pre>
-		</div>
+		<dl class="footer__channels" data-reveal-stagger>
+			{channels.map((channel) => (
+				<div class="footer__channel" data-reveal>
+					<dt>{channel.label}</dt>
+					<dd>
+						<a href={channel.href} class="footer__link" target={channel.href.startsWith('http') ? '_blank' : undefined} rel={channel.href.startsWith('http') ? 'noopener noreferrer' : undefined}>
+							<span>{channel.value}</span>
+							<span aria-hidden="true">↗</span>
+						</a>
+					</dd>
+				</div>
+			))}
+		</dl>
 
 		<hr class="rule" />
 
@@ -83,13 +72,6 @@ const signature = [
 		line-height: 1.12;
 		letter-spacing: -0.015em;
 		font-weight: 400;
-	}
-
-	.footer__grid {
-		display: grid;
-		grid-template-columns: 1fr;
-		gap: 2.5rem;
-		align-items: end;
 	}
 
 	.footer__channels {
@@ -139,17 +121,6 @@ const signature = [
 		opacity: 1;
 	}
 
-	.footer__signature {
-		font-family: var(--font-mono);
-		font-size: 0.66rem;
-		line-height: 1.2;
-		color: var(--mute-soft);
-		margin: 0;
-		justify-self: end;
-		white-space: pre;
-		opacity: 0.7;
-	}
-
 	.footer__meta {
 		display: flex;
 		justify-content: space-between;
@@ -158,12 +129,6 @@ const signature = [
 		font-family: var(--font-mono);
 		font-size: 0.72rem;
 		letter-spacing: 0.04em;
-		color: var(--mute);
-	}
-
-	@media (min-width: 52em) {
-		.footer__grid {
-			grid-template-columns: 1fr auto;
-		}
+		color: var(--mute-soft);
 	}
 </style>

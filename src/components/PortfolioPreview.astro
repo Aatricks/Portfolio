@@ -32,7 +32,9 @@ const altMetric = data.metrics[1];
 
 		<div class="pp__media">
 			<div class="pp__media-frame">
-				<img src={data.img} alt={data.img_alt || ''} loading="lazy" decoding="async" />
+				<div class="pp__media-inner" data-parallax="0.025">
+					<img src={data.img} alt={data.img_alt || ''} loading="lazy" decoding="async" />
+				</div>
 			</div>
 			<div class="pp__media-tag" aria-hidden="true">
 				<span class="dot dot--ok"></span>
@@ -107,18 +109,19 @@ const altMetric = data.metrics[1];
 	.pp__link::before {
 		content: '';
 		position: absolute;
-		left: -1rem;
+		left: -1.4rem;
 		top: 2.4rem;
 		bottom: 2.4rem;
 		width: 2px;
 		background: var(--pp-accent);
 		opacity: 0;
-		transition: opacity 320ms var(--ease), left 320ms var(--ease);
+		transform: translateX(0.4rem);
+		transition: opacity 320ms var(--ease), transform 320ms var(--ease);
 	}
 
 	.pp__link:hover::before {
 		opacity: 1;
-		left: -1.4rem;
+		transform: translateX(0);
 	}
 
 	.pp__meta {
@@ -207,6 +210,13 @@ const altMetric = data.metrics[1];
 
 	.pp__link:hover .pp__media-frame::after {
 		opacity: 1;
+	}
+
+	.pp__media-inner {
+		position: absolute;
+		inset: -6% 0;
+		width: 100%;
+		will-change: transform;
 	}
 
 	.pp__media-frame img {

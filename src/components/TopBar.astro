@@ -25,10 +25,6 @@ const navLinks = [
 		</nav>
 
 		<div class="topbar__tail">
-			<span class="topbar__status">
-				<span class="dot dot--ok" aria-hidden="true"></span>
-				<span>open to roles · summer 2026</span>
-			</span>
 			<button class="topbar__theme" data-theme-toggle type="button" aria-label="Toggle color theme" aria-pressed="false">
 				<span class="topbar__theme-icon topbar__theme-icon--sun" aria-hidden="true">☀</span>
 				<span class="topbar__theme-icon topbar__theme-icon--moon" aria-hidden="true">☾</span>
@@ -138,17 +134,6 @@ const navLinks = [
 		gap: 0.9rem;
 	}
 
-	.topbar__status {
-		display: none;
-		align-items: center;
-		gap: 0.45rem;
-		font-family: var(--font-mono);
-		font-size: 0.7rem;
-		letter-spacing: 0.04em;
-		color: var(--mute);
-		text-transform: lowercase;
-	}
-
 	.topbar__theme {
 		display: inline-flex;
 		align-items: center;
@@ -195,9 +180,6 @@ const navLinks = [
 
 	@media (min-width: 52em) {
 		.topbar__nav {
-			display: inline-flex;
-		}
-		.topbar__status {
 			display: inline-flex;
 		}
 	}

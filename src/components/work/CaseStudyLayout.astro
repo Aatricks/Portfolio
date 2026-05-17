@@ -35,6 +35,7 @@ const publishYear = data.publishDate.getFullYear();
 	style={`--proj: ${accent}; --proj-dark: ${accentDark ?? accent};`}
 >
 	<header class="project-page__hero">
+		<div class="project-page__hero-bg" aria-hidden="true" data-parallax="0.05"></div>
 		<div class="wrapper project-page__hero-inner">
 			<nav class="project-page__nav">
 				<a class="project-page__back" href={backHref}>
@@ -49,7 +50,7 @@ const publishYear = data.publishDate.getFullYear();
 			<div class="project-page__hero-grid">
 				<div class="project-page__hero-copy">
 					<p class="section-marker project-page__marker">
-						{data.status === 'flagship' ? 'flagship · §' : 'side work · §'}
+						{data.status === 'flagship' ? 'flagship' : 'side work'}
 					</p>
 					<p class="project-page__eyebrow">{data.eyebrow}</p>
 					<h1 class="project-page__title">{data.title}</h1>
@@ -64,17 +65,11 @@ const publishYear = data.publishDate.getFullYear();
 					</div>
 				</div>
 
-				<aside class="project-page__hero-spec" data-parallax="0.04">
-					<header class="project-page__hero-spec-head">
-						<span class="project-page__hero-spec-dot" aria-hidden="true"></span>
-						<span>{hint || `~/${themeKey}.spec`}</span>
-						<span class="project-page__hero-spec-id" aria-hidden="true">
-							v{publishYear.toString().slice(-2)}.{((data.publishDate.getMonth() + 1) * 10).toString().padStart(2, '0')}
-						</span>
-					</header>
+				<aside class="project-page__hero-spec" data-parallax="0.04" data-reveal-stagger>
+					<p class="label project-page__hero-spec-label">{hint || `${themeKey}.spec`}</p>
 					<div class="project-page__hero-spec-body">
 						{data.heroPoints.slice(0, 3).map((point, i) => (
-							<div class="project-page__hero-spec-row">
+							<div class="project-page__hero-spec-row" data-reveal>
 								<span class="project-page__hero-spec-key">[{String(i + 1).padStart(2, '0')}]</span>
 								<p>{point}</p>
 							</div>
@@ -98,18 +93,18 @@ const publishYear = data.publishDate.getFullYear();
 				<h2 class="project-page__section-h">
 					<em>{data.title}</em> — {data.description}
 				</h2>
-				<ul class="project-page__bullets">
+				<ul class="project-page__bullets" data-reveal-stagger>
 					{data.highlights.map((highlight) => (
-						<li>{highlight}</li>
+						<li data-reveal>{highlight}</li>
 					))}
 				</ul>
 			</div>
 
 			<aside class="project-page__arch" data-reveal>
 				<p class="section-marker">architecture</p>
-				<ol class="project-page__arch-list">
+				<ol class="project-page__arch-list" data-reveal-stagger>
 					{data.architecture.map((step, i) => (
-						<li>
+						<li data-reveal>
 							<span class="project-page__arch-num">{String(i + 1).padStart(2, '0')}</span>
 							<p>{step}</p>
 						</li>
@@ -146,27 +141,32 @@ const publishYear = data.publishDate.getFullYear();
 
 	/* ---------------- HERO ---------------- */
 	.project-page__hero {
-		padding-block: 3rem 4rem;
+		padding-block: clamp(3rem, 8vw, 6rem) clamp(3rem, 7vw, 5rem);
 		border-bottom: 1px solid var(--rule-soft);
 		position: relative;
-		background:
-			linear-gradient(
-				180deg,
-				color-mix(in srgb, var(--project-accent) 6%, transparent),
-				transparent 65%
-			);
+		overflow: clip;
 	}
 
-	.project-page__hero::before {
-		content: '';
+	.project-page__hero-bg {
 		position: absolute;
-		inset: 0;
-		background-image:
-			linear-gradient(to right, var(--rule-soft) 1px, transparent 1px);
-		background-size: 1.25rem 100%;
-		mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.35), transparent 80%);
+		inset: -10vh -10vw auto auto;
+		width: 60vw;
+		height: 60vw;
+		max-width: 720px;
+		max-height: 720px;
+		background: radial-gradient(
+			closest-side,
+			color-mix(in srgb, var(--project-accent) 10%, transparent),
+			transparent 70%
+		);
 		pointer-events: none;
-		opacity: 0.6;
+		filter: blur(48px);
+		opacity: 0.55;
+		will-change: transform;
+	}
+
+	[data-theme='dark'] .project-page__hero-bg {
+		opacity: 0.4;
 	}
 
 	.project-page__hero-inner {
@@ -250,42 +250,24 @@ const publishYear = data.publishDate.getFullYear();
 
 	/* hero spec block */
 	.project-page__hero-spec {
-		background: var(--paper-soft);
-		border: 1px solid var(--rule);
 		font-family: var(--font-mono);
 		font-size: 0.78rem;
 		line-height: 1.5;
 		color: var(--ink-soft);
+		border-top: 1px dashed var(--rule);
+		border-bottom: 1px dashed var(--rule);
+		padding-block: 1rem;
 	}
 
-	.project-page__hero-spec-head {
-		display: flex;
-		align-items: center;
-		gap: 0.55rem;
-		padding: 0.6rem 0.85rem;
-		border-bottom: 1px solid var(--rule);
-		background: var(--paper-deep);
-		color: var(--ink);
-		font-size: 0.72rem;
-	}
-
-	.project-page__hero-spec-dot {
-		width: 0.45rem;
-		height: 0.45rem;
-		border-radius: 999px;
-		background: var(--project-accent);
-	}
-
-	.project-page__hero-spec-id {
-		margin-left: auto;
-		color: var(--mute);
-		letter-spacing: 0.04em;
+	.project-page__hero-spec-label {
+		padding-inline: 0.1rem;
+		margin-bottom: 0.9rem;
 	}
 
 	.project-page__hero-spec-body {
 		display: grid;
 		gap: 0.85rem;
-		padding: 1rem 1.1rem;
+		padding: 0 0.1rem;
 	}
 
 	.project-page__hero-spec-row {
@@ -310,7 +292,8 @@ const publishYear = data.publishDate.getFullYear();
 		display: flex;
 		align-items: baseline;
 		gap: 0.7rem;
-		padding: 0.7rem 1.1rem;
+		padding: 0.9rem 0.1rem 0;
+		margin-top: 0.85rem;
 		border-top: 1px dashed var(--rule);
 		font-size: 0.7rem;
 		color: var(--mute);

@@ -51,6 +51,9 @@
 	/* Motion */
 	--ease: cubic-bezier(0.2, 0.6, 0.2, 1);
 	--theme-transition: 320ms var(--ease);
+
+	/* Soft depth — opt-in only */
+	--shadow-soft: 0 1px 1px rgba(0, 0, 0, 0.04), 0 6px 18px rgba(0, 0, 0, 0.04);
 }
 
 [data-theme='dark'] {
@@ -67,6 +70,7 @@
 	--accent: #e07a4a;
 	--accent-soft: rgba(224, 122, 74, 0.14);
 	--accent-strong: #f0916a;
+	--shadow-soft: 0 1px 1px rgba(0, 0, 0, 0.3), 0 6px 18px rgba(0, 0, 0, 0.3);
 }
 
 /* ============================================================
@@ -280,7 +284,7 @@ kbd {
 	font-family: var(--font-display);
 	font-size: 0.95rem;
 	font-style: italic;
-	color: var(--accent);
+	color: var(--mute);
 	transform: translateY(0.05em);
 }
 
@@ -360,6 +364,12 @@ kbd {
 	will-change: transform;
 }
 
+/* Staggered cascading reveal — children of [data-reveal-stagger]
+   pick up an index via --reveal-i set in BaseLayout's script. */
+.js [data-reveal-stagger] [data-reveal] {
+	transition-delay: calc(var(--reveal-i, 0) * 70ms);
+}
+
 @media (prefers-reduced-motion: reduce) {
 	html {
 		scroll-behavior: auto;
@@ -368,6 +378,9 @@ kbd {
 		opacity: 1;
 		transform: none;
 		transition: none;
+	}
+	.js [data-reveal-stagger] [data-reveal] {
+		transition-delay: 0s;
 	}
 	[data-parallax] {
 		transform: none;

@@ -38,19 +38,6 @@ const sideNotes = [
 	{ mark: '⌂', text: '3D printing — machine maintenance + functional parts for embedded projects.' },
 	{ mark: 'λ', text: 'fr / en / es / it / ru — diplomacy training at C-MIMUN.' },
 ];
-
-const codeSnippet = [
-	'// llmedge — backend selection',
-	'val edge = LLMEdge.create(',
-	'    context = ctx,',
-	'    scope   = viewModelScope,',
-	')',
-	'',
-	'val reply = edge.text.generate(',
-	'    prompt = "summarize edge AI",',
-	')',
-	'// runs on OpenCL → Vulkan → CPU',
-];
 ---
 
 <BaseLayout
@@ -59,31 +46,9 @@ const codeSnippet = [
 >
 	{/* ============================== §00 · HERO ============================== */}
 	<section class="hero" id="top" aria-labelledby="hero-title">
-		<div class="hero__canvas" aria-hidden="true">
-			<div class="hero__grid"></div>
-			<div class="hero__ascii">
-				<pre>{`+----+----+----+----+----+----+
-|    |    |    |    |    |    |
-+----+----+----+----+----+----+
-|    |  ●  |    |    |    |    |
-+----+----+----+----+----+----+
-|    |    |    |    |  ○  |    |
-+----+----+----+----+----+----+`}</pre>
-			</div>
-			<svg class="hero__arc" viewBox="0 0 600 600" aria-hidden="true">
-				<defs>
-					<linearGradient id="arc-grad" x1="0" y1="0" x2="1" y2="1">
-						<stop offset="0%" stop-color="currentColor" stop-opacity="0.2" />
-						<stop offset="100%" stop-color="currentColor" stop-opacity="0" />
-					</linearGradient>
-				</defs>
-				<circle cx="300" cy="300" r="280" fill="none" stroke="url(#arc-grad)" stroke-width="1" />
-				<circle cx="300" cy="300" r="220" fill="none" stroke="url(#arc-grad)" stroke-width="1" />
-				<circle cx="300" cy="300" r="160" fill="none" stroke="currentColor" stroke-opacity="0.08" stroke-width="1" />
-			</svg>
-		</div>
+		<div class="hero__bg" aria-hidden="true" data-parallax="0.05"></div>
 
-		<div class="wrapper hero__inner">
+		<div class="wrapper hero__inner" data-reveal-stagger>
 			<div class="hero__strip" data-reveal>
 				{heroSpecs.map(([k, v], i) => (
 					<span class="hero__spec">
@@ -94,22 +59,22 @@ const codeSnippet = [
 				))}
 			</div>
 
-			<div class="hero__main" data-reveal>
-				<p class="hero__eyebrow">
-					<span aria-hidden="true">[ §00 · whoami ]</span>
+			<div class="hero__main">
+				<p class="hero__eyebrow" data-reveal>
+					<span aria-hidden="true">§ 00 · whoami</span>
 				</p>
-				<h1 class="hero__title" id="hero-title">
-					Emilio&nbsp;Melis<span class="hero__cursor" aria-hidden="true">_</span><br />
+				<h1 class="hero__title" id="hero-title" data-reveal>
+					Emilio&nbsp;Melis.<br />
 					builds <em>edge&nbsp;AI</em> that<br />
 					runs <em>where it&nbsp;lives</em>.
 				</h1>
-				<p class="hero__lede">
+				<p class="hero__lede" data-reveal>
 					Engineering student specializing in algorithmic optimization and AI on constrained
 					hardware. I write the C/C++ that makes models fit, the Kotlin/JNI that ships them,
 					and the sensor fusion that keeps them honest.
 				</p>
 
-				<div class="hero__actions">
+				<div class="hero__actions" data-reveal>
 					<a class="btn btn--solid" href="#work">
 						<span>Selected work</span>
 						<span aria-hidden="true">→</span>
@@ -124,23 +89,6 @@ const codeSnippet = [
 					</a>
 				</div>
 			</div>
-
-			<aside class="hero__side" data-reveal>
-				<div class="hero__terminal" aria-hidden="true">
-					<header class="hero__terminal-head">
-						<span class="hero__terminal-dot"></span>
-						<span class="hero__terminal-dot"></span>
-						<span class="hero__terminal-dot"></span>
-						<span class="hero__terminal-title">~/llmedge — kotlin</span>
-					</header>
-					<pre class="hero__terminal-body">{codeSnippet.join('\n')}</pre>
-				</div>
-			</aside>
-		</div>
-
-		<div class="hero__scroll" aria-hidden="true">
-			<span>scroll</span>
-			<span class="hero__scroll-bar"></span>
 		</div>
 	</section>
 
@@ -148,7 +96,7 @@ const codeSnippet = [
 	<section class="section" id="work" aria-labelledby="work-title">
 		<div class="wrapper">
 			<header class="section__head" data-reveal>
-				<p class="section-marker">§ 01 · selected work</p>
+				<p class="section-marker">01 · selected work</p>
 				<div class="section__title-row">
 					<h2 id="work-title" class="section__title">
 						Systems I built and <em>shipped</em>.
@@ -169,7 +117,7 @@ const codeSnippet = [
 				)}
 
 				{secondary.length > 0 && (
-					<div class="secondary-grid work__secondary">
+					<div class="secondary-grid work__secondary" data-reveal-stagger>
 						{secondary.map((project) => (
 							<PortfolioPreview project={project} variant="secondary" />
 						))}
@@ -183,7 +131,7 @@ const codeSnippet = [
 	<section class="section section--about" id="about" aria-labelledby="about-title">
 		<div class="wrapper about">
 			<header class="section__head" data-reveal>
-				<p class="section-marker">§ 02 · about</p>
+				<p class="section-marker">02 · about</p>
 				<h2 id="about-title" class="section__title">
 					CS engineering student at <em>Polytech&nbsp;Tours</em>,<br />
 					going deep on <em>edge inference</em> and <em>embedded&nbsp;control</em>.
@@ -236,7 +184,7 @@ const codeSnippet = [
 	<section class="section" id="stack" aria-labelledby="stack-title">
 		<div class="wrapper">
 			<header class="section__head" data-reveal>
-				<p class="section-marker">§ 03 · stack</p>
+				<p class="section-marker">03 · stack</p>
 				<h2 id="stack-title" class="section__title">
 					Tools I reach for, <em>ranked by hours&nbsp;in&nbsp;hand</em>.
 				</h2>
@@ -251,15 +199,15 @@ const codeSnippet = [
 		<section class="section" id="more" aria-labelledby="more-title">
 			<div class="wrapper">
 				<header class="section__head" data-reveal>
-					<p class="section-marker">§ 05 · index</p>
+					<p class="section-marker">05 · index</p>
 					<h2 id="more-title" class="section__title">
 						More work <em>worth a look</em>.
 					</h2>
 				</header>
 
-				<ul class="project-index" data-reveal>
+				<ul class="project-index" data-reveal-stagger>
 					{additionalProjects.map((project, i) => (
-						<li class="project-index__row">
+						<li class="project-index__row" data-reveal>
 							<a href={`/Portfolio/work/${project.id}`} class="project-index__link">
 								<span class="project-index__num">{String(i + 1).padStart(2, '0')}</span>
 								<div class="project-index__copy">
@@ -281,7 +229,7 @@ const codeSnippet = [
 	/* ====================== HERO ====================== */
 	.hero {
 		position: relative;
-		padding-block: 4rem 3rem;
+		padding-block: clamp(5rem, 11vw, 9rem) clamp(4rem, 8vw, 7rem);
 		min-height: calc(100svh - 4rem);
 		display: flex;
 		flex-direction: column;
@@ -290,45 +238,26 @@ const codeSnippet = [
 		border-bottom: 1px solid var(--rule-soft);
 	}
 
-	.hero__canvas {
+	.hero__bg {
 		position: absolute;
-		inset: 0;
+		inset: -10vh -10vw auto auto;
+		width: 60vw;
+		height: 60vw;
+		max-width: 720px;
+		max-height: 720px;
+		background: radial-gradient(
+			closest-side,
+			color-mix(in srgb, var(--accent) 8%, transparent),
+			transparent 70%
+		);
 		pointer-events: none;
-		color: var(--accent);
-		opacity: 0.75;
-	}
-
-	.hero__grid {
-		position: absolute;
-		inset: 0;
-		background-image:
-			linear-gradient(to right, var(--rule-soft) 1px, transparent 1px),
-			linear-gradient(to bottom, var(--rule-soft) 1px, transparent 1px);
-		background-size: clamp(40px, 6vw, 88px) clamp(40px, 6vw, 88px);
-		mask-image: radial-gradient(ellipse at top right, rgba(0, 0, 0, 0.55), transparent 70%);
-		opacity: 0.7;
-	}
-
-	.hero__ascii {
-		position: absolute;
-		top: 50%;
-		right: -2rem;
-		transform: translateY(-50%);
-		font-family: var(--font-mono);
-		font-size: 0.6rem;
-		color: var(--mute);
-		opacity: 0.25;
-		display: none;
-	}
-
-	.hero__arc {
-		position: absolute;
-		right: -8rem;
-		top: -8rem;
-		width: 36rem;
-		height: 36rem;
-		color: var(--accent);
+		filter: blur(48px);
 		opacity: 0.55;
+		will-change: transform;
+	}
+
+	[data-theme='dark'] .hero__bg {
+		opacity: 0.4;
 	}
 
 	.hero__inner {
@@ -336,7 +265,7 @@ const codeSnippet = [
 		display: grid;
 		grid-template-columns: 1fr;
 		gap: 2.5rem;
-		padding-top: 1.5rem;
+		max-width: 56rem;
 	}
 
 	.hero__strip {
@@ -388,32 +317,14 @@ const codeSnippet = [
 		font-variation-settings: 'opsz' 144, 'SOFT' 30, 'WONK' 1;
 		letter-spacing: -0.028em;
 		line-height: 0.94;
-		max-width: 16ch;
-		margin-bottom: 2rem;
+		max-width: 18ch;
+		margin-bottom: 2.2rem;
 	}
 
 	.hero__title em {
 		color: var(--accent);
 		font-style: italic;
 		font-variation-settings: 'opsz' 144, 'SOFT' 90, 'WONK' 1;
-	}
-
-	.hero__cursor {
-		display: inline-block;
-		color: var(--accent);
-		font-style: normal;
-		font-family: var(--font-mono);
-		font-size: 0.7em;
-		font-weight: 400;
-		transform: translateY(-0.18em);
-		margin-left: 0.05em;
-		animation: blink 1.05s steps(1) infinite;
-	}
-
-	@keyframes blink {
-		50% {
-			opacity: 0;
-		}
 	}
 
 	.hero__lede {
@@ -459,7 +370,6 @@ const codeSnippet = [
 	.btn--solid:hover {
 		background: var(--accent);
 		border-color: var(--accent);
-		transform: translateY(-1px);
 	}
 
 	.btn--ghost {
@@ -471,93 +381,6 @@ const codeSnippet = [
 	.btn--ghost:hover {
 		border-color: var(--ink);
 		color: var(--accent);
-	}
-
-	.hero__side {
-		display: none;
-	}
-
-	.hero__terminal {
-		border: 1px solid var(--rule);
-		background: var(--paper-soft);
-		font-family: var(--font-mono);
-		font-size: 0.78rem;
-		line-height: 1.55;
-		overflow: hidden;
-		box-shadow: 0 1px 0 var(--rule-soft);
-	}
-
-	.hero__terminal-head {
-		display: flex;
-		align-items: center;
-		gap: 0.4rem;
-		padding: 0.55rem 0.75rem;
-		border-bottom: 1px solid var(--rule);
-		background: var(--paper-deep);
-		font-size: 0.68rem;
-		color: var(--mute);
-	}
-
-	.hero__terminal-dot {
-		width: 0.5rem;
-		height: 0.5rem;
-		border-radius: 999px;
-		background: var(--rule);
-	}
-
-	.hero__terminal-title {
-		margin-left: auto;
-		letter-spacing: 0.05em;
-	}
-
-	.hero__terminal-body {
-		margin: 0;
-		padding: 1rem 1.1rem;
-		color: var(--ink-soft);
-		white-space: pre;
-		overflow-x: auto;
-	}
-
-	.hero__scroll {
-		position: absolute;
-		bottom: 1.5rem;
-		left: 50%;
-		transform: translateX(-50%);
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 0.5rem;
-		font-family: var(--font-mono);
-		font-size: 0.65rem;
-		letter-spacing: 0.16em;
-		text-transform: uppercase;
-		color: var(--mute);
-		pointer-events: none;
-	}
-
-	.hero__scroll-bar {
-		width: 1px;
-		height: 2.5rem;
-		background: linear-gradient(to bottom, var(--accent), transparent);
-		animation: scroll-bar 2s var(--ease) infinite;
-	}
-
-	@keyframes scroll-bar {
-		0% {
-			transform: scaleY(0);
-			transform-origin: top;
-		}
-		50% {
-			transform: scaleY(1);
-			transform-origin: top;
-		}
-		51% {
-			transform-origin: bottom;
-		}
-		100% {
-			transform: scaleY(0);
-			transform-origin: bottom;
-		}
 	}
 
 	/* ====================== SECTION ====================== */
@@ -750,7 +573,11 @@ const codeSnippet = [
 	}
 
 	.project-index__link:hover {
-		padding-left: 1rem;
+		background: color-mix(in srgb, var(--paper-soft) 60%, transparent);
+	}
+
+	.project-index__link:hover .project-index__title {
+		color: var(--accent);
 	}
 
 	.project-index__num {
@@ -803,30 +630,7 @@ const codeSnippet = [
 		transform: translateX(4px);
 	}
 
-	@media (min-width: 56em) {
-		.hero__ascii {
-			display: block;
-		}
-	}
-
 	@media (min-width: 68em) {
-		.hero__inner {
-			grid-template-columns: minmax(0, 1.15fr) minmax(20rem, 0.85fr);
-			column-gap: 4rem;
-			align-items: center;
-		}
-
-		.hero__side {
-			display: block;
-			align-self: stretch;
-			display: flex;
-			align-items: center;
-		}
-
-		.hero__terminal {
-			width: 100%;
-		}
-
 		.about__grid {
 			grid-template-columns: minmax(0, 1.25fr) minmax(18rem, 0.75fr);
 			gap: 3.5rem;
@@ -838,13 +642,6 @@ const codeSnippet = [
 
 		.project-index__stack {
 			display: inline;
-		}
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		.hero__cursor,
-		.hero__scroll-bar {
-			animation: none;
 		}
 	}
 </style>
