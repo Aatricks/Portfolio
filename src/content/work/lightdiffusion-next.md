@@ -5,7 +5,7 @@ thesis: A practical diffusion system shaped around local use, model flexibility,
 eyebrow: Generation stack
 stackLine: Python / FastAPI / Streamlit / Gradio / PyTorch / Flux / SDXL
 themeKey: lightdiffusion-next
-publishDate: 2026-04-13 00:00:00
+publishDate: 2024-12-13 00:00:00
 img: /Portfolio/assets/lightdiffusion-home.png
 img_alt: LightDiffusion-Next browser interface with prompt controls and generated output
 featured: true

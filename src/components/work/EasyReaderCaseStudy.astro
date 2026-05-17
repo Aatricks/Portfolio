@@ -17,3 +17,10 @@ const { entry, Content } = Astro.props as {
 	hint="~/EasyReader/MainActivity.kt"
 	galleryColumns="single"
 />
+
+<style is:global>
+	.project-page--easyreader .gallery--single .gallery__frame {
+		max-width: 22rem;
+		margin-inline: auto;
+	}
+</style>

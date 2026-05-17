@@ -5,7 +5,7 @@ thesis: Kotlin-owned orchestration over raw native engines, with practical contr
 eyebrow: Flagship system
 stackLine: Kotlin / JNI / C++ / Android NDK / Vulkan / OpenCL / ONNX
 themeKey: llmedge
-publishDate: 2026-04-10 00:00:00
+publishDate: 2025-09-18 00:00:00
 img: /Portfolio/assets/llmedge-site.png
 img_alt: llmedge documentation homepage
 featured: true

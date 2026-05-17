@@ -5,7 +5,7 @@ thesis: Productized Android UX backed by local model integration instead of remo
 eyebrow: Product surface
 stackLine: Kotlin / Jetpack Compose / Room / Hilt / llmedge
 themeKey: easyreader
-publishDate: 2026-04-12 00:00:00
+publishDate: 2025-10-23 00:00:00
 img: /Portfolio/assets/easyreader-explorer.jpg
 img_alt: EasyReader explore screen showing discovery cards on Android
 featured: true
@@ -25,7 +25,7 @@ heroPoints:
   - Uses llmedge for on-device summaries so user text stays local and the AI feature remains inside the product workflow.
   - Emphasizes Android product craft as much as model integration.
 gallery:
-  - src: https://raw.githubusercontent.com/Aatricks/EasyReader/main/ManwhaReader.jpg
+  - src: /Portfolio/assets/easyreader-manhwa.jpg
     alt: EasyReader manwha reader screen from the EasyReader repository
     caption: The image shows the reader in a manwha with the fast access library opened.
 architecture:

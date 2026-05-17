@@ -5,7 +5,7 @@ thesis: Small, direct engine work built around explicit state, deterministic sea
 eyebrow: Core systems
 stackLine: C / engine logic / minimax / alpha-beta pruning / board evaluation
 themeKey: cchess
-publishDate: 2026-04-11 00:00:00
+publishDate: 2024-11-07 00:00:00
 img: /Portfolio/assets/CChess.webp
 img_alt: CChess project artwork with robotic hand moving a chess piece
 featured: false
