@@ -30,71 +30,93 @@ const sideNotes = [
 	{ mark: 'λ', text: 'fr / en / es / it / ru — diplomacy training at C-MIMUN.' },
 ];
 
-// ---- Build-time GitHub activity strip ----
-const NINETY_DAYS = 91;
-const todayUtc = new Date();
-todayUtc.setUTCHours(0, 0, 0, 0);
-const ninetyDays = Array.from({ length: NINETY_DAYS }, (_, i) => {
-	const d = new Date(todayUtc);
-	d.setUTCDate(d.getUTCDate() - (NINETY_DAYS - 1 - i));
-	return d.toISOString().slice(0, 10);
-});
-const counts = new Map<string, number>(ninetyDays.map((d) => [d, 0]));
-let totalCommits = 0;
-let lastPushed: string | null = null;
+// ---- Build-time GitHub activity strip (real contribution data) ----
+// Source: jogruber's contributions proxy — real per-day GitHub contribution
+// counts (commits + PRs + issues + reviews) with GitHub's own 0–4 levels.
+// No token needed; CORS-enabled. The public events API was too sparse to fill
+// a 90-day window, so the old strip rendered near-empty (the "placeholder").
+const WINDOW_DAYS = 90;
+type ContribDay = { date: string; count: number; level: number };
+let days: ContribDay[] = [];
 
 try {
 	const res = await fetch(
-		'https://api.github.com/users/Aatricks/events/public?per_page=100',
+		'https://github-contributions-api.jogruber.de/v4/Aatricks?y=last',
 		{
-			signal: AbortSignal.timeout(5000),
+			signal: AbortSignal.timeout(6000),
+			headers: { 'user-agent': 'portfolio-build', accept: 'application/json' },
+		},
+	);
+	if (res.ok) {
+		const data = (await res.json()) as { contributions?: ContribDay[] };
+		if (Array.isArray(data.contributions)) {
+			days = data.contributions.slice(-WINDOW_DAYS);
+		}
+	}
+} catch {
+	// Network failure or rate limit — fall through to the empty fallback below.
+}
+
+// Always render a full window, even if the fetch failed (graceful degradation).
+if (days.length === 0) {
+	const todayUtc = new Date();
+	todayUtc.setUTCHours(0, 0, 0, 0);
+	days = Array.from({ length: WINDOW_DAYS }, (_, i) => {
+		const d = new Date(todayUtc);
+		d.setUTCDate(d.getUTCDate() - (WINDOW_DAYS - 1 - i));
+		return { date: d.toISOString().slice(0, 10), count: 0, level: 0 };
+	});
+}
+
+// GitHub's 5-bucket scale mapped onto the strip's accent opacity.
+const LEVEL_OPACITY = [0.08, 0.34, 0.56, 0.78, 1];
+const totalContributions = days.reduce((sum, d) => sum + d.count, 0);
+const activityGrid = days.map((d) => ({
+	date: d.date,
+	count: d.count,
+	opacity: LEVEL_OPACITY[d.level] ?? 0.08,
+}));
+
+let lastActive: string | null = null;
+for (let i = days.length - 1; i >= 0; i--) {
+	if (days[i].count > 0) {
+		lastActive = days[i].date;
+		break;
+	}
+}
+
+function relativeAgo(iso: string | null): string {
+	if (!iso) return 'no recent activity';
+	const sec = (Date.now() - new Date(iso).getTime()) / 1000;
+	if (sec < 86400) return 'today';
+	if (sec < 86400 * 7) return `${Math.floor(sec / 86400)}d ago`;
+	return `${Math.floor(sec / (86400 * 7))}w ago`;
+}
+const lastActiveAgo = relativeAgo(lastActive);
+
+// ---- Build-time GitHub repo totals (cumulative stars + forks) ----
+let totalStars = 0;
+let totalForks = 0;
+try {
+	const res = await fetch(
+		'https://api.github.com/users/Aatricks/repos?per_page=100&type=owner&sort=updated',
+		{
+			signal: AbortSignal.timeout(6000),
 			headers: { 'user-agent': 'portfolio-build', accept: 'application/vnd.github+json' },
 		},
 	);
 	if (res.ok) {
-		const events = (await res.json()) as Array<any>;
-		for (const e of events) {
-			if (e?.type !== 'PushEvent') continue;
-			// public events strip the commits array; fall back to size or 1
-			const commitCount =
-				(Array.isArray(e?.payload?.commits) && e.payload.commits.length) ||
-				(typeof e?.payload?.size === 'number' && e.payload.size) ||
-				1;
-			const day = String(e.created_at).slice(0, 10);
-			const prev = counts.get(day);
-			if (prev !== undefined) {
-				counts.set(day, prev + commitCount);
-				totalCommits += commitCount;
-				if (!lastPushed || e.created_at > lastPushed) {
-					lastPushed = e.created_at;
-				}
+		const repos = (await res.json()) as Array<{ stargazers_count?: number; forks_count?: number }>;
+		if (Array.isArray(repos)) {
+			for (const r of repos) {
+				totalStars += r.stargazers_count ?? 0;
+				totalForks += r.forks_count ?? 0;
 			}
 		}
 	}
 } catch {
-	// Network failure or rate limit — strip renders empty (still informative).
+	// Network failure or rate limit — totals stay 0; the client refresh fills them.
 }
-
-const maxCount = Math.max(1, ...Array.from(counts.values()));
-const activityGrid = ninetyDays.map((d) => {
-	const c = counts.get(d) ?? 0;
-	return {
-		date: d,
-		count: c,
-		opacity: c === 0 ? 0.08 : 0.22 + (c / maxCount) * 0.78,
-	};
-});
-
-function relativeAgo(iso: string | null): string {
-	if (!iso) return 'no recent push';
-	const sec = (Date.now() - new Date(iso).getTime()) / 1000;
-	if (sec < 60) return 'just now';
-	if (sec < 3600) return `${Math.floor(sec / 60)}m ago`;
-	if (sec < 86400) return `${Math.floor(sec / 3600)}h ago`;
-	if (sec < 86400 * 7) return `${Math.floor(sec / 86400)}d ago`;
-	return `${Math.floor(sec / (86400 * 7))}w ago`;
-}
-const lastPushedAgo = relativeAgo(lastPushed);
 ---
 
 <BaseLayout
@@ -200,13 +222,14 @@ const lastPushedAgo = relativeAgo(lastPushed);
 						<div class="about__activity-head">
 							<span class="label">last 90 days · github</span>
 							<span class="about__activity-meta">
-								last push <em>{lastPushedAgo}</em> · {totalCommits} commits visible
+								last active <em data-activity-last>{lastActiveAgo}</em> · <span data-activity-total>{totalContributions}</span> contributions
+								· ★ <span data-repo-stars>{totalStars}</span> · ⑂ <span data-repo-forks>{totalForks}</span>
 							</span>
 						</div>
-						<svg class="about__activity-strip" viewBox={`0 0 ${activityGrid.length * 3} 14`} preserveAspectRatio="none" aria-hidden="true">
+						<svg class="about__activity-strip" data-activity-strip viewBox={`0 0 ${activityGrid.length * 3} 14`} preserveAspectRatio="none" aria-hidden="true">
 							{activityGrid.map((cell, i) => (
 								<rect x={i * 3} y={2} width={2} height={10} fill="currentColor" opacity={cell.opacity}>
-									<title>{cell.date}: {cell.count} commit{cell.count === 1 ? '' : 's'}</title>
+									<title>{cell.date}: {cell.count} contribution{cell.count === 1 ? '' : 's'}</title>
 								</rect>
 							))}
 						</svg>
@@ -270,6 +293,99 @@ const lastPushedAgo = relativeAgo(lastPushed);
 		</section>
 	)}
 </BaseLayout>
+
+<script>
+	// Progressive enhancement: the strip is rendered with real data at build
+	// time, then refreshed live in the browser so it stays current between
+	// portfolio redeploys. If the fetch fails, the build-time baseline stays.
+	const ACTIVITY_USER = 'Aatricks';
+	const ACTIVITY_WINDOW = 90;
+	const ACTIVITY_LEVEL_OPACITY = [0.08, 0.34, 0.56, 0.78, 1];
+	const SVG_NS = 'http://www.w3.org/2000/svg';
+
+	function activityAgo(dateStr: string | null): string {
+		if (!dateStr) return 'no recent activity';
+		const sec = (Date.now() - new Date(dateStr).getTime()) / 1000;
+		if (sec < 86400) return 'today';
+		if (sec < 86400 * 7) return `${Math.floor(sec / 86400)}d ago`;
+		return `${Math.floor(sec / (86400 * 7))}w ago`;
+	}
+
+	async function refreshActivity() {
+		const strip = document.querySelector('[data-activity-strip]');
+		if (!strip) return;
+
+		let days: Array<{ date: string; count: number; level: number }>;
+		try {
+			const res = await fetch(
+				`https://github-contributions-api.jogruber.de/v4/${ACTIVITY_USER}?y=last`,
+			);
+			if (!res.ok) return;
+			const data = await res.json();
+			if (!Array.isArray(data?.contributions)) return;
+			days = data.contributions.slice(-ACTIVITY_WINDOW);
+		} catch {
+			return; // keep the build-time baseline
+		}
+		if (!days.length) return;
+
+		const frag = document.createDocumentFragment();
+		let total = 0;
+		let lastActive: string | null = null;
+		days.forEach((d, i) => {
+			total += d.count;
+			if (d.count > 0) lastActive = d.date;
+			const rect = document.createElementNS(SVG_NS, 'rect');
+			rect.setAttribute('x', String(i * 3));
+			rect.setAttribute('y', '2');
+			rect.setAttribute('width', '2');
+			rect.setAttribute('height', '10');
+			rect.setAttribute('fill', 'currentColor');
+			rect.setAttribute('opacity', String(ACTIVITY_LEVEL_OPACITY[d.level] ?? 0.08));
+			const title = document.createElementNS(SVG_NS, 'title');
+			title.textContent = `${d.date}: ${d.count} contribution${d.count === 1 ? '' : 's'}`;
+			rect.appendChild(title);
+			frag.appendChild(rect);
+		});
+		strip.replaceChildren(frag);
+
+		const totalEl = document.querySelector('[data-activity-total]');
+		if (totalEl) totalEl.textContent = String(total);
+		const lastEl = document.querySelector('[data-activity-last]');
+		if (lastEl) lastEl.textContent = activityAgo(lastActive);
+	}
+
+	async function refreshRepoStats() {
+		const starsEl = document.querySelector('[data-repo-stars]');
+		const forksEl = document.querySelector('[data-repo-forks]');
+		if (!starsEl && !forksEl) return;
+
+		let repos: Array<{ stargazers_count?: number; forks_count?: number }>;
+		try {
+			const res = await fetch(
+				`https://api.github.com/users/${ACTIVITY_USER}/repos?per_page=100&type=owner&sort=updated`,
+				{ headers: { accept: 'application/vnd.github+json' } },
+			);
+			if (!res.ok) return;
+			repos = await res.json();
+			if (!Array.isArray(repos)) return;
+		} catch {
+			return; // keep the build-time baseline
+		}
+
+		let stars = 0;
+		let forks = 0;
+		for (const r of repos) {
+			stars += r.stargazers_count ?? 0;
+			forks += r.forks_count ?? 0;
+		}
+		if (starsEl) starsEl.textContent = String(stars);
+		if (forksEl) forksEl.textContent = String(forks);
+	}
+
+	refreshActivity();
+	refreshRepoStats();
+</script>
 
 <style>
 	/* ====================== HERO ====================== */
