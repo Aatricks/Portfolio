@@ -3,8 +3,14 @@ title: CChess
 description: A pure C chess engine focused on board state, search, pruning, and evaluation with minimal abstraction.
 thesis: Small, direct engine work built around explicit state, deterministic search, and performance-aware implementation.
 eyebrow: Core systems
+blurb: Chess engine in pure C — minimax with alpha-beta pruning, bitboard state, heuristic evaluation, no frameworks.
+proof: search, pruning, and evaluation from scratch
 stackLine: C / engine logic / minimax / alpha-beta pruning / board evaluation
 themeKey: cchess
+accent: '#6b2b8a'
+accentDark: '#b288d4'
+hint: ~/CChess/board.c
+galleryColumns: single
 publishDate: 2024-11-07 00:00:00
 img: /Portfolio/assets/CChess.webp
 img_alt: CChess project artwork with robotic hand moving a chess piece
@@ -17,8 +23,8 @@ metrics:
     value: Chess engine
   - label: Core techniques
     value: Minimax, alpha-beta pruning, and evaluation heuristics
-  - label: Portfolio role
-    value: Low-level systems signal outside AI
+  - label: Footprint
+    value: Small enough to reason about directly
 heroPoints:
   - Keeps the code close to the machine, with explicit state handling and minimal abstraction overhead.
   - Centers the engine around search, pruning, and evaluation rather than framework structure.
@@ -27,39 +33,24 @@ architecture:
   - Board state and move logic stay explicit so search behavior remains understandable and debuggable.
   - Minimax and alpha-beta pruning form the decision core for move selection.
   - Evaluation logic scores positions through heuristic reasoning rather than heavyweight abstraction.
-  - I kept the project focused on deterministic control flow and performance-aware implementation.
+  - Deterministic control flow keeps the engine inspectable under a debugger.
 highlights:
-  - Keeps the implementation small enough to reason about directly.
-  - Emphasizes memory, algorithms, and debugging discipline in a plain C codebase.
-  - Shows the same systems mindset as the AI projects without relying on model tooling.
+  - Bitboard structures keep board state compact and move operations bitwise.
+  - Alpha-beta pruning cuts the minimax tree without changing the chosen move.
+  - Plain C, no dependencies — memory layout and control flow are fully owned.
 status: secondary
 ---
 
-`CChess` is a compact chess engine I wrote in plain C. The point of the project is not breadth. It is to keep the implementation direct enough that board state, search behavior, and evaluation logic all stay visible in the code.
+`CChess` is a compact chess engine in plain C. The design constraint: keep board state, search behavior, and evaluation logic visible in the code — no abstraction hiding what the engine is doing.
 
-## Core focus
+## Core mechanics
 
-The engine is built around the classic problems that make chess programs interesting:
+- **Board state** lives in bitboard structures, so position updates and move generation are bitwise operations rather than object traversal.
+- **Search** is minimax with alpha-beta pruning; pruning cuts the tree aggressively while preserving the selected move.
+- **Evaluation** scores positions through lightweight heuristics — material, position, mobility — kept deliberately simple to stay tunable.
 
-- board state management
-- move generation
-- search
-- pruning
-- evaluation
+## Why plain C
 
-That combination keeps the project grounded in explicit state and algorithmic decision-making. There is very little abstraction hiding what the engine is doing.
+The engine owns its memory layout and control flow entirely. Deterministic behavior makes search bugs reproducible under a debugger, and the absence of dependencies means the performance profile is the code, nothing else.
 
-## Implementation approach
-
-I kept the code close to the problem:
-
-- board and move logic stay explicit so search behavior remains inspectable
-- minimax and alpha-beta pruning drive move selection
-- evaluation remains heuristic and lightweight instead of buried behind unnecessary structure
-- deterministic control flow makes the engine easier to debug and reason about
-
-That is what I wanted from the project: a small codebase where the important parts stay understandable.
-
-## Result
-
-`CChess` is a straightforward systems project centered on logic, search, and implementation discipline. It is smaller than the AI work, but it shows the same preference for explicit control over opaque abstraction — the same instinct that drove the IMU sensor fusion and Kalman filter work on the autonomous submarine prototype I built in C++.
+The same instinct — explicit state over opaque abstraction — drove the IMU sensor fusion and Kalman filter work on the autonomous submarine prototype: control loops you can trace by hand when they misbehave.

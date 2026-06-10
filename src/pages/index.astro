@@ -19,8 +19,35 @@ const secondary = featuredProjects.slice(1);
 const aboutFacts = [
 	{ label: 'now', value: 'CS engineering @ Polytech Tours · 2022–2027' },
 	{ label: 'next', value: 'AI research intern · HEC Montréal · summer 2026' },
-	{ label: 'focus', value: 'edge inference · embedded · sensor fusion · ADAS' },
 	{ label: 'origin', value: '14 yrs expatriation · 5 spoken languages' },
+];
+
+// GitHub repos worth listing in the index but without a case study.
+const externalProjects = [
+	{
+		title: 'Android-battery-optimizer',
+		stack: 'Python / ADB / Android',
+		href: 'https://github.com/Aatricks/Android-battery-optimizer',
+		repo: 'Android-battery-optimizer',
+	},
+	{
+		title: 'Atoll',
+		stack: 'Swift / macOS',
+		href: 'https://github.com/Aatricks/Atoll',
+		repo: 'Atoll',
+	},
+	{
+		title: 'llmedge-examples',
+		stack: 'Kotlin / Android',
+		href: 'https://github.com/Aatricks/llmedge-examples',
+		repo: 'llmedge-examples',
+	},
+	{
+		title: 'NixOS-EasyConfig',
+		stack: 'Nix / flakes',
+		href: 'https://github.com/Aatricks/NixOS-EasyConfig',
+		repo: 'NixOS-EasyConfig',
+	},
 ];
 
 const sideNotes = [
@@ -94,9 +121,10 @@ function relativeAgo(iso: string | null): string {
 }
 const lastActiveAgo = relativeAgo(lastActive);
 
-// ---- Build-time GitHub repo totals (cumulative stars + forks) ----
+// ---- Build-time GitHub repo stats (totals + per-repo star counts) ----
 let totalStars = 0;
 let totalForks = 0;
+const repoStars: Record<string, number> = {};
 try {
 	const res = await fetch(
 		'https://api.github.com/users/Aatricks/repos?per_page=100&type=owner&sort=updated',
@@ -106,17 +134,26 @@ try {
 		},
 	);
 	if (res.ok) {
-		const repos = (await res.json()) as Array<{ stargazers_count?: number; forks_count?: number }>;
+		const repos = (await res.json()) as Array<{
+			name?: string;
+			stargazers_count?: number;
+			forks_count?: number;
+		}>;
 		if (Array.isArray(repos)) {
 			for (const r of repos) {
 				totalStars += r.stargazers_count ?? 0;
 				totalForks += r.forks_count ?? 0;
+				if (r.name) repoStars[r.name] = r.stargazers_count ?? 0;
 			}
 		}
 	}
 } catch {
 	// Network failure or rate limit — totals stay 0; the client refresh fills them.
 }
+
+// Star count for a project from its repo URL (case studies) or repo name (index rows).
+const starsFor = (repoUrl: string | undefined): number =>
+	repoUrl ? (repoStars[repoUrl.split('/').pop() ?? ''] ?? 0) : 0;
 ---
 
 <BaseLayout
@@ -126,6 +163,8 @@ try {
 	{/* ============================== §00 · HERO ============================== */}
 	<section class="hero" id="top" aria-labelledby="hero-title">
 		<div class="hero__bg" aria-hidden="true" data-parallax="0.05"></div>
+		<span class="hero__reg hero__reg--tr" aria-hidden="true">+</span>
+		<span class="hero__reg hero__reg--bl" aria-hidden="true">+</span>
 
 		<div class="wrapper hero__inner" data-reveal-stagger>
 			<div class="hero__main">
@@ -176,14 +215,22 @@ try {
 			<div id="selected-work" class="work">
 				{flagship && (
 					<div class="work__flagship">
-						<PortfolioPreview project={flagship} variant="dominant" />
+						<PortfolioPreview
+							project={flagship}
+							variant="dominant"
+							stars={starsFor(flagship.data.repoUrl)}
+						/>
 					</div>
 				)}
 
 				{secondary.length > 0 && (
 					<div class="secondary-grid work__secondary" data-reveal-stagger>
 						{secondary.map((project) => (
-							<PortfolioPreview project={project} variant="secondary" />
+							<PortfolioPreview
+								project={project}
+								variant="secondary"
+								stars={starsFor(project.data.repoUrl)}
+							/>
 						))}
 					</div>
 				)}
@@ -197,16 +244,22 @@ try {
 			<header class="section__head" data-reveal>
 				<p class="section-marker">02 · about</p>
 				<h2 id="about-title" class="section__title">
-					CS engineering student at <em>Polytech&nbsp;Tours</em>,<br />
-					going deep on <em>edge inference</em> and <em>embedded&nbsp;control</em>.
+					CS engineering student at <em>Polytech&nbsp;Tours</em> —<br />
+					next, AI research at <em>HEC&nbsp;Montréal</em>.
 				</h2>
 			</header>
 
 			<div class="about__grid">
 				<div class="about__prose" data-reveal>
 					<p class="about__pull">
-						Native runtimes, embedded control, sensor fusion — anywhere the runtime
-						has to be <strong>honest about the hardware</strong>.
+						It started with an autonomous submarine: fusing raw IMU data through
+						<strong>Kalman filters</strong> until the heading finally held.
+					</p>
+
+					<p class="about__body">
+						That control-loop discipline now goes into edge AI — native inference
+						runtimes on phones and embedded targets, aimed at automotive and
+						aerospace systems where real-time is not optional.
 					</p>
 
 					<dl class="about__facts">
@@ -258,7 +311,7 @@ try {
 			<header class="section__head" data-reveal>
 				<p class="section-marker">03 · stack</p>
 				<h2 id="stack-title" class="section__title">
-					Tools I reach for, <em>ranked by hours&nbsp;in&nbsp;hand</em>.
+					Tools I reach for, <em>proven by what&nbsp;shipped</em>.
 				</h2>
 			</header>
 
@@ -266,32 +319,53 @@ try {
 		</div>
 	</section>
 
-	{/* ============================== §05 · MORE WORK ============================== */}
-	{additionalProjects.length > 0 && (
-		<section class="section" id="more" aria-labelledby="more-title">
-			<div class="wrapper">
-				<header class="section__head" data-reveal>
-					<p class="section-marker">05 · index</p>
-					<h2 id="more-title" class="section__title">
-						More work <em>worth a look</em>.
-					</h2>
-				</header>
+	{/* ============================== §04 · INDEX ============================== */}
+	<section class="section" id="more" aria-labelledby="more-title">
+		<div class="wrapper">
+			<header class="section__head" data-reveal>
+				<p class="section-marker">04 · index</p>
+				<h2 id="more-title" class="section__title">
+					More work <em>worth a look</em>.
+				</h2>
+			</header>
 
-				<ul class="project-index" data-reveal-stagger>
-					{additionalProjects.map((project, i) => (
-						<li class="project-index__row" data-reveal>
-							<a href={`/Portfolio/work/${project.id}`} class="project-index__link">
-								<span class="project-index__num">{String(i + 1).padStart(2, '0')}</span>
-								<h3 class="project-index__title">{project.data.title}</h3>
-								<span class="project-index__stack">{project.data.stackLine}</span>
-								<span class="project-index__arrow" aria-hidden="true">→</span>
-							</a>
-						</li>
-					))}
-				</ul>
-			</div>
-		</section>
-	)}
+			<ul class="project-index" data-reveal-stagger>
+				{additionalProjects.map((project, i) => (
+					<li class="project-index__row" data-reveal>
+						<a href={`/Portfolio/work/${project.id}`} class="project-index__link">
+							<span class="project-index__num">{String(i + 1).padStart(2, '0')}</span>
+							<h3 class="project-index__title">{project.data.title}</h3>
+							<span class="project-index__stack">{project.data.blurb ?? project.data.stackLine}</span>
+							{starsFor(project.data.repoUrl) > 0 && (
+								<span class="project-index__stars">★ {starsFor(project.data.repoUrl)}</span>
+							)}
+							<span class="project-index__arrow" aria-hidden="true">→</span>
+						</a>
+					</li>
+				))}
+				{externalProjects.map((project, i) => (
+					<li class="project-index__row" data-reveal>
+						<a
+							href={project.href}
+							class="project-index__link"
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							<span class="project-index__num">
+								{String(additionalProjects.length + i + 1).padStart(2, '0')}
+							</span>
+							<h3 class="project-index__title">{project.title}</h3>
+							<span class="project-index__stack">{project.stack}</span>
+							{(repoStars[project.repo] ?? 0) > 0 && (
+								<span class="project-index__stars">★ {repoStars[project.repo]}</span>
+							)}
+							<span class="project-index__arrow" aria-hidden="true">↗</span>
+						</a>
+					</li>
+				))}
+			</ul>
+		</div>
+	</section>
 </BaseLayout>
 
 <script>
@@ -430,46 +504,25 @@ try {
 		max-width: 56rem;
 	}
 
-	.hero__strip {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.65rem;
-		align-items: baseline;
+	/* Registration marks — print-shop corners, quiet aesthetic signature */
+	.hero__reg {
+		position: absolute;
 		font-family: var(--font-mono);
-		font-size: 0.72rem;
-		letter-spacing: 0.04em;
-		color: var(--mute);
-		text-transform: lowercase;
-	}
-
-	.hero__spec {
-		display: inline-flex;
-		gap: 0.4rem;
-		align-items: baseline;
-	}
-
-	.hero__spec-key {
-		color: var(--accent);
-		font-weight: 500;
-		letter-spacing: 0.08em;
-	}
-
-	.hero__spec-val {
-		color: var(--ink-soft);
-	}
-
-	.hero__spec-sep {
+		font-size: 0.9rem;
+		font-weight: 400;
 		color: var(--mute-soft);
-		margin-inline: 0.2rem;
+		pointer-events: none;
+		user-select: none;
 	}
 
-	.hero__eyebrow {
-		font-family: var(--font-mono);
-		font-size: 0.7rem;
-		letter-spacing: 0.12em;
-		color: var(--mute);
-		margin-bottom: 1.2rem;
-		text-transform: lowercase;
+	.hero__reg--tr {
+		top: clamp(1.5rem, 4vw, 3rem);
+		right: clamp(1.25rem, 3.5vw, 2.4rem);
+	}
+
+	.hero__reg--bl {
+		bottom: clamp(1.5rem, 4vw, 3rem);
+		left: clamp(1.25rem, 3.5vw, 2.4rem);
 	}
 
 	.hero__title {
@@ -560,9 +613,9 @@ try {
 		text-transform: lowercase;
 		border: 1px solid var(--ink);
 		transition:
-			background-color 220ms var(--ease),
-			color 220ms var(--ease),
-			transform 220ms var(--ease);
+			background-color var(--t-link) var(--ease),
+			color var(--t-link) var(--ease),
+			transform var(--t-link) var(--ease);
 	}
 
 	.btn--solid {
@@ -674,6 +727,13 @@ try {
 		font-style: normal;
 		color: var(--accent);
 		font-weight: 400;
+	}
+
+	.about__body {
+		max-width: 36rem;
+		font-size: 1.02rem;
+		line-height: 1.65;
+		color: var(--ink-soft);
 	}
 
 	.about__facts {
@@ -795,6 +855,7 @@ try {
 		padding-block: 1.4rem;
 		color: var(--ink);
 		position: relative;
+		transition: background-color var(--t-link) var(--ease);
 	}
 
 	.project-index__link::before {
@@ -806,7 +867,7 @@ try {
 		height: 100%;
 		background: var(--accent);
 		opacity: 0;
-		transition: width 280ms var(--ease), opacity 280ms var(--ease);
+		transition: width var(--t-link) var(--ease), opacity var(--t-link) var(--ease);
 	}
 
 	.project-index__link:hover::before {
@@ -843,15 +904,28 @@ try {
 		display: none;
 		font-family: var(--font-mono);
 		font-size: 0.74rem;
-		color: var(--mute);
+		color: var(--ink-soft);
 		text-align: right;
+		max-width: 34rem;
+	}
+
+	.project-index__stars {
+		font-family: var(--font-mono);
+		font-size: 0.74rem;
+		color: var(--mute);
+		font-variant-numeric: tabular-nums;
+		white-space: nowrap;
+	}
+
+	.project-index__link:hover .project-index__stars {
+		color: var(--accent);
 	}
 
 	.project-index__arrow {
 		font-family: var(--font-mono);
 		color: var(--mute);
 		font-size: 1rem;
-		transition: transform 280ms var(--ease), color 280ms var(--ease);
+		transition: transform var(--t-link) var(--ease), color var(--t-link) var(--ease);
 	}
 
 	.project-index__link:hover .project-index__arrow {
@@ -859,14 +933,14 @@ try {
 		transform: translateX(4px);
 	}
 
-	@media (min-width: 68em) {
+	@media (min-width: 64em) {
 		.about__grid {
 			grid-template-columns: minmax(0, 1.25fr) minmax(18rem, 0.75fr);
 			gap: 3.5rem;
 		}
 
 		.project-index__link {
-			grid-template-columns: auto 1fr auto auto;
+			grid-template-columns: auto 1fr auto auto auto;
 		}
 
 		.project-index__stack {

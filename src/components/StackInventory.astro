@@ -1,7 +1,6 @@
 ---
 interface StackEntry {
 	name: string;
-	level: number; // 1..10
 	note?: string;
 }
 
@@ -16,34 +15,30 @@ const groups: StackGroup[] = [
 		label: 'languages & systems',
 		caption: 'where the time goes',
 		entries: [
-			{ name: 'C / C++', level: 9, note: 'native runtimes, JNI bridges, Kalman' },
-			{ name: 'Kotlin', level: 9, note: 'Android, Compose, Hilt, Room' },
-			{ name: 'Python', level: 9, note: 'PyTorch, FastAPI, scripting' },
-			{ name: 'Rust', level: 6, note: 'AoC, side experiments' },
-			{ name: 'Java', level: 6, note: 'JVM internals, early Android work' },
-			{ name: 'Linux', level: 9, note: 'Arch, NixOS, kernel troubleshooting' },
+			{ name: 'C / C++', note: 'llmedge JNI bridges · CChess · submarine control' },
+			{ name: 'Kotlin', note: 'llmedge API · EasyReader — Compose, Hilt, Room' },
+			{ name: 'Python', note: 'LightDiffusion pipelines · PyTorch tooling' },
+			{ name: 'Linux', note: 'daily driver — Arch + NixOS flakes, kernel debugging' },
 		],
 	},
 	{
 		label: 'ai & inference',
 		caption: 'model-side discipline',
 		entries: [
-			{ name: 'PyTorch', level: 8, note: 'diffusion pipelines, optimization' },
-			{ name: 'llama.cpp', level: 8, note: 'GGUF, JNI, on-device LLM' },
-			{ name: 'stable-diffusion.cpp', level: 7, note: 'mobile + desktop pipelines' },
-			{ name: 'whisper.cpp / bark.cpp', level: 7, note: 'on-device STT + TTS' },
-			{ name: 'Vulkan / OpenCL', level: 7, note: 'compute, shader-side optimization' },
-			{ name: 'ONNX', level: 6, note: 'embedding utilities, RAG' },
+			{ name: 'PyTorch', note: 'diffusion optimization · scheduler work' },
+			{ name: 'llama.cpp', note: 'GGUF on-device LLM in llmedge' },
+			{ name: 'stable-diffusion.cpp', note: 'mobile + desktop diffusion pipelines' },
+			{ name: 'Vulkan / OpenCL', note: 'backend fallback policy · compute shaders' },
 		],
 	},
 	{
 		label: 'embedded & signal',
 		caption: 'what brought me here',
 		entries: [
-			{ name: 'Sensor fusion', level: 8, note: 'IMU + Kalman, control loops' },
-			{ name: 'Arduino / ARM', level: 7, note: 'prototyping, peripherals' },
-			{ name: 'Computer vision', level: 7, note: 'training + classical pipeline' },
-			{ name: '3D modelling / print', level: 7, note: 'functional parts, prototyping' },
+			{ name: 'Sensor fusion', note: 'IMU + Kalman on the autonomous submarine' },
+			{ name: 'Arduino / ARM', note: 'prototyping, peripherals' },
+			{ name: 'Computer vision', note: 'training + classical pipelines' },
+			{ name: '3D modelling / print', note: 'functional parts for embedded projects' },
 		],
 	},
 ];
@@ -55,7 +50,6 @@ const languages = [
 	{ code: 'it', name: 'Italiano', level: 'B2' },
 	{ code: 'ru', name: 'Русский', level: 'B1' },
 ];
-
 ---
 
 <div class="stack-grid" data-reveal-stagger>
@@ -69,12 +63,6 @@ const languages = [
 				{group.entries.map((entry) => (
 					<li class="stack-row" data-reveal>
 						<span class="stack-row__name">{entry.name}</span>
-						<span
-							class="stack-row__bar"
-							aria-hidden="true"
-							style={`--bar-fill: ${(entry.level / 10) * 100}%;`}
-						></span>
-						<span class="stack-row__lvl" aria-label={`${entry.level} of 10`}>{entry.level}/10</span>
 						{entry.note && <span class="stack-row__note">— {entry.note}</span>}
 					</li>
 				))}
@@ -100,7 +88,7 @@ const languages = [
 	.stack-grid {
 		display: grid;
 		grid-template-columns: 1fr;
-		gap: 2.4rem;
+		gap: 2rem;
 	}
 
 	.stack-group__head {
@@ -108,8 +96,8 @@ const languages = [
 		align-items: baseline;
 		justify-content: space-between;
 		gap: 1rem;
-		padding-bottom: 0.8rem;
-		margin-bottom: 0.6rem;
+		padding-bottom: 0.7rem;
+		margin-bottom: 0.5rem;
 		border-bottom: 1px solid var(--rule);
 	}
 
@@ -133,86 +121,43 @@ const languages = [
 		margin: 0;
 		padding: 0;
 		display: grid;
-		gap: 0.35rem;
+		gap: 0;
 	}
 
 	.stack-row {
-		display: grid;
-		grid-template-columns: minmax(7rem, max-content) minmax(3rem, 1fr) auto minmax(0, 1.4fr);
-		align-items: center;
-		gap: 0.6rem 0.85rem;
-		padding: 0.45rem 0;
-		font-size: 0.92rem;
+		padding: 0.5rem 0;
 		line-height: 1.5;
-		color: var(--ink-soft);
+		border-bottom: 1px dashed var(--rule-soft);
+	}
+
+	.stack-row:last-child {
+		border-bottom: 0;
 	}
 
 	.stack-row__name {
 		font-family: var(--font-display);
-		font-size: 1.05rem;
+		font-size: 1rem;
 		font-weight: 400;
 		color: var(--ink);
 		letter-spacing: -0.01em;
-		align-self: baseline;
-	}
-
-	.stack-row__bar {
-		position: relative;
-		display: block;
-		height: 2px;
-		width: 100%;
-		background: var(--rule);
-		overflow: hidden;
-	}
-
-	.stack-row__bar::after {
-		content: '';
-		position: absolute;
-		left: 0;
-		top: 0;
-		bottom: 0;
-		width: var(--bar-fill, 0%);
-		background: var(--accent);
-		transform: scaleX(0);
-		transform-origin: left;
-		transition: transform 720ms var(--ease);
-		transition-delay: calc(140ms + var(--reveal-i, 0) * 70ms);
-	}
-
-	:global(.js [data-reveal].is-visible) .stack-row__bar::after {
-		transform: scaleX(1);
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		.stack-row__bar::after {
-			transform: scaleX(1);
-			transition: none;
-		}
-	}
-
-	.stack-row__lvl {
-		font-family: var(--font-mono);
-		font-size: 0.7rem;
-		color: var(--mute);
-		font-variant-numeric: tabular-nums;
+		margin-right: 0.55rem;
 	}
 
 	.stack-row__note {
 		font-family: var(--font-mono);
-		font-size: 0.78rem;
+		font-size: 0.74rem;
 		color: var(--mute);
-		text-align: left;
 	}
 
 	.stack-langs {
-		margin-top: 3rem;
-		padding: 1.6rem 0 0;
+		margin-top: 2.5rem;
+		padding: 1.4rem 0 0;
 		border-top: 1px dashed var(--rule);
 	}
 
 	.stack-langs__label {
 		font-family: var(--font-mono);
-		font-size: 0.7rem;
+		font-size: var(--text-xs);
 		letter-spacing: 0.18em;
 		text-transform: uppercase;
 		color: var(--mute);
@@ -243,7 +188,7 @@ const languages = [
 		padding: 0.05rem 0.35rem;
 		border: 1px solid var(--rule);
 		font-family: var(--font-mono);
-		font-size: 0.62rem;
+		font-size: 0.68rem;
 		text-transform: uppercase;
 		letter-spacing: 0.08em;
 		color: var(--accent);
@@ -257,52 +202,14 @@ const languages = [
 
 	.stack-langs__level {
 		font-family: var(--font-mono);
-		font-size: 0.7rem;
+		font-size: var(--text-xs);
 		color: var(--mute);
 	}
 
-	@media (max-width: 48em) {
-		.stack-row {
-			grid-template-columns: 1fr auto;
-			row-gap: 0.3rem;
-		}
-		.stack-row__bar {
-			grid-column: 1 / -1;
-			width: 100%;
-		}
-		.stack-row__note {
-			grid-column: 1 / -1;
-			padding-left: 0;
-		}
-	}
-
-	@media (min-width: 52em) and (max-width: 68em) {
-		.stack-grid {
-			grid-template-columns: repeat(2, minmax(0, 1fr));
-			gap: 2.4rem 2.6rem;
-		}
-		.stack-row {
-			grid-template-columns: minmax(6rem, max-content) minmax(2.5rem, 1fr) auto;
-		}
-		.stack-row__note {
-			grid-column: 1 / -1;
-			padding-left: 0;
-			margin-top: -0.15rem;
-		}
-	}
-
-	@media (min-width: 68em) {
+	@media (min-width: 52em) {
 		.stack-grid {
 			grid-template-columns: repeat(3, minmax(0, 1fr));
 			gap: 2.5rem;
-		}
-		.stack-row {
-			grid-template-columns: minmax(6rem, max-content) minmax(2.5rem, 1fr) auto;
-		}
-		.stack-row__note {
-			grid-column: 1 / -1;
-			padding-left: 0;
-			margin-top: -0.15rem;
 		}
 	}
 </style>

@@ -3,7 +3,8 @@ const navLinks = [
 	{ href: '/Portfolio/#work', label: 'Work', mark: '01' },
 	{ href: '/Portfolio/#about', label: 'About', mark: '02' },
 	{ href: '/Portfolio/#stack', label: 'Stack', mark: '03' },
-	{ href: '/Portfolio/#contact', label: 'Contact', mark: '04' },
+	{ href: '/Portfolio/#more', label: 'Index', mark: '04' },
+	{ href: '/Portfolio/#contact', label: 'Contact', mark: '05' },
 ];
 ---
 
@@ -187,7 +188,7 @@ const navLinks = [
 		background: var(--accent);
 		transform: scaleX(0);
 		transform-origin: left;
-		transition: transform 280ms var(--ease);
+		transition: transform var(--t-link) var(--ease);
 	}
 
 	.topbar__link:hover::after {

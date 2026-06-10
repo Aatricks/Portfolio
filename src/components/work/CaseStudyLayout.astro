@@ -281,9 +281,11 @@ const buildLabel = [
 		font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1;
 	}
 
+	/* Optical bleed for the display title — never beyond the space the viewport
+	   actually has left of the wrapper (padding + centering gutter). */
 	@media (min-width: 80em) {
 		.project-page__title {
-			margin-inline-start: -3.5rem;
+			margin-inline-start: calc(-1 * min(3.5rem, (100vw - 80rem) / 2 + 1.9rem));
 		}
 	}
 

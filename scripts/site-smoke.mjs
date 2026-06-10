@@ -21,7 +21,7 @@ const routes = [
 		url: `${baseUrl}/`,
 		screenshot: 'home.png',
 		fullPage: true,
-		selectors: ['.hero', '.hero__canvas', '#selected-work', '.secondary-grid', '#about', 'footer'],
+		selectors: ['.hero', '.hero__bg', '#selected-work', '.secondary-grid', '#about', '#stack', '#more', 'footer'],
 		expectedTitle: 'Emilio Melis · edge AI & native systems',
 		expectedText: 'Emilio Melis',
 	},

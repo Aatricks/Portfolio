@@ -25,3 +25,8 @@ pnpm-debug.log*
 # macOS-specific files
 .DS_Store
 docs/
+
+# review/iteration screenshots
+/*.png
+.playwright-mcp/
+.design/*/screenshots/

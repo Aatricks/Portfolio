@@ -1,10 +1,7 @@
 ---
 import { type CollectionEntry, getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import LlmedgeCaseStudy from '../../components/work/LlmedgeCaseStudy.astro';
-import LightDiffusionCaseStudy from '../../components/work/LightDiffusionCaseStudy.astro';
-import EasyReaderCaseStudy from '../../components/work/EasyReaderCaseStudy.astro';
-import CChessCaseStudy from '../../components/work/CChessCaseStudy.astro';
+import CaseStudyLayout from '../../components/work/CaseStudyLayout.astro';
 
 interface Props {
 	entry: CollectionEntry<'work'>;
@@ -20,17 +17,18 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content } = await render(entry);
-
-const workViews = {
-	llmedge: LlmedgeCaseStudy,
-	'lightdiffusion-next': LightDiffusionCaseStudy,
-	easyreader: EasyReaderCaseStudy,
-	cchess: CChessCaseStudy,
-} as const;
-
-const WorkView = workViews[entry.data.themeKey];
+const backHref = entry.data.featured ? '/Portfolio/#work' : '/Portfolio/#more';
 ---
 
 <BaseLayout title={`${entry.data.title} | Emilio Melis`} description={entry.data.description}>
-	<WorkView entry={entry} Content={Content} />
+	<CaseStudyLayout
+		entry={entry}
+		Content={Content}
+		themeKey={entry.data.themeKey}
+		accent={entry.data.accent}
+		accentDark={entry.data.accentDark}
+		hint={entry.data.hint}
+		backHref={backHref}
+		galleryColumns={entry.data.galleryColumns}
+	/>
 </BaseLayout>

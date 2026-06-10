@@ -3,6 +3,7 @@ interface GalleryItem {
 	src: string;
 	alt: string;
 	caption?: string;
+	frame?: 'wide' | 'phone';
 }
 
 interface Props {
@@ -16,7 +17,10 @@ const { items, columns = 'double' } = Astro.props;
 {items.length > 0 && (
 	<section class={`gallery gallery--${columns}`}>
 		{items.map((item, i) => (
-			<figure class="gallery__item" data-reveal>
+			<figure
+				class:list={['gallery__item', item.frame === 'phone' && 'gallery__item--phone']}
+				data-reveal
+			>
 				<div class="gallery__frame">
 					<span class="gallery__id" aria-hidden="true">fig {String(i + 1).padStart(2, '0')}</span>
 					<img src={item.src} alt={item.alt} loading="lazy" decoding="async" />
@@ -80,5 +84,22 @@ const { items, columns = 'double' } = Astro.props;
 		max-width: 44rem;
 		padding-left: 0.85rem;
 		border-left: 1px solid var(--rule);
+	}
+
+	/* Portrait phone screenshots render at device-ish width, not full bleed */
+	.gallery__item--phone {
+		justify-items: center;
+	}
+
+	.gallery__item--phone .gallery__frame {
+		max-width: 20rem;
+	}
+
+	.gallery__item--phone .gallery__caption {
+		justify-self: center;
+		text-align: center;
+		padding-left: 0;
+		border-left: 0;
+		padding-top: 0.1rem;
 	}
 </style>

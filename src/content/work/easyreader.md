@@ -3,8 +3,14 @@ title: EasyReader
 description: Offline-first Android reading software with local summaries, persistent state, and a product surface people can live in.
 thesis: Productized Android UX backed by local model integration instead of remote summarization shortcuts.
 eyebrow: Product surface
+blurb: Offline-first Android reader for web chapters, PDF, EPUB, and manga — with on-device chapter summaries running through llmedge.
+proof: ships llmedge in production · user text never leaves the phone
 stackLine: Kotlin / Jetpack Compose / Room / Hilt / llmedge
 themeKey: easyreader
+accent: '#2f7a3a'
+accentDark: '#7ad88a'
+hint: ~/EasyReader/MainActivity.kt
+galleryColumns: single
 publishDate: 2025-10-23 00:00:00
 img: /Portfolio/assets/easyreader-explorer.jpg
 img_alt: EasyReader explore screen showing discovery cards on Android
@@ -27,54 +33,50 @@ heroPoints:
 gallery:
   - src: /Portfolio/assets/easyreader-manhwa.jpg
     alt: EasyReader manwha reader screen from the EasyReader repository
-    caption: The image shows the reader in a manwha with the fast access library opened.
+    caption: The reader mid-manwha with the fast-access library drawer open.
+    frame: phone
 architecture:
   - MainActivity coordinates reader, library, explore, deep links, and local file selection.
   - ContentRepository normalizes remote chapters, PDF, EPUB, and HTML into one reading pipeline.
   - SummaryService uses llmedge to fetch a local model and summarize chapters without sending user text away.
   - Compose, Room, and Hilt hold the application together as a durable Android product rather than a prototype shell.
 highlights:
-  - Shows product sense without abandoning local-systems discipline.
+  - Production consumer of llmedge — the runtime work ships inside a real reading product.
   - Bridges persistent state, ingestion, and on-device inference inside one mobile workflow.
-  - Demonstrates that edge AI work can ship in software people actually use repeatedly.
+  - Four input formats normalize into a single reading pipeline with persistent reading state.
 status: flagship
 ---
 
-`EasyReader` is the clearest product-focused project in my portfolio. It uses local AI, but I do not want it presented as "an app with summaries." The stronger angle is that it is a **real Android reading product** that happens to integrate on-device summarization well.
+`EasyReader` is an Android reading app — discovery, library, multi-format reader — that happens to run its AI feature entirely on device. It is also the production consumer of [`llmedge`](/Portfolio/work/llmedge): the runtime work ships here, inside software built for daily use.
 
-## Product framing
+## The product
 
-The app’s core job is reading:
+The core job is reading, and the app covers the full loop:
 
-- discovering content
-- organizing a library
-- opening multiple input formats
-- preserving reading state
-- staying usable offline
+- discovering content and organizing a library
+- opening web chapters, PDF, EPUB, manga/manwha, and local HTML
+- preserving reading position and library state across sessions
+- staying fully usable offline
 
-That matters because the AI feature only works if the surrounding product is solid. The summary capability belongs inside a broader reading flow, not as a gimmick floating above the app.
+Each input format is normalized through `ContentRepository` into one reading pipeline, so the reader surface never cares where a chapter came from.
 
-## Why the architecture is interesting
+## The AI feature, scoped on purpose
 
-I structured the app around a clean product pipeline:
+Chapter summaries run on device through llmedge:
 
-- ingestion is normalized through repository code
-- the reading surface stays separate from acquisition and persistence concerns
-- local summaries are delegated through `llmedge` rather than baked directly into UI code
-- Room and Hilt support a real application lifecycle
+- `SummaryService` fetches a local model and summarizes without any network round-trip
+- user text never leaves the phone — privacy is a property of the architecture, not a policy
+- the summary sits inside the reading flow, supporting it rather than replacing it
 
-This is different from my runtime-heavy projects, but it complements them. It proves I can turn infrastructure into a usable mobile product.
+Local inference earns its place where the data is sensitive and the latency budget is human. A reading app is exactly that case.
 
-## The AI story
+## Architecture
 
-The AI angle is still important, but it is intentionally scoped:
-
-- chapter summaries run on device
-- user text does not need to leave the phone
-- the summary feature supports the reading experience rather than replacing it
-
-That is a stronger signal than a generic "AI assistant" layer because it shows my product judgment about where local inference actually adds value.
+- `MainActivity` coordinates reader, library, explore, deep links, and local file selection
+- `ContentRepository` owns ingestion and normalization
+- `SummaryService` delegates to llmedge instead of baking inference into UI code
+- Compose, Room, and Hilt give it a real application lifecycle
 
 ## Result
 
-`EasyReader` shows end-to-end delivery: Android UX, ingestion, persistence, navigation, and local AI integration tied together into software I would present as a product, not a demo.
+End-to-end delivery: Android UX, ingestion, persistence, navigation, and local AI integration in one shipped product — the application-layer counterpart to the runtime work in llmedge.

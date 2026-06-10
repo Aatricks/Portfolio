@@ -16,7 +16,7 @@ const channels = [
 
 <footer id="contact" class="footer">
 	<div class="wrapper footer__inner">
-		<p class="section-marker">04 · contact</p>
+		<p class="section-marker">05 · contact</p>
 
 		<dl class="footer__channels" data-reveal-stagger>
 			{channels.map((channel) => (
@@ -63,7 +63,7 @@ const channels = [
 
 	.footer__channel dt {
 		font-family: var(--font-mono);
-		font-size: 0.7rem;
+		font-size: var(--text-xs);
 		letter-spacing: 0.18em;
 		text-transform: uppercase;
 		color: var(--mute);
@@ -93,7 +93,7 @@ const channels = [
 	.footer__link span:last-child {
 		font-family: var(--font-body);
 		opacity: 0.5;
-		transition: transform 220ms var(--ease), opacity 220ms var(--ease);
+		transition: transform var(--t-link) var(--ease), opacity var(--t-link) var(--ease);
 	}
 
 	.footer__link:hover span:last-child {

@@ -4,14 +4,23 @@ import type { CollectionEntry } from 'astro:content';
 interface Props {
 	project: CollectionEntry<'work'>;
 	variant?: 'dominant' | 'secondary';
+	stars?: number | undefined;
 }
 
-const { project, variant = 'secondary' } = Astro.props;
+const { project, variant = 'secondary', stars } = Astro.props;
 const { data, id } = project;
 const href = `/Portfolio/work/${id.replace(/\.md$/, '')}`;
+const proofParts = [
+	...(stars && stars > 0 ? [`★ ${stars}`] : []),
+	...(data.proof ? [data.proof] : []),
+];
 ---
 
-<article class={`pp pp--${variant} pp--${data.themeKey}`} data-reveal>
+<article
+	class={`pp pp--${variant} pp--${data.themeKey}`}
+	style={`--pp-a: ${data.accent}; --pp-a-dark: ${data.accentDark};`}
+	data-reveal
+>
 	<a class="pp__link" href={href}>
 		<div class="pp__head">
 			<span class="pp__eyebrow">{data.eyebrow}</span>
@@ -19,52 +28,40 @@ const href = `/Portfolio/work/${id.replace(/\.md$/, '')}`;
 				<span transition:name={`title-${data.themeKey}`}>{data.title}</span>
 				<span class="pp__arrow" aria-hidden="true">↗</span>
 			</h3>
+			{data.blurb && <p class="pp__blurb">{data.blurb}</p>}
 		</div>
 
 		<div class="pp__media">
 			<div class="pp__media-frame">
-				<div class="pp__media-inner" data-parallax="0.025">
-					<img src={data.img} alt={data.img_alt || ''} loading="lazy" decoding="async" />
+				<div class="pp__chrome" aria-hidden="true">
+					<span class="pp__chrome-dots"><i></i><i></i><i></i></span>
+					<span class="pp__chrome-path">{data.hint ?? href}</span>
+				</div>
+				<div class="pp__media-view">
+					<div class="pp__media-inner" data-parallax="0.025">
+						<img src={data.img} alt={data.img_alt || ''} loading="lazy" decoding="async" />
+					</div>
 				</div>
 			</div>
 		</div>
 
 		<div class="pp__foot">
 			<span class="pp__stack">{data.stackLine}</span>
+			{proofParts.length > 0 && (
+				<span class="pp__proof">{proofParts.join(' · ')}</span>
+			)}
 		</div>
 	</a>
 </article>
 
 <style>
 	.pp {
-		--pp-accent: var(--accent);
+		--pp-accent: var(--pp-a, var(--accent));
 		border-bottom: 1px solid var(--rule);
 	}
 
-	.pp--llmedge {
-		--pp-accent: #2b6cb0;
-	}
-	.pp--lightdiffusion-next {
-		--pp-accent: #b8421a;
-	}
-	.pp--easyreader {
-		--pp-accent: #2f7a3a;
-	}
-	.pp--cchess {
-		--pp-accent: #6b2b8a;
-	}
-
-	[data-theme='dark'] .pp--llmedge {
-		--pp-accent: #79a7ff;
-	}
-	[data-theme='dark'] .pp--lightdiffusion-next {
-		--pp-accent: #f4b458;
-	}
-	[data-theme='dark'] .pp--easyreader {
-		--pp-accent: #7ad88a;
-	}
-	[data-theme='dark'] .pp--cchess {
-		--pp-accent: #b288d4;
+	:global([data-theme='dark']) .pp {
+		--pp-accent: var(--pp-a-dark, var(--accent));
 	}
 
 	.pp__link {
@@ -86,7 +83,7 @@ const href = `/Portfolio/work/${id.replace(/\.md$/, '')}`;
 		background: var(--pp-accent);
 		opacity: 0;
 		transform: translateX(0.4rem);
-		transition: opacity 320ms var(--ease), transform 320ms var(--ease);
+		transition: opacity var(--t-link) var(--ease), transform var(--t-link) var(--ease);
 	}
 
 	.pp__link:hover::before {
@@ -97,7 +94,7 @@ const href = `/Portfolio/work/${id.replace(/\.md$/, '')}`;
 	.pp__eyebrow {
 		display: inline-block;
 		font-family: var(--font-mono);
-		font-size: 0.7rem;
+		font-size: var(--text-xs);
 		letter-spacing: 0.16em;
 		text-transform: uppercase;
 		color: var(--pp-accent);
@@ -123,11 +120,18 @@ const href = `/Portfolio/work/${id.replace(/\.md$/, '')}`;
 		font-variation-settings: 'opsz' 144, 'SOFT' 90, 'WONK' 1;
 	}
 
+	.pp__blurb {
+		max-width: 34rem;
+		font-size: 0.98rem;
+		line-height: 1.6;
+		color: var(--ink-soft);
+	}
+
 	.pp__arrow {
 		font-family: var(--font-mono);
 		font-size: 0.85em;
 		color: var(--mute);
-		transition: color 220ms var(--ease), transform 320ms var(--ease);
+		transition: color var(--t-link) var(--ease), transform var(--t-link) var(--ease);
 	}
 
 	.pp__link:hover .pp__arrow {
@@ -141,14 +145,61 @@ const href = `/Portfolio/work/${id.replace(/\.md$/, '')}`;
 	}
 
 	.pp__media-frame {
-		overflow: hidden;
 		border: 1px solid var(--rule);
 		background: var(--paper-soft);
+		transition: border-color var(--t-link) var(--ease);
+	}
+
+	.pp__link:hover .pp__media-frame {
+		border-color: color-mix(in srgb, var(--pp-accent) 45%, var(--rule));
+	}
+
+	.pp__chrome {
+		display: flex;
+		align-items: center;
+		gap: 0.7rem;
+		padding: 0.45rem 0.7rem;
+		border-bottom: 1px solid var(--rule);
+		background: var(--paper-deep);
+	}
+
+	.pp__chrome-dots {
+		display: inline-flex;
+		gap: 0.3rem;
+	}
+
+	.pp__chrome-dots i {
+		width: 0.42rem;
+		height: 0.42rem;
+		border-radius: 999px;
+		border: 1px solid var(--mute-soft);
+		background: transparent;
+		transition: background-color var(--t-link) var(--ease), border-color var(--t-link) var(--ease);
+	}
+
+	.pp__link:hover .pp__chrome-dots i:first-child {
+		background: var(--pp-accent);
+		border-color: var(--pp-accent);
+	}
+
+	.pp__chrome-path {
+		font-family: var(--font-mono);
+		font-size: 0.72rem;
+		letter-spacing: 0.03em;
+		color: var(--mute);
+		text-transform: lowercase;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.pp__media-view {
+		overflow: hidden;
 		aspect-ratio: 16 / 10;
 		position: relative;
 	}
 
-	.pp__media-frame::after {
+	.pp__media-view::after {
 		content: '';
 		position: absolute;
 		inset: 0;
@@ -159,10 +210,10 @@ const href = `/Portfolio/work/${id.replace(/\.md$/, '')}`;
 		);
 		pointer-events: none;
 		opacity: 0.5;
-		transition: opacity 320ms var(--ease);
+		transition: opacity var(--t-link) var(--ease);
 	}
 
-	.pp__link:hover .pp__media-frame::after {
+	.pp__link:hover .pp__media-view::after {
 		opacity: 1;
 	}
 
@@ -173,25 +224,37 @@ const href = `/Portfolio/work/${id.replace(/\.md$/, '')}`;
 		will-change: transform;
 	}
 
-	.pp__media-frame img {
+	.pp__media-view img {
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
 		transition: transform 800ms var(--ease);
 	}
 
-	.pp__link:hover .pp__media-frame img {
+	.pp__link:hover .pp__media-view img {
 		transform: scale(1.025);
 	}
 
 	.pp__foot {
-		display: block;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 0.5rem 2rem;
 	}
 
 	.pp__stack {
 		font-family: var(--font-mono);
 		font-size: 0.78rem;
-		color: var(--mute);
+		color: var(--ink-soft);
+		line-height: 1.5;
+	}
+
+	.pp__proof {
+		font-family: var(--font-mono);
+		font-size: 0.74rem;
+		letter-spacing: 0.03em;
+		color: var(--pp-accent);
 		line-height: 1.5;
 	}
 
