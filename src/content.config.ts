@@ -13,7 +13,7 @@ export const collections = {
 			blurb: z.string().optional(),
 			proof: z.string().optional(),
 			stackLine: z.string(),
-			themeKey: z.enum(['llmedge', 'lightdiffusion-next', 'easyreader', 'cchess']),
+			themeKey: z.enum(['llmedge', 'lightdiffusion-next', 'easyreader', 'cchess', 'pilotrs']),
 			accent: z.string().default('#b8421a'),
 			accentDark: z.string().default('#e07a4a'),
 			hint: z.string().optional(),
