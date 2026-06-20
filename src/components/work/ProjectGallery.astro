@@ -12,18 +12,31 @@ interface Props {
 }
 
 const { items, columns = 'double' } = Astro.props;
+// SVG diagrams ship a `-dark.svg` companion (see scripts/gen-dark-diagrams.mjs); CSS
+// swaps the visible variant by theme so the figure isn't a bright card in dark mode.
+const withDark = items.map((item) => ({
+	...item,
+	srcDark: item.src.endsWith('.svg') ? item.src.replace(/\.svg$/, '-dark.svg') : null,
+}));
 ---
 
-{items.length > 0 && (
+{withDark.length > 0 && (
 	<section class={`gallery gallery--${columns}`}>
-		{items.map((item, i) => (
+		{withDark.map((item, i) => (
 			<figure
 				class:list={['gallery__item', item.frame === 'phone' && 'gallery__item--phone']}
 				data-reveal
 			>
 				<div class="gallery__frame">
 					<span class="gallery__id" aria-hidden="true">fig {String(i + 1).padStart(2, '0')}</span>
-					<img src={item.src} alt={item.alt} loading="lazy" decoding="async" />
+					{item.srcDark ? (
+						<>
+							<img class="theme-img--light" src={item.src} alt={item.alt} loading="lazy" decoding="async" />
+							<img class="theme-img--dark" src={item.srcDark} alt={item.alt} loading="lazy" decoding="async" />
+						</>
+					) : (
+						<img src={item.src} alt={item.alt} loading="lazy" decoding="async" />
+					)}
 				</div>
 				{item.caption && <figcaption class="gallery__caption">{item.caption}</figcaption>}
 			</figure>

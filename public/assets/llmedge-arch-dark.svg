@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 800" role="img" aria-label="llmedge architecture: Kotlin facade over JNI bridges to native engines with backend fallback">
+  <defs>
+    <marker id="arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L8 4 L0 8 z" fill="#8a8170"/>
+    </marker>
+    <marker id="arrb" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L8 4 L0 8 z" fill="#79a7ff"/>
+    </marker>
+  </defs>
+
+  <rect width="1280" height="800" fill="#0d0c0a"/>
+
+  <!-- app layer -->
+  <rect x="470" y="104" width="340" height="54" fill="none" stroke="#ede6d7" stroke-width="1.5"/>
+  <text x="640" y="137" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="24" fill="#ede6d7">Android application</text>
+  <line x1="640" y1="158" x2="640" y2="192" stroke="#8a8170" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- kotlin facade -->
+  <rect x="170" y="196" width="940" height="88" fill="#1c1915" stroke="#ede6d7" stroke-width="1.5"/>
+  <rect x="170" y="196" width="940" height="4" fill="#79a7ff"/>
+  <text x="200" y="238" font-family="Georgia, 'Times New Roman', serif" font-size="30" fill="#ede6d7">Kotlin facade</text>
+  <text x="1080" y="238" text-anchor="end" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="17" fill="#8a8170">coroutines · Flow · lifecycle-safe sessions</text>
+  <text x="200" y="266" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="15" fill="#5e564a">the only API surface an app ever sees</text>
+
+  <line x1="395" y1="284" x2="395" y2="318" stroke="#8a8170" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="885" y1="284" x2="885" y2="318" stroke="#8a8170" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- orchestration -->
+  <rect x="170" y="322" width="450" height="80" fill="none" stroke="#ede6d7" stroke-width="1.5"/>
+  <text x="195" y="356" font-family="Georgia, 'Times New Roman', serif" font-size="23" fill="#ede6d7">ModelRepository</text>
+  <text x="195" y="384" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="15" fill="#8a8170">download · validate · resumable fetch · cache</text>
+
+  <rect x="660" y="322" width="450" height="80" fill="none" stroke="#ede6d7" stroke-width="1.5"/>
+  <text x="685" y="356" font-family="Georgia, 'Times New Roman', serif" font-size="23" fill="#ede6d7">RuntimePool / Coordinator</text>
+  <text x="685" y="384" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="15" fill="#8a8170">probe devices · reuse engines · blacklist failing paths</text>
+
+  <!-- JNI band -->
+  <line x1="170" y1="446" x2="595" y2="446" stroke="#8a8170" stroke-width="1" stroke-dasharray="6 5"/>
+  <line x1="685" y1="446" x2="1110" y2="446" stroke="#8a8170" stroke-width="1" stroke-dasharray="6 5"/>
+  <text x="640" y="452" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="17" letter-spacing="6" fill="#8a8170">JNI</text>
+  <line x1="395" y1="402" x2="395" y2="488" stroke="#8a8170" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="885" y1="402" x2="885" y2="488" stroke="#8a8170" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- engines -->
+  <g font-family="ui-monospace, Menlo, Consolas, monospace">
+    <rect x="170" y="492" width="172" height="66" fill="none" stroke="#ede6d7" stroke-width="1.5"/>
+    <text x="256" y="522" text-anchor="middle" font-size="17" fill="#ede6d7">llama.cpp</text>
+    <text x="256" y="544" text-anchor="middle" font-size="13" fill="#5e564a">LLM · GGUF</text>
+
+    <rect x="362" y="492" width="172" height="66" fill="none" stroke="#ede6d7" stroke-width="1.5"/>
+    <text x="448" y="522" text-anchor="middle" font-size="15" fill="#ede6d7">stable-diffusion.cpp</text>
+    <text x="448" y="544" text-anchor="middle" font-size="13" fill="#5e564a">image</text>
+
+    <rect x="554" y="492" width="172" height="66" fill="none" stroke="#ede6d7" stroke-width="1.5"/>
+    <text x="640" y="522" text-anchor="middle" font-size="17" fill="#ede6d7">whisper.cpp</text>
+    <text x="640" y="544" text-anchor="middle" font-size="13" fill="#5e564a">speech-to-text</text>
+
+    <rect x="746" y="492" width="172" height="66" fill="none" stroke="#ede6d7" stroke-width="1.5"/>
+    <text x="832" y="522" text-anchor="middle" font-size="17" fill="#ede6d7">bark.cpp</text>
+    <text x="832" y="544" text-anchor="middle" font-size="13" fill="#5e564a">text-to-speech</text>
+
+    <rect x="938" y="492" width="172" height="66" fill="none" stroke="#ede6d7" stroke-width="1.5"/>
+    <text x="1024" y="522" text-anchor="middle" font-size="17" fill="#ede6d7">ONNX</text>
+    <text x="1024" y="544" text-anchor="middle" font-size="13" fill="#5e564a">embeddings · RAG</text>
+  </g>
+
+  <line x1="640" y1="558" x2="640" y2="600" stroke="#79a7ff" stroke-width="1.5" marker-end="url(#arrb)"/>
+
+  <!-- backend fallback chain -->
+  <g font-family="ui-monospace, Menlo, Consolas, monospace">
+    <rect x="270" y="604" width="220" height="62" fill="#1c1915" stroke="#79a7ff" stroke-width="1.5"/>
+    <text x="380" y="632" text-anchor="middle" font-size="18" fill="#ede6d7">OpenCL</text>
+    <text x="380" y="652" text-anchor="middle" font-size="13" fill="#79a7ff">preferred</text>
+
+    <line x1="490" y1="635" x2="526" y2="635" stroke="#79a7ff" stroke-width="1.5" marker-end="url(#arrb)"/>
+
+    <rect x="530" y="604" width="220" height="62" fill="none" stroke="#ede6d7" stroke-width="1.5"/>
+    <text x="640" y="632" text-anchor="middle" font-size="18" fill="#ede6d7">Vulkan</text>
+    <text x="640" y="652" text-anchor="middle" font-size="13" fill="#8a8170">fallback</text>
+
+    <line x1="750" y1="635" x2="786" y2="635" stroke="#79a7ff" stroke-width="1.5" marker-end="url(#arrb)"/>
+
+    <rect x="790" y="604" width="220" height="62" fill="none" stroke="#ede6d7" stroke-width="1.5" stroke-dasharray="5 4"/>
+    <text x="900" y="632" text-anchor="middle" font-size="18" fill="#ede6d7">CPU</text>
+    <text x="900" y="652" text-anchor="middle" font-size="13" fill="#8a8170">last resort</text>
+  </g>
+
+  <!-- caption -->
+  <line x1="70" y1="700" x2="1210" y2="700" stroke="#2a261f" stroke-width="1"/>
+  <text x="70" y="730" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="20" fill="#8a8170">backend instability is treated as product policy — fallback is designed, not hoped for.</text>
+</svg>

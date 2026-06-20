@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 880" role="img" aria-label="Pilotrs architecture: simulation truth and sensors above a perception boundary, estimators and control below, closing the loop through noisy estimates">
+  <defs>
+    <marker id="parr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L8 4 L0 8 z" fill="#8a8170"/>
+    </marker>
+    <marker id="parrt" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L8 4 L0 8 z" fill="#54cfdd"/>
+    </marker>
+  </defs>
+
+  <rect width="1280" height="880" fill="#0d0c0a"/>
+
+  <!-- plant / simulation truth -->
+  <rect x="340" y="64" width="600" height="90" fill="#1c1915" stroke="#ede6d7" stroke-width="1.5"/>
+  <rect x="340" y="64" width="600" height="4" fill="#54cfdd"/>
+  <text x="370" y="110" font-family="Georgia, 'Times New Roman', serif" font-size="28" fill="#ede6d7">Simulation truth</text>
+  <text x="910" y="110" text-anchor="end" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="15" fill="#5e564a">the world the autopilot can't see</text>
+  <text x="370" y="138" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="15" fill="#8a8170">6DOF rigid body · full inertia tensor · RK4 @ 1 kHz</text>
+
+  <line x1="640" y1="154" x2="640" y2="200" stroke="#8a8170" stroke-width="1.5" marker-end="url(#parr)"/>
+  <text x="652" y="184" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="14" fill="#8a8170">true state</text>
+
+  <!-- sensors -->
+  <text x="180" y="224" font-family="Georgia, 'Times New Roman', serif" font-size="22" fill="#ede6d7">Sensors</text>
+  <text x="1100" y="224" text-anchor="end" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="14" fill="#5e564a">+ seeded noise · bias random-walk</text>
+  <g font-family="ui-monospace, Menlo, Consolas, monospace">
+    <rect x="180" y="236" width="206" height="58" fill="none" stroke="#ede6d7" stroke-width="1.2"/>
+    <text x="283" y="266" text-anchor="middle" font-size="17" fill="#ede6d7">IMU</text>
+    <text x="283" y="284" text-anchor="middle" font-size="12" fill="#5e564a">accel + gyro</text>
+
+    <rect x="418" y="236" width="206" height="58" fill="none" stroke="#ede6d7" stroke-width="1.2"/>
+    <text x="521" y="266" text-anchor="middle" font-size="17" fill="#ede6d7">GPS</text>
+    <text x="521" y="284" text-anchor="middle" font-size="12" fill="#5e564a">position</text>
+
+    <rect x="656" y="236" width="206" height="58" fill="none" stroke="#ede6d7" stroke-width="1.2"/>
+    <text x="759" y="266" text-anchor="middle" font-size="17" fill="#ede6d7">barometer</text>
+    <text x="759" y="284" text-anchor="middle" font-size="12" fill="#5e564a">altitude</text>
+
+    <rect x="894" y="236" width="206" height="58" fill="none" stroke="#ede6d7" stroke-width="1.2"/>
+    <text x="997" y="266" text-anchor="middle" font-size="17" fill="#ede6d7">magnetometer</text>
+    <text x="997" y="284" text-anchor="middle" font-size="12" fill="#5e564a">heading</text>
+  </g>
+
+  <!-- measurement arrow crossing the boundary -->
+  <line x1="640" y1="294" x2="640" y2="372" stroke="#8a8170" stroke-width="1.5" marker-end="url(#parr)"/>
+  <text x="652" y="316" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="14" fill="#54cfdd">noisy measurements</text>
+
+  <!-- perception boundary -->
+  <text x="150" y="326" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="15" letter-spacing="5" fill="#54cfdd">PERCEPTION BOUNDARY</text>
+  <text x="1130" y="326" text-anchor="end" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="13" fill="#8a8170">below this line, nothing reads ground truth</text>
+  <line x1="150" y1="338" x2="1130" y2="338" stroke="#54cfdd" stroke-width="1.5" stroke-dasharray="7 6"/>
+
+  <!-- estimators -->
+  <rect x="180" y="372" width="920" height="120" fill="none" stroke="#ede6d7" stroke-width="1.5"/>
+  <text x="210" y="406" font-family="Georgia, 'Times New Roman', serif" font-size="23" fill="#ede6d7">Estimator</text>
+  <text x="1070" y="406" text-anchor="end" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="14" fill="#5e564a">select one → state estimate x&#770;</text>
+  <g font-family="ui-monospace, Menlo, Consolas, monospace">
+    <rect x="210" y="420" width="270" height="56" fill="none" stroke="#ede6d7" stroke-width="1"/>
+    <text x="345" y="448" text-anchor="middle" font-size="16" fill="#ede6d7">complementary filter</text>
+    <text x="345" y="466" text-anchor="middle" font-size="12" fill="#5e564a">fast, simple AHRS</text>
+
+    <rect x="505" y="420" width="270" height="56" fill="none" stroke="#ede6d7" stroke-width="1"/>
+    <text x="640" y="448" text-anchor="middle" font-size="16" fill="#ede6d7">6-state MEKF</text>
+    <text x="640" y="466" text-anchor="middle" font-size="12" fill="#5e564a">attitude + gyro bias</text>
+
+    <rect x="800" y="420" width="270" height="56" fill="none" stroke="#ede6d7" stroke-width="1"/>
+    <text x="935" y="448" text-anchor="middle" font-size="16" fill="#ede6d7">15-state INS</text>
+    <text x="935" y="466" text-anchor="middle" font-size="12" fill="#5e564a">GPS · baro · vel · mag fusion</text>
+  </g>
+
+  <line x1="640" y1="492" x2="640" y2="536" stroke="#8a8170" stroke-width="1.5" marker-end="url(#parr)"/>
+  <text x="652" y="520" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="14" fill="#8a8170">state estimate x&#770;</text>
+
+  <!-- control & guidance -->
+  <rect x="180" y="536" width="920" height="120" fill="#1c1915" stroke="#ede6d7" stroke-width="1.5"/>
+  <rect x="180" y="652" width="920" height="4" fill="#54cfdd"/>
+  <text x="210" y="570" font-family="Georgia, 'Times New Roman', serif" font-size="23" fill="#ede6d7">Control &amp; guidance</text>
+  <text x="1070" y="570" text-anchor="end" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="14" fill="#5e564a">common Controller trait · swappable</text>
+  <g font-family="ui-monospace, Menlo, Consolas, monospace">
+    <rect x="210" y="584" width="270" height="56" fill="none" stroke="#ede6d7" stroke-width="1"/>
+    <text x="345" y="612" text-anchor="middle" font-size="16" fill="#ede6d7">PID / LQR inner loop</text>
+    <text x="345" y="630" text-anchor="middle" font-size="12" fill="#5e564a">cascaded, swappable</text>
+
+    <rect x="505" y="584" width="270" height="56" fill="none" stroke="#ede6d7" stroke-width="1"/>
+    <text x="640" y="612" text-anchor="middle" font-size="16" fill="#ede6d7">waypoint guidance</text>
+    <text x="640" y="630" text-anchor="middle" font-size="12" fill="#5e564a">position · velocity · missions</text>
+
+    <rect x="800" y="584" width="270" height="56" fill="#0d0c0a" stroke="#54cfdd" stroke-width="1.5"/>
+    <text x="935" y="612" text-anchor="middle" font-size="16" fill="#ede6d7">fly-by-wire fighter</text>
+    <text x="935" y="630" text-anchor="middle" font-size="12" fill="#54cfdd">relaxed stability · gain-scheduled</text>
+  </g>
+
+  <line x1="640" y1="656" x2="640" y2="700" stroke="#8a8170" stroke-width="1.5" marker-end="url(#parr)"/>
+  <text x="652" y="684" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="14" fill="#8a8170">actuator commands</text>
+
+  <!-- actuators -->
+  <rect x="380" y="700" width="520" height="60" fill="none" stroke="#ede6d7" stroke-width="1.5"/>
+  <text x="640" y="729" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="20" fill="#ede6d7">Actuators → forces &amp; moments</text>
+  <text x="640" y="750" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12" fill="#5e564a">thrust · control surfaces · mixer</text>
+
+  <!-- closed loop back into the plant -->
+  <polyline points="900,730 1160,730 1160,109 942,109" fill="none" stroke="#54cfdd" stroke-width="1.5" marker-end="url(#parrt)"/>
+  <text x="1188" y="430" text-anchor="middle" transform="rotate(90 1188 430)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="14" fill="#54cfdd">closed loop · drives the truth</text>
+
+  <!-- caption -->
+  <line x1="70" y1="804" x2="1210" y2="804" stroke="#2a261f" stroke-width="1"/>
+  <text x="70" y="836" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="20" fill="#8a8170">Every loop closes through the estimate — the controller never touches the truth it is chasing.</text>
+</svg>

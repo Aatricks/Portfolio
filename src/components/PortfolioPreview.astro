@@ -14,6 +14,9 @@ const proofParts = [
 	...(stars && stars > 0 ? [`★ ${stars}`] : []),
 	...(data.proof ? [data.proof] : []),
 ];
+// SVG diagrams ship a `-dark.svg` companion (see scripts/gen-dark-diagrams.mjs) so
+// they don't render as a bright card on a dark page. CSS swaps which one is shown.
+const imgDark = data.img.endsWith('.svg') ? data.img.replace(/\.svg$/, '-dark.svg') : null;
 ---
 
 <article
@@ -39,7 +42,14 @@ const proofParts = [
 				</div>
 				<div class="pp__media-view">
 					<div class="pp__media-inner" data-parallax="0.025">
-						<img src={data.img} alt={data.img_alt || ''} loading="lazy" decoding="async" />
+						{imgDark ? (
+							<>
+								<img class="theme-img--light" src={data.img} alt={data.img_alt || ''} loading="lazy" decoding="async" />
+								<img class="theme-img--dark" src={imgDark} alt={data.img_alt || ''} loading="lazy" decoding="async" />
+							</>
+						) : (
+							<img src={data.img} alt={data.img_alt || ''} loading="lazy" decoding="async" />
+						)}
 					</div>
 				</div>
 			</div>

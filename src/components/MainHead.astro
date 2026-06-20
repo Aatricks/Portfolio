@@ -38,14 +38,23 @@ const {
 
 <script is:inline>
 	(function () {
-		try {
-			var saved = localStorage.getItem('theme');
-			var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-			var theme = saved || (prefersDark ? 'dark' : 'light');
+		function applyTheme() {
+			var theme = 'light';
+			try {
+				var saved = localStorage.getItem('theme');
+				var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+				theme = saved || (prefersDark ? 'dark' : 'light');
+			} catch (e) {
+				/* localStorage/matchMedia unavailable — fall back to light */
+			}
 			document.documentElement.dataset.theme = theme;
-		} catch (e) {
-			document.documentElement.dataset.theme = 'light';
+			document.documentElement.classList.add('js');
 		}
-		document.documentElement.classList.add('js');
+		applyTheme();
+		// Astro's ClientRouter strips all <html> attributes during a view-transition
+		// swap (and this inline script is content-deduped, so it never re-runs).
+		// Re-apply the theme on every swap, before the new page paints, to avoid a
+		// flash back to light when navigating between pages.
+		document.addEventListener('astro:after-swap', applyTheme);
 	})();
 </script>

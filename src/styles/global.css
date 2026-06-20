@@ -74,6 +74,21 @@
 	--shadow-soft: 0 1px 1px rgba(0, 0, 0, 0.3), 0 6px 18px rgba(0, 0, 0, 0.3);
 }
 
+/* Theme-aware diagrams: <img> SVGs can't read the parent theme, so we ship a
+   light + dark variant per diagram and swap which one is shown by [data-theme].
+   Astro scopes component `.frame img` rules with [data-astro-cid] (specificity
+   0,3,1), so this visibility toggle uses !important to win regardless of where a
+   diagram is rendered; the component's sizing/object-fit rules still apply. */
+.theme-img--dark {
+	display: none !important;
+}
+[data-theme='dark'] .theme-img--light {
+	display: none !important;
+}
+[data-theme='dark'] .theme-img--dark {
+	display: block !important;
+}
+
 /* ============================================================
    Reset
    ============================================================ */

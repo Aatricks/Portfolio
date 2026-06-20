@@ -145,25 +145,33 @@ const { title, description } = Astro.props;
 			pointerFine.addEventListener('change', onMediaChange);
 			wideViewport.addEventListener('change', onMediaChange);
 
-			const themeToggle = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
-			if (themeToggle) {
-				const update = () => {
-					const current = document.documentElement.dataset.theme || 'light';
-					themeToggle.setAttribute('aria-pressed', current === 'dark' ? 'true' : 'false');
-					themeToggle.dataset.current = current;
-				};
-				update();
-				themeToggle.addEventListener('click', () => {
-					const next = (document.documentElement.dataset.theme || 'light') === 'dark' ? 'light' : 'dark';
-					document.documentElement.dataset.theme = next;
-					try {
-						localStorage.setItem('theme', next);
-					} catch (_) {
-						/* ignore */
-					}
-					update();
-				});
-			}
+			const root = document.documentElement;
+			const syncThemeToggle = () => {
+				const btn = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
+				if (!btn) return;
+				const current = root.dataset.theme || 'light';
+				btn.setAttribute('aria-pressed', current === 'dark' ? 'true' : 'false');
+				btn.dataset.current = current;
+			};
+			// Delegate on document (which persists across view-transition swaps) instead
+			// of binding to the button element — the button is replaced when ClientRouter
+			// swaps the body, which would otherwise leave the toggle dead after navigation.
+			document.addEventListener('click', (event) => {
+				const target = event.target as HTMLElement | null;
+				if (!target || !target.closest('[data-theme-toggle]')) return;
+				const next = (root.dataset.theme || 'light') === 'dark' ? 'light' : 'dark';
+				root.dataset.theme = next;
+				try {
+					localStorage.setItem('theme', next);
+				} catch (_) {
+					/* ignore */
+				}
+				syncThemeToggle();
+			});
+			syncThemeToggle();
+			// The swapped-in button starts from its static aria-pressed="false"; re-sync it
+			// to the active theme after each navigation.
+			document.addEventListener('astro:after-swap', syncThemeToggle);
 		</script>
 
 		<style>
