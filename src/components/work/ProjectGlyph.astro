@@ -106,6 +106,38 @@ const { themeKey, label } = Astro.props;
 	</svg>
 )}
 
+{themeKey === 'framelimiter' && (
+	<svg class="glyph" viewBox="0 0 90 36" role="img" aria-label={label || 'frame pacing cap'}>
+		<line x1="4" y1="31" x2="50" y2="31" stroke="currentColor" stroke-opacity="0.25" stroke-width="1" />
+		<line x1="4" y1="10" x2="50" y2="10" stroke="currentColor" stroke-opacity="0.5" stroke-width="1" stroke-dasharray="3 2" />
+		<g stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="butt">
+			<line x1="10" y1="31" x2="10" y2="10"><animate attributeName="y2" from="31" to="10" dur="0.5s" fill="freeze" begin="0.1s" /></line>
+			<line x1="18" y1="31" x2="18" y2="10"><animate attributeName="y2" from="31" to="10" dur="0.5s" fill="freeze" begin="0.2s" /></line>
+			<line x1="26" y1="31" x2="26" y2="10"><animate attributeName="y2" from="31" to="10" dur="0.5s" fill="freeze" begin="0.3s" /></line>
+			<line x1="34" y1="31" x2="34" y2="10"><animate attributeName="y2" from="31" to="10" dur="0.5s" fill="freeze" begin="0.4s" /></line>
+			<line x1="42" y1="31" x2="42" y2="10"><animate attributeName="y2" from="31" to="10" dur="0.5s" fill="freeze" begin="0.5s" /></line>
+		</g>
+		<text x="56" y="19" font-size="7" fill="currentColor" font-family="var(--font-mono)" opacity="0.7">fps</text>
+		<text x="56" y="29" font-size="5" fill="currentColor" font-family="var(--font-mono)" opacity="0.45">cap</text>
+	</svg>
+)}
+
+{themeKey === 'pixcii' && (
+	<svg class="glyph" viewBox="0 0 90 36" role="img" aria-label={label || 'pixels to ascii ramp'}>
+		<g fill="currentColor">
+			<rect x="4" y="11" width="5.5" height="5.5"><animate attributeName="opacity" from="0" to="0.25" dur="0.4s" fill="freeze" begin="0.05s" /></rect>
+			<rect x="10.5" y="11" width="5.5" height="5.5"><animate attributeName="opacity" from="0" to="0.55" dur="0.4s" fill="freeze" begin="0.12s" /></rect>
+			<rect x="4" y="17.5" width="5.5" height="5.5"><animate attributeName="opacity" from="0" to="0.8" dur="0.4s" fill="freeze" begin="0.19s" /></rect>
+			<rect x="10.5" y="17.5" width="5.5" height="5.5"><animate attributeName="opacity" from="0" to="1" dur="0.4s" fill="freeze" begin="0.26s" /></rect>
+		</g>
+		<path d="M22 19 L31 19 M28 16.5 L31 19 L28 21.5" fill="none" stroke="currentColor" stroke-width="1" stroke-opacity="0.45" />
+		<text x="35" y="24" font-size="12" fill="currentColor" font-family="var(--font-mono)" letter-spacing="1.5">
+			<tspan opacity="0.3">.</tspan><tspan opacity="0.5">:</tspan><tspan opacity="0.7">+</tspan><tspan opacity="0.85">#</tspan><tspan opacity="1">@</tspan>
+			<animate attributeName="opacity" from="0" to="1" dur="0.5s" fill="freeze" begin="0.32s" />
+		</text>
+	</svg>
+)}
+
 <style>
 	.glyph {
 		display: block;

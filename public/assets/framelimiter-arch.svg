@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 800" role="img" aria-label="FrameLimiter architecture: an injected dylib swizzles CAMetalLayer nextDrawable and paces the render loop, applying back-pressure to cut GPU work">
+  <defs>
+    <marker id="arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L8 4 L0 8 z" fill="#6b6157"/>
+    </marker>
+    <marker id="arra" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L8 4 L0 8 z" fill="#9d6b0f"/>
+    </marker>
+  </defs>
+
+  <rect width="1280" height="800" fill="#f3efe6"/>
+
+  <!-- game -->
+  <rect x="440" y="64" width="400" height="62" fill="none" stroke="#161310" stroke-width="1.5"/>
+  <text x="640" y="96" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="24" fill="#161310">Metal game · render loop</text>
+  <text x="640" y="116" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="14" fill="#9a9082">CAMetalLayer · MTKView / SDL2 — unmodified</text>
+  <line x1="640" y1="126" x2="640" y2="172" stroke="#6b6157" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="654" y="155" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="15" fill="#6b6157">-[CAMetalLayer nextDrawable]</text>
+
+  <!-- injected swizzle -->
+  <rect x="420" y="176" width="440" height="84" fill="#ece7da" stroke="#161310" stroke-width="1.5"/>
+  <rect x="420" y="176" width="440" height="4" fill="#9d6b0f"/>
+  <text x="445" y="216" font-family="Georgia, 'Times New Roman', serif" font-size="27" fill="#161310">Swizzled nextDrawable</text>
+  <text x="445" y="244" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="15" fill="#6b6157">method swizzling — the one interception point</text>
+
+  <!-- injection annotation -->
+  <text x="70" y="206" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="15" fill="#9d6b0f">DYLD_INSERT_LIBRARIES</text>
+  <text x="70" y="226" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="13" fill="#9a9082">ad-hoc signed dylib</text>
+  <line x1="290" y1="212" x2="414" y2="216" stroke="#9d6b0f" stroke-width="1.5" stroke-dasharray="6 5" marker-end="url(#arra)"/>
+
+  <line x1="640" y1="260" x2="640" y2="304" stroke="#6b6157" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- pacer -->
+  <rect x="420" y="308" width="440" height="84" fill="none" stroke="#161310" stroke-width="1.5"/>
+  <text x="445" y="346" font-family="Georgia, 'Times New Roman', serif" font-size="24" fill="#161310">Frame pacer</text>
+  <text x="445" y="374" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="15" fill="#6b6157">mach_wait_until — sleeps, never spins</text>
+
+  <!-- live control file -->
+  <rect x="952" y="308" width="288" height="84" fill="#ece7da" stroke="#9d6b0f" stroke-width="1.5"/>
+  <text x="1096" y="344" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="17" fill="#161310">~/.framelimiter.fps</text>
+  <text x="1096" y="368" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="13" fill="#9d6b0f">live-tunable · flctl · no restart</text>
+  <line x1="950" y1="350" x2="864" y2="350" stroke="#9d6b0f" stroke-width="1.5" stroke-dasharray="6 5" marker-end="url(#arra)"/>
+
+  <!-- adaptive vsync band -->
+  <line x1="220" y1="436" x2="560" y2="436" stroke="#6b6157" stroke-width="1" stroke-dasharray="6 5"/>
+  <line x1="720" y1="436" x2="1060" y2="436" stroke="#6b6157" stroke-width="1" stroke-dasharray="6 5"/>
+  <text x="640" y="442" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="15" letter-spacing="2" fill="#6b6157">adaptive VSync — target vs display refresh</text>
+  <line x1="640" y1="392" x2="640" y2="416" stroke="#6b6157" stroke-width="1.5"/>
+  <line x1="400" y1="416" x2="880" y2="416" stroke="#6b6157" stroke-width="1.5"/>
+  <line x1="400" y1="416" x2="400" y2="478" stroke="#6b6157" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="880" y1="416" x2="880" y2="478" stroke="#6b6157" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- branches -->
+  <rect x="200" y="482" width="400" height="82" fill="none" stroke="#161310" stroke-width="1.5"/>
+  <text x="224" y="514" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="17" fill="#161310">target ≤ refresh</text>
+  <text x="224" y="540" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="14" fill="#6b6157">restore the layer's original VSync</text>
+
+  <rect x="680" y="482" width="400" height="82" fill="none" stroke="#161310" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <text x="704" y="514" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="17" fill="#161310">target &gt; refresh</text>
+  <text x="704" y="540" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="13" fill="#6b6157">displaySyncEnabled = off — tears, lower latency</text>
+
+  <!-- converge to outcome -->
+  <line x1="400" y1="564" x2="400" y2="588" stroke="#9d6b0f" stroke-width="1.5"/>
+  <line x1="880" y1="564" x2="880" y2="588" stroke="#9d6b0f" stroke-width="1.5"/>
+  <line x1="400" y1="588" x2="880" y2="588" stroke="#9d6b0f" stroke-width="1.5"/>
+  <line x1="640" y1="588" x2="640" y2="612" stroke="#9d6b0f" stroke-width="1.5" marker-end="url(#arra)"/>
+
+  <!-- outcome -->
+  <rect x="240" y="616" width="800" height="74" fill="#ece7da" stroke="#9d6b0f" stroke-width="1.5"/>
+  <rect x="240" y="616" width="800" height="4" fill="#9d6b0f"/>
+  <text x="640" y="650" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="23" fill="#161310">Back-pressure throttles the GPU</text>
+  <text x="640" y="675" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="14" fill="#6b6157">drawable pool drains · render thread stalls · less real GPU work · lower power &amp; heat</text>
+
+  <!-- caption -->
+  <line x1="70" y1="724" x2="1210" y2="724" stroke="#cfc6b3" stroke-width="1"/>
+  <text x="70" y="754" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="20" fill="#6b6157">A limiter can only cap downward — back-pressure means less GPU work, not just delayed frames.</text>
+</svg>

@@ -27,6 +27,7 @@ const palette = {
 const diagrams = [
 	{ file: 'llmedge-arch.svg', accent: { '#2b6cb0': '#79a7ff' } },
 	{ file: 'pilotrs-arch.svg', accent: { '#0e7c86': '#54cfdd' } },
+	{ file: 'framelimiter-arch.svg', accent: { '#9d6b0f': '#e3a73a' } },
 ];
 
 const replaceAll = (svg, map) =>
