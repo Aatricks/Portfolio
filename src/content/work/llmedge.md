@@ -1,10 +1,10 @@
 ---
 title: llmedge
-description: Android-native inference runtime for local multimodal workloads on constrained devices.
-thesis: Kotlin-owned orchestration over raw native engines, with practical control over memory, artifact lifecycle, and backend fallback.
+description: An Android-native runtime for running AI models locally on phones. LLMs, image generation, speech, and embeddings, all behind one Kotlin API.
+thesis: A Kotlin wrapper that handles the messy native engines, memory allocations, and fallback logic so Android apps don't have to.
 eyebrow: Flagship system
-blurb: Android-native runtime that runs LLMs, diffusion, and speech models locally on real phones — one Kotlin API over llama.cpp, stable-diffusion.cpp, whisper.cpp, and ONNX.
-proof: powers EasyReader summaries · OpenCL → Vulkan → CPU fallback
+blurb: Android runtime that runs LLMs, diffusion, and speech models locally on real phones. One Kotlin API over llama.cpp, stable-diffusion.cpp, whisper.cpp, and ONNX.
+proof: powers EasyReader summaries · handles OpenCL/Vulkan/CPU fallback
 stackLine: Kotlin / JNI / C++ / Android NDK / Vulkan / OpenCL / ONNX
 themeKey: llmedge
 accent: '#2b6cb0'
@@ -13,7 +13,7 @@ hint: ~/llmedge/runtime.kt
 galleryColumns: single
 publishDate: 2025-09-18 00:00:00
 img: /Portfolio/assets/llmedge-arch.svg
-img_alt: llmedge architecture diagram, Kotlin facade over JNI bridges, native engines, and backend fallback chain
+img_alt: llmedge architecture diagram, a Kotlin layer over JNI bridges, native engines, and the backend fallback chain
 featured: true
 featuredOrder: 1
 repoUrl: https://github.com/Aatricks/llmedge
@@ -28,54 +28,54 @@ metrics:
   - label: API shape
     value: Kotlin-first facade over JNI/C++
 heroPoints:
-  - Bundles JNI/C++ bindings over llama.cpp, stable-diffusion.cpp, whisper.cpp, bark.cpp, and ONNX-backed utilities.
-  - Treats backend instability as a product problem, with fallback policy, runtime reuse, and artifact validation inside the stack.
-  - Targets real Android applications that need downloads, caching, memory limits, and predictable local inference behavior.
+  - It bundles JNI/C++ bindings for llama.cpp, stable-diffusion.cpp, whisper.cpp, bark.cpp, and ONNX utilities.
+  - Backends fall over differently on every phone, so it has fallback, engine reuse, and model validation built in.
+  - It's aimed at real apps that need downloads, caching, memory limits, and inference that behaves predictably.
 gallery:
   - src: /Portfolio/assets/llmedge-site.png
     alt: llmedge documentation site showing navigation and feature overview
-    caption: The docs cover installation, usage, architecture, quirks, and troubleshooting — the runtime has real operational surface area, so it is documented like an operated system.
+    caption: The docs cover install, usage, architecture, the quirks, and troubleshooting. There's enough going on that it needed real docs.
 architecture:
-  - Kotlin facade owns product-facing APIs, coroutine-friendly entrypoints, and lifecycle-safe session management.
-  - ModelRepository isolates artifact download, validation, resumable fetches, and local cache placement.
-  - RuntimePool and RuntimeCoordinator reuse native engines, probe device capabilities, and blacklist failing backend paths.
-  - JNI bridges connect Kotlin orchestration to llama.cpp, stable-diffusion.cpp, whisper.cpp, bark.cpp, and ONNX embedding utilities.
+  - A Kotlin layer owns the app-facing API, coroutine entrypoints, and lifecycle-safe sessions.
+  - ModelRepository handles downloading models, validating them, resuming interrupted fetches, and where they get cached.
+  - RuntimePool and RuntimeCoordinator reuse native engines, check what a device can do, and skip backends that have already failed on it.
+  - JNI bridges connect the Kotlin side to llama.cpp, stable-diffusion.cpp, whisper.cpp, bark.cpp, and the ONNX embedding utilities.
 highlights:
-  - Backend fallback across OpenCL, Vulkan, and CPU replaces optimistic single-path execution.
-  - Memory-aware context and runtime reuse reduce repeated startup cost on constrained devices.
-  - On-device RAG, PDF ingestion, speech, and image generation live behind one Android-facing toolkit instead of separate demos.
+  - Backends fall back across OpenCL, Vulkan, and CPU instead of betting on one path working.
+  - It reuses runtimes and keeps context around, so short jobs don't pay native startup every time. That cost adds up on phones.
+  - On-device RAG, PDF reading, speech, and image generation all live behind one Android toolkit instead of separate demos.
 status: flagship
 ---
 
-`llmedge` is an Android-native toolkit for **local multimodal inference**: LLMs, image generation, speech, and embeddings behind one Kotlin API, with the native engines and their failure modes kept out of application code.
+`llmedge` is an Android toolkit for running AI models on the device: LLMs, image generation, speech, and embeddings, all behind one Kotlin API, with the native engines and their failure modes kept out of app code.
 
 ## The problem
 
 Running local AI on Android is mostly a systems problem:
 
-- device capabilities vary heavily across vendors
-- GPU paths fail differently on different phones
-- model artifacts are large and expensive to move around
-- native runtimes are costly to initialize repeatedly
-- application teams still need a clean Kotlin API
+- devices vary a lot between vendors
+- GPU paths break differently on different phones
+- model files are big and annoying to move around
+- native runtimes are expensive to start up over and over
+- and apps still want a clean Kotlin API
 
-A wrapper around one backend solves none of this. The runtime has to own artifact lifecycle, device probing, and fallback policy before "it can run models locally" means anything on real hardware.
+Wrapping a single backend doesn't cover that. The runtime has to handle the model files, device checks, and fallback itself.
 
-## Decisions
+## What I decided
 
-- **Kotlin stays the stable application layer.** Engines live behind JNI; engine-specific complexity never leaks into app code. Coroutines and Flow keep the public API idiomatic even though the implementation is deeply native.
-- **Backend order is policy, not luck.** OpenCL is preferred when viable, Vulkan is the fallback, CPU is the safe last resort. The RuntimeCoordinator probes capabilities and blacklists paths that fail on a given device instead of retrying them forever.
-- **Runtimes are pooled and reused.** Sessions don't pay native re-initialization on every call — on constrained devices that startup cost dominates short workloads.
-- **Artifacts are the library's job.** Download, resumable fetch, validation, and cache placement are centralized in ModelRepository rather than re-implemented by every app.
+- Kotlin handles the app-facing API, while JNI encapsulates the C++ code to keep the UI layer clean. Coroutines and Flow keep the public API normal even though the inside is heavily native.
+- Backends fall back in a set order: OpenCL if the device can do it, Vulkan if not, CPU as the safe last resort. The coordinator checks what works and stops retrying paths that already failed on that phone.
+- Runtimes get pooled and reused, so a session doesn't re-init native code on every call. On phones that startup cost is most of a short job.
+- Model files are the library's job. Downloading, resuming, validating, and caching all happen in ModelRepository instead of every app redoing it.
 
-## Capability surface
+## What it can do
 
 - LLM inference (GGUF via llama.cpp), with KV-cache reuse for multi-turn chat
 - image generation through stable-diffusion.cpp
 - speech-to-text and text-to-speech (whisper.cpp, bark.cpp)
-- embeddings, RAG, and PDF ingestion via ONNX-backed utilities
-- Android example apps exercising the API end to end
+- embeddings, RAG, and PDF reading via ONNX utilities
+- example Android apps that exercise the whole API
 
 ## Where it runs
 
-[`EasyReader`](/Portfolio/work/easyreader) ships llmedge in production for on-device chapter summaries — user text never leaves the phone. The [`llmedge-examples`](https://github.com/Aatricks/llmedge-examples) repo demonstrates each modality as a standalone Android app.
+[`EasyReader`](/Portfolio/work/easyreader) ships llmedge in production for on-device chapter summaries, so the user's text never leaves the phone. The [`llmedge-examples`](https://github.com/Aatricks/llmedge-examples) repo has each feature as its own small Android app.

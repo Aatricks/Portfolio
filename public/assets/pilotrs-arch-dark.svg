@@ -104,5 +104,5 @@
 
   <!-- caption -->
   <line x1="70" y1="804" x2="1210" y2="804" stroke="#2a261f" stroke-width="1"/>
-  <text x="70" y="836" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="20" fill="#8a8170">Every loop closes through the estimate — the controller never touches the truth it is chasing.</text>
+  <text x="70" y="836" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="20" fill="#8a8170">Every loop closes through the estimate. The controller never touches the truth it's chasing.</text>
 </svg>

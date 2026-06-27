@@ -1,9 +1,9 @@
 ---
 title: LightDiffusion-Next
-description: Performance-oriented image generation stack with a local server, workflow tooling, and aggressive implementation tuning.
-thesis: A practical diffusion system shaped around local use, model flexibility, and implementation detail rather than benchmark theater.
+description: A local image-generation stack I tuned for speed. A pipeline core, a queueing server, and a browser UI.
+thesis: A local diffusion setup focused on speed, model support, and the implementation details.
 eyebrow: Generation stack
-blurb: Local image-generation system — pipeline core, queueing server, browser UI — tuned with Xformers, BFloat16, WaveSpeed, and Stable-Fast.
+blurb: Local image-generation system. Pipeline core, queueing server, browser UI, tuned with Xformers, BFloat16, WaveSpeed, and Stable-Fast.
 proof: ~30% faster inference than open-source baseline · Ready Tensor CV Expo 2024
 stackLine: Python / FastAPI / Streamlit / Gradio / PyTorch / Flux / SDXL
 themeKey: lightdiffusion-next
@@ -29,60 +29,56 @@ metrics:
   - label: Product surface
     value: Queue, history, presets, previews, uploads, and API
 heroPoints:
-  - Built for local iteration, not a one-button demo, with queueing, preview flow, deployment options, and maintainable execution routing.
-  - Supports multiple model families and workflow features such as Hires-Fix, ADetailer, prompt enhancement, and img2img-style operations.
-  - Measured ~30% inference-time reduction over open-source baselines through scheduler optimization and VRAM-level tensor allocation.
+  - Built to run locally and repeatedly, with a queue, previews, and deployment options.
+  - Supports several model families plus Hires-Fix, ADetailer, prompt enhancement, and img2img.
+  - I measured about 30% less inference time than the open-source baselines, from scheduler work and VRAM-level tensor allocation.
 gallery:
   - src: /Portfolio/assets/lightdiffusion-home.png
     alt: LightDiffusion-Next browser UI with settings sidebar and generated car image
-    caption: Browser-facing interface built around prompt controls, run management, and output previews.
+    caption: The browser UI, with prompt controls, run management, and output previews.
   - src: /Portfolio/assets/LDN.webp
     alt: Desktop LightDiffusion interface with prompt area and generated preview
-    caption: The earlier desktop UI — same local-first workflow, one implementation phase earlier.
+    caption: The older desktop UI, one version earlier.
   - src: /Portfolio/assets/SD1.webp
     alt: Generated landscape image produced by the diffusion pipeline
-    caption: Pipeline output with Hires-Fix and enhancement passes applied.
+    caption: Pipeline output with Hires-Fix and enhancement passes.
 architecture:
-  - Pipeline context routes generation settings through shared execution logic instead of scattering branches across the UI.
-  - Local server handles queueing, seeds, uploads, previews, and long-running generation workflows.
-  - ModelFactory resolves different model layouts and assembles diffusion, encoder, and VAE pieces as needed.
-  - UI surfaces stay decoupled from the core pipeline so local experimentation does not collapse into script sprawl.
+  - Generation settings go through one shared pipeline context instead of branching across the UI.
+  - The local server handles the queue, seeds, uploads, previews, and long-running jobs.
+  - ModelFactory works out the different model layouts and assembles the diffusion, encoder, and VAE pieces.
+  - The UI is kept separate from the core pipeline.
 highlights:
-  - Measured ~30% inference-time reduction over open-source baselines; selected for the Ready Tensor CV Projects Expo 2024.
-  - Supports both browser-facing product flow and lower-level execution control.
-  - Acceleration is architectural — Xformers, BFloat16, WaveSpeed, and Stable-Fast are wired into the execution path, not bolted on.
+  - About 30% less inference time than the open-source baselines, and it got into the Ready Tensor CV Projects Expo 2024.
+  - It works as a browser app and as lower-level execution you can drive directly.
+  - The speedups (Xformers, BFloat16, WaveSpeed, Stable-Fast) are wired into the execution path.
 status: flagship
 ---
 
-`LightDiffusion-Next` is a local image-generation system: a pipeline core, a queueing server, and a browser UI, documented end to end (setup, UI tour, REST API, architecture, deployment, performance).
+`LightDiffusion-Next` is a local image-generation system built around a pipeline core, a queueing server, and a web interface. The project includes a complete setup guide, API docs, and a breakdown of the architecture and performance optimizations.
 
-## The performance work
+## The speed work
 
-The headline number: the `LightDiffusion` lineage this project descends from measured a **~30% inference-time reduction** against open-source baselines, and was **selected for the Ready Tensor CV Projects Expo 2024** on the strength of that work. The reduction came from two places:
+The first version of this project measured about **30% less inference time** than open-source baselines, earning a spot in the **Ready Tensor CV Projects Expo 2024**. The speedup comes from:
 
-- scheduler optimization — reworking the sampling loop instead of accepting reference implementations
-- VRAM-level tensor allocation — controlling when and where tensors live rather than letting the framework decide
+- **Scheduler optimizations**: reworking the sampling loop instead of using the stock reference implementation.
+- **VRAM tensor management**: controlling exactly where and when tensors are allocated in memory instead of delegating it to the framework.
 
-On top of that, the execution path wires in **Xformers**, **BFloat16**, **WaveSpeed**, and **Stable-Fast**, because repeated local use is where acceleration is actually felt.
+It also wires **Xformers**, **BFloat16**, **WaveSpeed**, and **Stable-Fast** into the execution path.
 
-## The workflow surface
+## The workflow
 
-The system is organized as a tool for repeated local use, not a single-script demo:
+It's built to be used repeatedly, with:
 
-- prompt and negative prompt control, presets, and generation modes
-- enhancement passes: Hires-Fix, ADetailer, prompt enhancement, img2img-style operations
-- queueing, history, output previews, and uploads
-- REST API and deployment paths (including a hosted HuggingFace Space demo)
+- prompt and negative prompt, presets, and generation modes
+- enhancement passes: Hires-Fix, ADetailer, prompt enhancement, img2img
+- queue, history, output previews, and uploads
+- a REST API and deployment paths (including a hosted HuggingFace Space)
 
 ## Architecture
 
-The interesting part is where product concerns meet backend concerns:
+The main pieces:
 
-- generation settings route through one shared pipeline context — no per-UI execution branches
-- model families (SD1.5, SDXL, Flux, LoRAs) resolve through factory-style assembly of diffusion, encoder, and VAE pieces
-- long-running jobs are queueable local workflows, not blocking calls
-- the frontend is decoupled enough from the pipeline that experiments don't degrade the codebase
-
-## Relation to the rest
-
-`llmedge` is C++/Kotlin systems work on Android; `LightDiffusion-Next` is the same optimization discipline applied to a larger Python system with real user-facing surfaces — both sides of performance-critical AI tooling.
+- generation settings go through one shared pipeline context, no per-UI branches
+- model families (SD1.5, SDXL, Flux, LoRAs) get assembled from diffusion, encoder, and VAE pieces
+- long jobs are queueable, not blocking calls
+- the frontend is kept separate from the pipeline

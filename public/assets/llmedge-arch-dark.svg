@@ -87,5 +87,5 @@
 
   <!-- caption -->
   <line x1="70" y1="700" x2="1210" y2="700" stroke="#2a261f" stroke-width="1"/>
-  <text x="70" y="730" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="20" fill="#8a8170">backend instability is treated as product policy — fallback is designed, not hoped for.</text>
+  <text x="70" y="730" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="20" fill="#8a8170">backends fail on real devices, so the fallback path is built in.</text>
 </svg>

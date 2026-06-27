@@ -154,7 +154,7 @@ const { title, description } = Astro.props;
 				btn.dataset.current = current;
 			};
 			// Delegate on document (which persists across view-transition swaps) instead
-			// of binding to the button element — the button is replaced when ClientRouter
+			// of binding to the button element; the button is replaced when ClientRouter
 			// swaps the body, which would otherwise leave the toggle dead after navigation.
 			document.addEventListener('click', (event) => {
 				const target = event.target as HTMLElement | null;

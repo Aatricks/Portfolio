@@ -1,9 +1,9 @@
 ---
 title: EasyReader
-description: Offline-first Android reading software with local summaries, persistent state, and a product surface people can live in.
-thesis: Productized Android UX backed by local model integration instead of remote summarization shortcuts.
+description: An offline-first Android reading app with on-device chapter summaries. It keeps your library and reading state, and the AI runs locally through llmedge.
+thesis: An Android reading app where the chapter summaries run on the phone instead of calling a server.
 eyebrow: Product surface
-blurb: Offline-first Android reader for web chapters, PDF, EPUB, and manga — with on-device chapter summaries running through llmedge.
+blurb: Offline-first Android reader for web chapters, PDF, EPUB, and manga, with on-device chapter summaries through llmedge.
 proof: ships llmedge in production · user text never leaves the phone
 stackLine: Kotlin / Jetpack Compose / Room / Hilt / llmedge
 themeKey: easyreader
@@ -27,56 +27,50 @@ metrics:
   - label: Product focus
     value: Offline-first Android UX
 heroPoints:
-  - Built as a reader people can return to, with discovery, persistence, local file ingestion, and reading-state management.
-  - Uses llmedge for on-device summaries so user text stays local and the AI feature remains inside the product workflow.
-  - Emphasizes Android product craft as much as model integration.
+  - A reader with discovery, saved state, local file import, and reading position that sticks.
+  - Summaries run on-device through llmedge, so the text stays on the phone.
+  - I put as much work into the Android side as the model part.
 gallery:
   - src: /Portfolio/assets/easyreader-manhwa.jpg
-    alt: EasyReader manwha reader screen from the EasyReader repository
-    caption: The reader mid-manwha with the fast-access library drawer open.
+    alt: EasyReader manhwa reader screen from the EasyReader repository
+    caption: The reader mid-manhwa with the quick library drawer open.
     frame: phone
 architecture:
-  - MainActivity coordinates reader, library, explore, deep links, and local file selection.
-  - ContentRepository normalizes remote chapters, PDF, EPUB, and HTML into one reading pipeline.
-  - SummaryService uses llmedge to fetch a local model and summarize chapters without sending user text away.
-  - Compose, Room, and Hilt hold the application together as a durable Android product rather than a prototype shell.
+  - MainActivity ties together the reader, library, explore, deep links, and local file picking.
+  - ContentRepository turns remote chapters, PDF, EPUB, and HTML into one reading pipeline.
+  - SummaryService uses llmedge to load a local model and summarize chapters without sending the text anywhere.
+  - Compose, Room, and Hilt hold it together as a normal app.
 highlights:
-  - Production consumer of llmedge — the runtime work ships inside a real reading product.
-  - Bridges persistent state, ingestion, and on-device inference inside one mobile workflow.
-  - Four input formats normalize into a single reading pipeline with persistent reading state.
+  - It's the app that uses llmedge in production.
+  - Saved state, file import, and on-device summaries in one workflow.
+  - Four input formats go through one reading pipeline, with reading position kept across sessions.
 status: flagship
 ---
 
-`EasyReader` is an Android reading app — discovery, library, multi-format reader — that happens to run its AI feature entirely on device. It is also the production consumer of [`llmedge`](/Portfolio/work/llmedge): the runtime work ships here, inside software built for daily use.
+`EasyReader` is an Android reading app: discovery, a library, and a multi-format reader, with the AI feature running on the phone. It's also where [`llmedge`](/Portfolio/work/llmedge) actually ships.
 
-## The product
+## The app
 
-The core job is reading, and the app covers the full loop:
+The main job is reading, and it covers the whole loop:
 
-- discovering content and organizing a library
-- opening web chapters, PDF, EPUB, manga/manwha, and local HTML
-- preserving reading position and library state across sessions
-- staying fully usable offline
+- finding content and organizing a library
+- opening web chapters, PDF, EPUB, manga/manhwa, and local HTML
+- keeping your position and library between sessions
+- working fully offline
 
-Each input format is normalized through `ContentRepository` into one reading pipeline, so the reader surface never cares where a chapter came from.
+Every format goes through `ContentRepository` into one pipeline, so the reader doesn't care where a chapter came from.
 
-## The AI feature, scoped on purpose
+## The AI part
 
-Chapter summaries run on device through llmedge:
+Chapter summaries run on the device through llmedge:
 
-- `SummaryService` fetches a local model and summarizes without any network round-trip
-- user text never leaves the phone — privacy is a property of the architecture, not a policy
-- the summary sits inside the reading flow, supporting it rather than replacing it
-
-Local inference earns its place where the data is sensitive and the latency budget is human. A reading app is exactly that case.
+- `SummaryService` loads a local model and summarizes with no network call
+- the text never leaves the phone
+- the summary sits inside the reading flow
 
 ## Architecture
 
-- `MainActivity` coordinates reader, library, explore, deep links, and local file selection
-- `ContentRepository` owns ingestion and normalization
-- `SummaryService` delegates to llmedge instead of baking inference into UI code
-- Compose, Room, and Hilt give it a real application lifecycle
-
-## Result
-
-End-to-end delivery: Android UX, ingestion, persistence, navigation, and local AI integration in one shipped product — the application-layer counterpart to the runtime work in llmedge.
+- `MainActivity` runs the reader, library, explore, deep links, and file picking
+- `ContentRepository` handles import and normalizing formats
+- `SummaryService` hands off to llmedge instead of putting inference in the UI
+- Compose, Room, and Hilt give it a normal app lifecycle

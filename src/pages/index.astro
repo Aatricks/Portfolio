@@ -19,7 +19,7 @@ const secondary = featuredProjects.slice(1);
 const aboutFacts = [
 	{ label: 'now', value: 'CS engineering @ Polytech Tours · 2022–2027' },
 	{ label: 'next', value: 'AI research intern · HEC Montréal · summer 2026' },
-	{ label: 'origin', value: '14 yrs expatriation · 5 spoken languages' },
+	{ label: 'origin', value: '14 yrs living abroad · 5 languages' },
 ];
 
 // GitHub repos worth listing in the index but without a case study.
@@ -57,14 +57,14 @@ const externalProjects = [
 ];
 
 const sideNotes = [
-	{ mark: '⌘', text: 'rank-up to Top 0.03% EU in Valorant. asymmetric decisions, team coord under pressure.' },
+	{ mark: '⌘', text: 'ranked in the top 0.03% EU in Valorant. taught me how to communicate and coordinate under pressure.' },
 	{ mark: '∴', text: 'maintain my own NixOS flakes and an arch laptop. kernel troubleshooting included.' },
-	{ mark: '⌂', text: '3D printing — machine maintenance + functional parts for embedded projects.' },
-	{ mark: 'λ', text: 'fr / en / es / it / ru — diplomacy training at C-MIMUN.' },
+	{ mark: '⌂', text: '3D printing, machine maintenance, and functional parts for embedded projects.' },
+	{ mark: 'λ', text: 'fr / en / es / it / ru, plus Model UN (C-MIMUN).' },
 ];
 
 // ---- Build-time GitHub activity strip (real contribution data) ----
-// Source: jogruber's contributions proxy — real per-day GitHub contribution
+// Source: jogruber's contributions proxy, real per-day GitHub contribution
 // counts (commits + PRs + issues + reviews) with GitHub's own 0–4 levels.
 // No token needed; CORS-enabled. The public events API was too sparse to fill
 // a 90-day window, so the old strip rendered near-empty (the "placeholder").
@@ -87,7 +87,7 @@ try {
 		}
 	}
 } catch {
-	// Network failure or rate limit — fall through to the empty fallback below.
+	// Network failure or rate limit, fall through to the empty fallback below.
 }
 
 // Always render a full window, even if the fetch failed (graceful degradation).
@@ -154,7 +154,7 @@ try {
 		}
 	}
 } catch {
-	// Network failure or rate limit — totals stay 0; the client refresh fills them.
+	// Network failure or rate limit, totals stay 0; the client refresh fills them.
 }
 
 // Star count for a project from its repo URL (case studies) or repo name (index rows).
@@ -177,7 +177,7 @@ const starsFor = (repoUrl: string | undefined): number =>
 				<h1 class="hero__title" id="hero-title" data-reveal>
 					Emilio&nbsp;Melis.<br />
 					builds <em>edge&nbsp;AI</em> that<br />
-					runs <em class="hero__title-mark"><span class="hero__title-text">where it&nbsp;lives</span><svg
+					runs <em class="hero__title-mark"><span class="hero__title-text">on-device</span><svg
 							class="hero__title-stroke"
 							viewBox="0 0 320 18"
 							aria-hidden="true"
@@ -191,7 +191,7 @@ const starsFor = (repoUrl: string | undefined): number =>
 							/></svg></em>.
 				</h1>
 				<p class="hero__lede" data-reveal>
-					Native runtimes, sensor fusion, AI on constrained hardware.
+					I write native runtimes, sensor fusion filters, and edge AI systems that fit on small chips.
 				</p>
 
 				<div class="hero__actions" data-reveal>
@@ -214,7 +214,7 @@ const starsFor = (repoUrl: string | undefined): number =>
 			<header class="section__head" data-reveal>
 				<p class="section-marker">01 · selected work</p>
 				<h2 id="work-title" class="section__title">
-					Systems I built and <em>shipped</em>.
+					Systems I've <em>built</em>.
 				</h2>
 			</header>
 
@@ -250,7 +250,7 @@ const starsFor = (repoUrl: string | undefined): number =>
 			<header class="section__head" data-reveal>
 				<p class="section-marker">02 · about</p>
 				<h2 id="about-title" class="section__title">
-					CS engineering student at <em>Polytech&nbsp;Tours</em> —<br />
+					CS engineering student at <em>Polytech&nbsp;Tours</em>,<br />
 					next, AI research at <em>HEC&nbsp;Montréal</em>.
 				</h2>
 			</header>
@@ -258,14 +258,13 @@ const starsFor = (repoUrl: string | undefined): number =>
 			<div class="about__grid">
 				<div class="about__prose" data-reveal>
 					<p class="about__pull">
-						It started with an autonomous submarine: fusing raw IMU data through
-						<strong>Kalman filters</strong> until the heading finally held.
+						My first real project was an autonomous submarine. The hard part was the
+						<strong>Kalman filter</strong>, getting a steady heading out of noisy IMU data.
 					</p>
 
 					<p class="about__body">
-						That control-loop discipline now goes into edge AI — native inference
-						runtimes on phones and embedded targets, aimed at automotive and
-						aerospace systems where real-time is not optional.
+						Now it's edge AI, running models locally on phones and embedded boards.
+						I want to take that into automotive or aerospace next.
 					</p>
 
 					<dl class="about__facts">
@@ -317,7 +316,7 @@ const starsFor = (repoUrl: string | undefined): number =>
 			<header class="section__head" data-reveal>
 				<p class="section-marker">03 · stack</p>
 				<h2 id="stack-title" class="section__title">
-					Tools I reach for, <em>proven by what&nbsp;shipped</em>.
+					Tools I reach for, <em>and what I built with&nbsp;them</em>.
 				</h2>
 			</header>
 
@@ -510,7 +509,7 @@ const starsFor = (repoUrl: string | undefined): number =>
 		max-width: 56rem;
 	}
 
-	/* Registration marks — print-shop corners, quiet aesthetic signature */
+	/* Registration marks: print-shop corners, quiet aesthetic signature */
 	.hero__reg {
 		position: absolute;
 		font-family: var(--font-mono);

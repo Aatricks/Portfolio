@@ -45,7 +45,7 @@ const {
 				var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 				theme = saved || (prefersDark ? 'dark' : 'light');
 			} catch (e) {
-				/* localStorage/matchMedia unavailable — fall back to light */
+				/* localStorage/matchMedia unavailable, fall back to light */
 			}
 			document.documentElement.dataset.theme = theme;
 			document.documentElement.classList.add('js');
