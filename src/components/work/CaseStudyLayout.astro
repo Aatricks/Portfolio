@@ -312,6 +312,7 @@ const buildLabel = [
 	/* ---------------- BODY ---------------- */
 	.project-page__body {
 		display: grid;
+		grid-template-columns: minmax(0, 1fr);
 		gap: 4.5rem;
 		padding-top: 3.5rem;
 	}
@@ -442,7 +443,9 @@ const buildLabel = [
 		line-height: 1.75;
 		color: var(--ink-soft);
 		display: grid;
+		grid-template-columns: minmax(0, 1fr);
 		gap: 1rem;
+		overflow-wrap: break-word;
 	}
 
 	.project-prose :global(h2) {
