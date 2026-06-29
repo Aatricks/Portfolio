@@ -30,3 +30,6 @@ docs/
 /*.png
 .playwright-mcp/
 .design/*/screenshots/
+
+# brainstorming visual companion scratch
+.superpowers/
