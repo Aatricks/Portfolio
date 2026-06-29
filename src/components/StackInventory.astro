@@ -13,10 +13,9 @@ interface StackGroup {
 const groups: StackGroup[] = [
 	{
 		label: 'languages & systems',
-		caption: 'where the time goes',
 		entries: [
 			{ name: 'C / C++', note: 'llmedge JNI bridges · CChess · submarine control' },
-			{ name: 'Objective-C / Metal', note: 'FrameLimiter · CAMetalLayer swizzle, mach_wait_until pacing' },
+			{ name: 'Objective-C / Metal', note: 'FrameLimiter · CAMetalLayer swizzle, menu-bar app, mach_wait_until' },
 			{ name: 'Rust', note: 'Pilotrs flight-control core · no_std, MEKF/LQR, Ferrocene-ready' },
 			{ name: 'Kotlin', note: 'llmedge API · EasyReader · Compose, Hilt, Room' },
 			{ name: 'Python', note: 'LightDiffusion pipelines · PyTorch tooling' },
@@ -25,7 +24,6 @@ const groups: StackGroup[] = [
 	},
 	{
 		label: 'ai & inference',
-		caption: 'the model side',
 		entries: [
 			{ name: 'PyTorch', note: 'diffusion optimization · scheduler work' },
 			{ name: 'llama.cpp', note: 'GGUF on-device LLM in llmedge' },
@@ -35,7 +33,6 @@ const groups: StackGroup[] = [
 	},
 	{
 		label: 'embedded & signal',
-		caption: 'what brought me here',
 		entries: [
 			{ name: 'Sensor fusion', note: 'IMU + Kalman on the autonomous submarine' },
 			{ name: 'Arduino / ARM', note: 'prototyping, peripherals' },
@@ -65,7 +62,7 @@ const languages = [
 				{group.entries.map((entry) => (
 					<li class="stack-row" data-reveal>
 						<span class="stack-row__name">{entry.name}</span>
-						{entry.note && <span class="stack-row__note">· {entry.note}</span>}
+						{entry.note && <p class="stack-row__note">{entry.note}</p>}
 					</li>
 				))}
 			</ul>
@@ -127,7 +124,7 @@ const languages = [
 	}
 
 	.stack-row {
-		padding: 0.5rem 0;
+		padding: 0.85rem 0;
 		line-height: 1.5;
 		border-bottom: 1px dashed var(--rule-soft);
 	}
@@ -138,22 +135,25 @@ const languages = [
 
 	.stack-row__name {
 		font-family: var(--font-display);
-		font-size: 1rem;
-		font-weight: 400;
+		font-size: 1.05rem;
+		font-weight: 500;
 		color: var(--ink);
 		letter-spacing: -0.01em;
-		margin-right: 0.55rem;
+		display: block;
+		margin-bottom: 0.2rem;
 	}
 
 	.stack-row__note {
-		font-family: var(--font-mono);
-		font-size: 0.74rem;
-		color: var(--mute);
+		font-family: var(--font-body);
+		font-size: 0.85rem;
+		color: var(--ink-soft);
+		margin: 0;
+		line-height: 1.45;
 	}
 
 	.stack-langs {
-		margin-top: 2.5rem;
-		padding: 1.4rem 0 0;
+		margin-top: 3.5rem;
+		padding: 2rem 0 0;
 		border-top: 1px dashed var(--rule);
 	}
 
@@ -172,7 +172,7 @@ const languages = [
 		padding: 0;
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
-		gap: 0.7rem 1.6rem;
+		gap: 1rem 2rem;
 	}
 
 	.stack-langs__item {
@@ -211,7 +211,7 @@ const languages = [
 	@media (min-width: 52em) {
 		.stack-grid {
 			grid-template-columns: repeat(3, minmax(0, 1fr));
-			gap: 2.5rem;
+			gap: 3.5rem;
 		}
 	}
 </style>

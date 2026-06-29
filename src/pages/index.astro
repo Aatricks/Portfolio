@@ -858,6 +858,9 @@ const starsFor = (repoUrl: string | undefined): number =>
 		align-items: center;
 		gap: 1.2rem 2rem;
 		padding-block: 1.4rem;
+		padding-inline: 1rem;
+		margin-inline: -1rem;
+		border-radius: 4px;
 		color: var(--ink);
 		position: relative;
 		transition: background-color var(--t-link) var(--ease);
@@ -872,6 +875,7 @@ const starsFor = (repoUrl: string | undefined): number =>
 		height: 100%;
 		background: var(--accent);
 		opacity: 0;
+		border-radius: 4px 0 0 4px;
 		transition: width var(--t-link) var(--ease), opacity var(--t-link) var(--ease);
 	}
 

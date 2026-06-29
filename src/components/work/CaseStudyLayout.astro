@@ -1,9 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import ProjectActions from './ProjectActions.astro';
-import ProjectMetrics from './ProjectMetrics.astro';
 import ProjectGallery from './ProjectGallery.astro';
-import ProjectGlyph from './ProjectGlyph.astro';
 
 interface Props {
 	entry: CollectionEntry<'work'>;
@@ -45,7 +43,7 @@ const buildLabel = [
 >
 	<header class="project-page__hero">
 		<div class="project-page__hero-bg" aria-hidden="true" data-parallax="0.05"></div>
-		<div class="wrapper project-page__hero-inner">
+		<div class="wrapper wrapper--narrow project-page__hero-inner">
 			<nav class="project-page__nav">
 				<a class="project-page__back" href={backHref}>
 					<span aria-hidden="true">←</span>
@@ -66,6 +64,11 @@ const buildLabel = [
 					<h1 class="project-page__title"><span transition:name={`title-${themeKey}`}>{data.title}</span></h1>
 					<p class="project-page__thesis">{data.thesis}</p>
 
+					<div class="project-page__tech-stack">
+						<span class="project-page__tech-label">stack //</span>
+						<span class="project-page__tech-value">{data.stackLine}</span>
+					</div>
+
 					<div class="project-page__actions">
 						<ProjectActions
 							repoUrl={data.repoUrl}
@@ -74,54 +77,32 @@ const buildLabel = [
 						/>
 					</div>
 				</div>
-
-				<aside class="project-page__hero-spec" data-parallax="0.04" data-reveal-stagger>
-					<header class="project-page__hero-spec-top" data-parallax="-0.018">
-						<p class="label project-page__hero-spec-label">{hint || `${themeKey}.spec`}</p>
-						<ProjectGlyph themeKey={themeKey} label={`${themeKey} glyph`} />
-					</header>
-					<div class="project-page__hero-spec-body">
-						{data.heroPoints.slice(0, 3).map((point, i) => (
-							<div class="project-page__hero-spec-row" data-reveal>
-								<span class="project-page__hero-spec-key">[{String(i + 1).padStart(2, '0')}]</span>
-								<p>{point}</p>
-							</div>
-						))}
-					</div>
-					<footer class="project-page__hero-spec-foot" data-parallax="-0.014">
-						<span>stack</span>
-						<span class="project-page__hero-spec-stack">{data.stackLine}</span>
-					</footer>
-				</aside>
 			</div>
 		</div>
 	</header>
 
-	<div class="wrapper project-page__body">
-		<ProjectMetrics metrics={data.metrics} />
-
-		<section class="project-page__split">
-			<div class="project-page__narrative" data-reveal>
-				<p class="section-marker">why it matters</p>
-				<ul class="project-page__bullets" data-reveal-stagger>
-					{data.highlights.map((highlight) => (
-						<li data-reveal>{highlight}</li>
-					))}
-				</ul>
-			</div>
-
-			<aside class="project-page__arch" data-reveal>
-				<p class="section-marker">architecture</p>
-				<ol class="project-page__arch-list" data-reveal-stagger>
+	<div class="wrapper wrapper--narrow project-page__body">
+		{data.architecture && data.architecture.length > 0 && (
+			<section class="project-page__arch" data-reveal>
+				<p class="section-marker">architecture flow</p>
+				<div class="arch-diagram" data-reveal-stagger>
 					{data.architecture.map((step, i) => (
-						<li data-reveal>
-							<span class="project-page__arch-num">{String(i + 1).padStart(2, '0')}</span>
-							<p>{step}</p>
-						</li>
+						<div class="arch-step" data-reveal>
+							<span class="arch-step__number">{String(i + 1).padStart(2, '0')}</span>
+							<p class="arch-step__desc">{step}</p>
+							{i < data.architecture.length - 1 && (
+								<div class="arch-step__connector" aria-hidden="true">
+									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+										<line x1="5" y1="12" x2="19" y2="12"></line>
+										<polyline points="12 5 19 12 12 19"></polyline>
+									</svg>
+								</div>
+							)}
+						</div>
 					))}
-				</ol>
-			</aside>
-		</section>
+				</div>
+			</section>
+		)}
 
 		{data.gallery.length > 0 && (
 			<section class="project-page__gallery" data-reveal>
@@ -281,13 +262,7 @@ const buildLabel = [
 		font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1;
 	}
 
-	/* Optical bleed for the display title: never beyond the space the viewport
-	   actually has left of the wrapper (padding + centering gutter). */
-	@media (min-width: 80em) {
-		.project-page__title {
-			margin-inline-start: calc(-1 * min(3.5rem, (100vw - 80rem) / 2 + 1.9rem));
-		}
-	}
+	/* Optical bleed removed for clean alignment */
 
 	.project-page__thesis {
 		max-width: 42rem;
@@ -300,81 +275,32 @@ const buildLabel = [
 		margin-bottom: 2rem;
 	}
 
+	.project-page__hero-copy {
+		max-width: 56rem;
+	}
+
+	.project-page__tech-stack {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: 0.5rem;
+		font-family: var(--font-mono);
+		font-size: 0.72rem;
+		margin-bottom: 2rem;
+	}
+
+	.project-page__tech-label {
+		color: var(--project-accent);
+		text-transform: lowercase;
+		letter-spacing: 0.08em;
+	}
+
+	.project-page__tech-value {
+		color: var(--ink-soft);
+	}
+
 	.project-page__actions {
 		display: flex;
-	}
-
-	/* hero spec block */
-	.project-page__hero-spec {
-		font-family: var(--font-mono);
-		font-size: 0.78rem;
-		line-height: 1.5;
-		color: var(--ink-soft);
-		border-top: 1px dashed var(--rule);
-		border-bottom: 1px dashed var(--rule);
-		padding-block: 1rem;
-	}
-
-	.project-page__hero-spec-top {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		gap: 1rem;
-		padding-inline: 0.1rem;
-		margin-bottom: 0.9rem;
-	}
-
-	.project-page__hero-spec-top .glyph {
-		max-width: 6.5rem;
-		flex-shrink: 0;
-	}
-
-	.project-page__hero-spec-label {
-		margin: 0;
-	}
-
-	.project-page__hero-spec-body {
-		display: grid;
-		gap: 0.85rem;
-		padding: 0 0.1rem;
-	}
-
-	.project-page__hero-spec-row {
-		display: grid;
-		grid-template-columns: 2.4rem 1fr;
-		gap: 0.5rem;
-	}
-
-	.project-page__hero-spec-row p {
-		font-family: var(--font-body);
-		font-size: 0.92rem;
-		line-height: 1.55;
-		color: var(--ink-soft);
-	}
-
-	.project-page__hero-spec-key {
-		color: var(--project-accent);
-		font-size: 0.72rem;
-	}
-
-	.project-page__hero-spec-foot {
-		display: flex;
-		align-items: baseline;
-		gap: 0.7rem;
-		padding: 0.9rem 0.1rem 0;
-		margin-top: 0.85rem;
-		border-top: 1px dashed var(--rule);
-		font-size: 0.7rem;
-		color: var(--mute);
-		text-transform: uppercase;
-		letter-spacing: 0.12em;
-	}
-
-	.project-page__hero-spec-stack {
-		color: var(--ink-soft);
-		font-size: 0.72rem;
-		text-transform: none;
-		letter-spacing: 0.02em;
 	}
 
 	/* ---------------- BODY ---------------- */
@@ -382,59 +308,6 @@ const buildLabel = [
 		display: grid;
 		gap: 4.5rem;
 		padding-top: 3.5rem;
-	}
-
-	.project-page__split {
-		display: grid;
-		grid-template-columns: 1fr;
-		gap: 2.5rem;
-		align-items: start;
-	}
-
-	.project-page__narrative {
-		display: grid;
-		gap: 1.25rem;
-	}
-
-	.project-page__section-h {
-		font-family: var(--font-display);
-		font-size: clamp(1.7rem, 3.4vw, 2.6rem);
-		font-weight: 400;
-		line-height: 1.06;
-		letter-spacing: -0.018em;
-		max-width: 24ch;
-		color: var(--ink);
-	}
-
-	.project-page__section-h em {
-		color: var(--project-accent);
-		font-style: italic;
-	}
-
-	.project-page__bullets {
-		list-style: none;
-		padding: 0;
-		margin: 0;
-		display: grid;
-		gap: 0.85rem;
-	}
-
-	.project-page__bullets li {
-		position: relative;
-		padding-left: 1.4rem;
-		font-size: 1rem;
-		line-height: 1.6;
-		color: var(--ink-soft);
-	}
-
-	.project-page__bullets li::before {
-		content: '▸';
-		position: absolute;
-		left: 0;
-		top: 0.05em;
-		color: var(--project-accent);
-		font-family: var(--font-mono);
-		font-size: 0.85em;
 	}
 
 	.project-page__arch {
@@ -454,39 +327,95 @@ const buildLabel = [
 		background: var(--project-accent);
 	}
 
-	.project-page__arch-list {
-		list-style: none;
-		padding: 0;
-		margin-top: 1rem;
+	.arch-diagram {
 		display: grid;
-		gap: 0;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 1.5rem;
+		margin-top: 1.5rem;
+		position: relative;
 	}
 
-	.project-page__arch-list li {
-		display: grid;
-		grid-template-columns: 2.5rem 1fr;
-		gap: 0.85rem;
-		padding-block: 0.85rem;
-		border-bottom: 1px dashed var(--rule);
+	.arch-step {
+		background: var(--paper-soft);
+		border: 1px solid var(--rule);
+		border-radius: 6px;
+		padding: 1.25rem 1.1rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.6rem;
+		position: relative;
+		transition: background-color 0.25s, border-color 0.25s, transform 0.25s;
 	}
 
-	.project-page__arch-list li:last-child {
-		border-bottom: 0;
+	.arch-step:hover {
+		background: var(--paper-deep);
+		border-color: var(--project-accent);
+		transform: translateY(-2px);
 	}
 
-	.project-page__arch-num {
+	.arch-step__number {
 		font-family: var(--font-mono);
 		font-size: 0.72rem;
 		color: var(--project-accent);
-		letter-spacing: 0.04em;
-		font-variant-numeric: tabular-nums;
-		padding-top: 0.15rem;
+		letter-spacing: 0.1em;
+		font-weight: 500;
 	}
 
-	.project-page__arch-list li p {
-		font-size: 0.95rem;
-		line-height: 1.55;
+	.arch-step__desc {
+		margin: 0;
+		font-size: 0.88rem;
+		line-height: 1.5;
 		color: var(--ink-soft);
+	}
+
+	.arch-step__connector {
+		position: absolute;
+		top: 50%;
+		right: -1.25rem;
+		transform: translateY(-50%);
+		width: 1rem;
+		height: 1rem;
+		color: var(--mute-soft);
+		z-index: 10;
+		pointer-events: none;
+		transition: color 0.25s;
+	}
+
+	.arch-step__connector svg {
+		width: 100%;
+		height: 100%;
+		transition: transform 0.25s;
+	}
+
+	.arch-step:hover .arch-step__connector {
+		color: var(--project-accent);
+	}
+
+	.arch-step:hover .arch-step__connector svg {
+		transform: translateX(3px);
+	}
+
+	@media (max-width: 64em) {
+		.arch-diagram {
+			grid-template-columns: 1fr;
+			gap: 2rem;
+		}
+
+		.arch-step__connector {
+			top: auto;
+			bottom: -1.5rem;
+			right: auto;
+			left: 50%;
+			transform: translateX(-50%);
+		}
+
+		.arch-step__connector svg {
+			transform: rotate(90deg);
+		}
+
+		.arch-step:hover .arch-step__connector svg {
+			transform: rotate(90deg) translateY(3px);
+		}
 	}
 
 	/* gallery / notes */
@@ -553,16 +482,5 @@ const buildLabel = [
 		color: var(--ink);
 	}
 
-	@media (min-width: 64em) {
-		.project-page__hero-grid {
-			grid-template-columns: minmax(0, 1.1fr) minmax(20rem, 0.85fr);
-			align-items: start;
-			gap: 4rem;
-		}
-
-		.project-page__split {
-			grid-template-columns: minmax(0, 1.1fr) minmax(18rem, 0.85fr);
-			gap: 3.5rem;
-		}
-	}
+	/* single column grid layout cleanup */
 </style>
