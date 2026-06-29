@@ -653,6 +653,28 @@ const starsFor = (repoUrl: string | undefined): number =>
 		border-block: 1px solid var(--rule);
 	}
 
+	/* About is a single narrative column — center it in the wide section. */
+	.section--about .section__head {
+		max-width: 54rem;
+		margin-inline: auto;
+		justify-items: center;
+		text-align: center;
+	}
+
+	.section--about .about__grid {
+		max-width: 42rem;
+		margin-inline: auto;
+	}
+
+	.section--about .about__prose {
+		max-width: none;
+	}
+
+	.section--about .about__lead {
+		max-width: none;
+		text-align: center;
+	}
+
 	.section__head {
 		display: grid;
 		gap: 1.4rem;
