@@ -16,10 +16,10 @@ const additionalProjects = work
 const flagship = featuredProjects[0];
 const secondary = featuredProjects.slice(1);
 
-const aboutFacts = [
-	{ label: 'now', value: 'CS engineering @ Polytech Tours · 2022–2027' },
-	{ label: 'next', value: 'AI research intern · HEC Montréal · summer 2026' },
-	{ label: 'origin', value: '14 yrs living abroad · 5 languages' },
+const aboutCredentials = [
+	{ label: 'now', value: 'CS engineering', detail: 'Polytech Tours · 2022–27' },
+	{ label: 'next', value: 'AI research intern', detail: 'HEC Montréal · 2026' },
+	{ label: 'based', value: 'France', detail: '14 yrs abroad' },
 ];
 
 // GitHub repos worth listing in the index but without a case study.
@@ -54,13 +54,6 @@ const externalProjects = [
 		href: 'https://github.com/Aatricks/PoSubmarine',
 		repo: 'PoSubmarine',
 	},
-];
-
-const sideNotes = [
-	{ mark: '⌘', text: 'ranked in the top 0.03% EU in Valorant. taught me how to communicate and coordinate under pressure.' },
-	{ mark: '∴', text: 'maintain my own NixOS flakes and an arch laptop. kernel troubleshooting included.' },
-	{ mark: '⌂', text: '3D printing, machine maintenance, and functional parts for embedded projects.' },
-	{ mark: 'λ', text: 'fr / en / es / it / ru, plus Model UN (C-MIMUN).' },
 ];
 
 // ---- Build-time GitHub activity strip (real contribution data) ----
@@ -250,31 +243,45 @@ const starsFor = (repoUrl: string | undefined): number =>
 			<header class="section__head" data-reveal>
 				<p class="section-marker">02 · about</p>
 				<h2 id="about-title" class="section__title">
-					CS engineering student at <em>Polytech&nbsp;Tours</em>,<br />
+					CS engineering at <em>Polytech&nbsp;Tours</em>,<br />
 					next, AI research at <em>HEC&nbsp;Montréal</em>.
 				</h2>
 			</header>
 
 			<div class="about__grid">
 				<div class="about__prose" data-reveal>
-					<p class="about__pull">
-						My first real project was an autonomous submarine. The hard part was the
-						<strong>Kalman filter</strong>, getting a steady heading out of noisy IMU data.
+					<p class="about__lead">
+						I build out of curiosity, or to get rid of a problem that's bugging me,
+						and most of it ends up being about running heavy compute locally.
 					</p>
 
 					<p class="about__body">
-						Now it's edge AI, running models locally on phones and embedded boards.
-						I want to take that into automotive or aerospace next.
+						It started with small stuff, a chess engine in C and the controls for an
+						autonomous submarine, then kept drifting toward local AI. That's the work I
+						care about most: <strong>LightDiffusion</strong>, a Stable Diffusion stack I
+						tuned to be one of the fastest, and <strong>llmedge</strong>, an Android
+						runtime that runs LLMs, diffusion, and speech right on the phone. The rest
+						tends to come from everyday friction: EasyReader because I wanted a better
+						reader, with the summaries running on-device, and FrameLimiter because I was
+						tired of my Air cooking itself in games. Pilotrs, a flight-control sim in
+						Rust, was just to see if I could.
 					</p>
 
-					<dl class="about__facts">
-						{aboutFacts.map((fact) => (
-							<div class="about__fact">
-								<dt>{fact.label}</dt>
-								<dd>{fact.value}</dd>
+					<dl class="about__creds">
+						{aboutCredentials.map((c) => (
+							<div class="about__cred">
+								<dt>{c.label}</dt>
+								<dd>
+									<span class="about__cred-value">{c.value}</span>
+									<span class="about__cred-detail">{c.detail}</span>
+								</dd>
 							</div>
 						))}
 					</dl>
+
+					<p class="about__spark">
+						off the clock · <strong>top 0.03% EU in Valorant · Model UN (C-MIMUN)</strong>
+					</p>
 
 					<div class="about__activity" data-reveal aria-label="GitHub activity, last 90 days">
 						<div class="about__activity-head">
@@ -297,15 +304,6 @@ const starsFor = (repoUrl: string | undefined): number =>
 						</div>
 					</div>
 				</div>
-
-				<aside class="about__notes" data-reveal aria-label="Side notes">
-					{sideNotes.map((note) => (
-						<div class="about__note">
-							<span class="about__note-mark" aria-hidden="true">{note.mark}</span>
-							<p>{note.text}</p>
-						</div>
-					))}
-				</aside>
 			</div>
 		</div>
 	</section>
@@ -710,28 +708,19 @@ const starsFor = (repoUrl: string | undefined): number =>
 
 	.about__prose {
 		display: grid;
-		gap: 2rem;
+		gap: 1.6rem;
 		max-width: 44rem;
-		font-size: 1.05rem;
-		line-height: 1.65;
 		color: var(--ink-soft);
 	}
 
-	.about__pull {
-		font-family: var(--font-display);
-		font-size: clamp(1.5rem, 2.8vw, 2.2rem);
-		font-style: italic;
-		line-height: 1.28;
-		letter-spacing: -0.014em;
+	.about__lead {
+		font-family: var(--font-body);
+		font-size: clamp(1.1rem, 1.6vw, 1.22rem);
+		font-weight: 500;
+		line-height: 1.5;
+		letter-spacing: -0.005em;
 		color: var(--ink);
-		font-variation-settings: 'opsz' 144, 'SOFT' 80, 'WONK' 0;
-		max-width: 32rem;
-	}
-
-	.about__pull strong {
-		font-style: normal;
-		color: var(--accent);
-		font-weight: 400;
+		max-width: 34rem;
 	}
 
 	.about__body {
@@ -741,62 +730,68 @@ const starsFor = (repoUrl: string | undefined): number =>
 		color: var(--ink-soft);
 	}
 
-	.about__facts {
-		display: grid;
-		grid-template-columns: auto 1fr;
-		gap: 0.55rem 1.2rem;
-		margin: 0;
-		padding-top: 1.4rem;
-		border-top: 1px dashed var(--rule);
-		font-family: var(--font-mono);
-		font-size: 0.84rem;
-		line-height: 1.55;
-	}
-
-	.about__fact {
-		display: contents;
-	}
-
-	.about__fact dt {
-		color: var(--accent);
-		text-transform: uppercase;
-		font-size: 0.7rem;
-		letter-spacing: 0.16em;
-		padding-top: 0.2rem;
-	}
-
-	.about__fact dd {
-		margin: 0;
+	.about__body strong {
+		font-weight: 500;
 		color: var(--ink);
 	}
 
-	.about__notes {
+	.about__creds {
 		display: grid;
-		gap: 1.1rem;
-		padding-top: 1.2rem;
-		border-top: 1px dashed var(--rule);
+		grid-template-columns: 1fr;
+		gap: 1rem;
+		margin: 0;
+		padding-top: 1.4rem;
+		border-top: 1px solid var(--rule);
 	}
 
-	.about__note {
+	.about__cred {
+		margin: 0;
+	}
+
+	.about__cred dt {
+		font-family: var(--font-mono);
+		color: var(--accent);
+		text-transform: uppercase;
+		font-size: 0.66rem;
+		letter-spacing: 0.16em;
+		margin-bottom: 0.45rem;
+	}
+
+	.about__cred dd {
+		margin: 0;
 		display: grid;
-		grid-template-columns: 1.4rem 1fr;
-		gap: 0.7rem;
+		gap: 0.15rem;
+	}
+
+	.about__cred-value {
 		font-size: 0.92rem;
-		line-height: 1.55;
+		line-height: 1.3;
+		color: var(--ink);
+	}
+
+	.about__cred-detail {
+		font-size: 0.82rem;
+		line-height: 1.3;
+		color: var(--mute);
+	}
+
+	.about__spark {
+		font-family: var(--font-mono);
+		font-size: 0.74rem;
+		letter-spacing: 0.02em;
+		line-height: 1.5;
+		color: var(--mute);
+	}
+
+	.about__spark strong {
+		font-weight: 400;
 		color: var(--ink-soft);
 	}
 
-	.about__note-mark {
-		font-family: var(--font-mono);
-		color: var(--accent);
-		font-size: 1rem;
-		line-height: 1.2;
-	}
-
 	.about__activity {
-		margin-top: 1.6rem;
+		margin-top: 0.4rem;
 		padding-top: 1.4rem;
-		border-top: 1px dashed var(--rule);
+		border-top: 1px solid var(--rule);
 		color: var(--ink);
 		display: grid;
 		gap: 0.55rem;
@@ -942,12 +937,23 @@ const starsFor = (repoUrl: string | undefined): number =>
 		transform: translateX(4px);
 	}
 
-	@media (min-width: 64em) {
-		.about__grid {
-			grid-template-columns: minmax(0, 1.25fr) minmax(18rem, 0.75fr);
-			gap: 3.5rem;
+	@media (min-width: 40em) {
+		.about__creds {
+			grid-template-columns: repeat(3, 1fr);
+			gap: 0;
 		}
 
+		.about__cred + .about__cred {
+			padding-left: 1.25rem;
+			border-left: 1px solid var(--rule);
+		}
+
+		.about__cred:not(:last-child) {
+			padding-right: 1.25rem;
+		}
+	}
+
+	@media (min-width: 64em) {
 		.project-index__link {
 			grid-template-columns: auto 1fr auto auto auto;
 		}
