@@ -15,7 +15,7 @@ publishDate: 2025-09-18 00:00:00
 img: /Portfolio/assets/llmedge-arch.svg
 img_alt: llmedge architecture diagram, a Kotlin layer over JNI bridges, native engines, and the backend fallback chain
 featured: true
-featuredOrder: 1
+featuredOrder: 3
 repoUrl: https://github.com/Aatricks/llmedge
 docsUrl: https://aatricks.github.io/llmedge/
 metrics:
@@ -75,6 +75,10 @@ Wrapping a single backend doesn't cover that. The runtime has to handle the mode
 - speech-to-text and text-to-speech (whisper.cpp, bark.cpp)
 - embeddings, RAG, and PDF reading via ONNX utilities
 - example Android apps that exercise the whole API
+
+## On a real phone
+
+A single Kotlin API wrapping llama.cpp, stable-diffusion.cpp, and whisper.cpp. On a stock Galaxy S22: 35 tok/s text generation (Qwen-0.6B, Q4_K_M) and ~40s for a 128×128 SD1.5 image (20 steps, dpmpp2m). Zero servers, zero cloud calls.
 
 ## Where it runs
 

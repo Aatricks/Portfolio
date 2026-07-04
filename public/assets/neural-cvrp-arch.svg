@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 880" role="img" aria-label="Neural CVRP: one instance sent to two approaches. A learned attention constructor is measured and set aside; a classical ruin-and-recreate Rust engine is the spine that wins, beating PyVRP on gap to best-known.">
+  <defs>
+    <marker id="carr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L8 4 L0 8 z" fill="#6b6157"/>
+    </marker>
+    <marker id="carrt" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L8 4 L0 8 z" fill="#5a3fc0"/>
+    </marker>
+  </defs>
+
+  <rect width="1280" height="880" fill="#f3efe6"/>
+
+  <!-- instance -->
+  <rect x="360" y="52" width="560" height="86" fill="#ece7da" stroke="#161310" stroke-width="1.5"/>
+  <rect x="360" y="52" width="560" height="4" fill="#5a3fc0"/>
+  <text x="384" y="92" font-family="Georgia, 'Times New Roman', serif" font-size="24" fill="#161310">CVRP instance</text>
+  <text x="896" y="92" text-anchor="end" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="13" fill="#9a9082">NP-hard</text>
+  <text x="384" y="118" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="14" fill="#6b6157">depot · n stops with demands · vehicles of capacity Q</text>
+
+  <!-- fan-out to two approaches -->
+  <polyline points="640,138 640,166 345,166 345,206" fill="none" stroke="#6b6157" stroke-width="1.5" marker-end="url(#carr)"/>
+  <polyline points="640,138 640,166 935,166 935,206" fill="none" stroke="#6b6157" stroke-width="1.5" marker-end="url(#carr)"/>
+  <text x="640" y="192" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="14" fill="#6b6157">same instance, two approaches</text>
+
+  <!-- LEFT: learned construction, measured and set aside -->
+  <rect x="80" y="210" width="520" height="440" fill="none" stroke="#6b6157" stroke-width="1.5"/>
+  <text x="104" y="250" font-family="Georgia, 'Times New Roman', serif" font-size="22" fill="#161310">Learned construction</text>
+  <text x="576" y="250" text-anchor="end" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="13" fill="#9a9082">Study A</text>
+  <text x="104" y="274" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="14" fill="#6b6157">attention enc–dec · POMO / LEHD</text>
+
+  <g font-family="ui-monospace, Menlo, Consolas, monospace">
+    <rect x="104" y="296" width="472" height="50" fill="none" stroke="#6b6157" stroke-width="1"/>
+    <text x="128" y="322" font-size="15" fill="#161310">builds the tour point by point</text>
+    <text x="128" y="340" font-size="12" fill="#9a9082">one client at a time</text>
+
+    <rect x="104" y="362" width="472" height="50" fill="none" stroke="#6b6157" stroke-width="1"/>
+    <text x="128" y="388" font-size="15" fill="#161310">warm-started by imitation, then RL</text>
+    <text x="128" y="406" font-size="12" fill="#9a9082">n=50: ≈1.1% over the HGS oracle</text>
+
+    <rect x="104" y="428" width="472" height="50" fill="none" stroke="#6b6157" stroke-width="1"/>
+    <text x="128" y="454" font-size="15" fill="#161310">quality is in the test-time search</text>
+    <text x="128" y="472" font-size="12" fill="#9a9082">not in the network</text>
+  </g>
+
+  <g font-family="ui-monospace, Menlo, Consolas, monospace" fill="#6b6157" font-size="14">
+    <text x="104" y="514">· every learned replacement lost</text>
+    <text x="104" y="542">· ≈99.9% of the large-n win is classical SISR</text>
+    <text x="104" y="570">· the neural policy adds ≈0.07%</text>
+  </g>
+  <rect x="104" y="592" width="176" height="30" fill="none" stroke="#6b6157" stroke-width="1" stroke-dasharray="5 4"/>
+  <text x="192" y="612" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12" fill="#6b6157">measured, set aside</text>
+
+  <!-- RIGHT: classical ILS engine, the spine that wins -->
+  <rect x="680" y="210" width="520" height="440" fill="none" stroke="#161310" stroke-width="1.5"/>
+  <rect x="680" y="210" width="520" height="4" fill="#5a3fc0"/>
+  <text x="704" y="250" font-family="Georgia, 'Times New Roman', serif" font-size="22" fill="#161310">Classical ILS engine</text>
+  <text x="1176" y="250" text-anchor="end" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="13" fill="#5a3fc0">Study B · the win</text>
+  <text x="704" y="274" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="14" fill="#6b6157">reimplemented from the papers, in Rust</text>
+
+  <g font-family="ui-monospace, Menlo, Consolas, monospace">
+    <rect x="704" y="296" width="472" height="44" fill="none" stroke="#161310" stroke-width="1"/>
+    <text x="728" y="324" font-size="15" fill="#161310">LKH giant tour → exact Prins Split</text>
+
+    <rect x="704" y="352" width="472" height="44" fill="none" stroke="#161310" stroke-width="1"/>
+    <text x="728" y="380" font-size="15" fill="#161310">granular local search (15-NN)</text>
+
+    <rect x="704" y="408" width="472" height="44" fill="none" stroke="#161310" stroke-width="1"/>
+    <text x="728" y="436" font-size="15" fill="#161310">SISR ruin &amp; recreate + SREX</text>
+
+    <rect x="704" y="464" width="472" height="44" fill="#f3efe6" stroke="#5a3fc0" stroke-width="1.5"/>
+    <text x="728" y="492" font-size="15" fill="#161310">best-of-K parallel ruin oracle</text>
+  </g>
+
+  <text x="704" y="544" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="13" letter-spacing="3" fill="#5a3fc0">RESULT</text>
+  <text x="704" y="572" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="15" fill="#161310">beats PyVRP (HGS) at every budget</text>
+  <text x="704" y="598" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="13" fill="#6b6157">AILS-II unbeaten · single-thread SOTA</text>
+
+  <!-- standing strip -->
+  <rect x="80" y="680" width="1120" height="76" fill="#ece7da" stroke="#161310" stroke-width="1.5"/>
+  <rect x="80" y="680" width="4" height="76" fill="#5a3fc0"/>
+  <text x="108" y="712" font-family="Georgia, 'Times New Roman', serif" font-size="18" fill="#161310">Standing</text>
+  <text x="108" y="734" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="13" fill="#6b6157">Set-X · gap to best-known @120 s, lower is better</text>
+
+  <rect x="580" y="698" width="180" height="16" fill="#5a3fc0"/>
+  <text x="768" y="711" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="13" fill="#161310">engine 0.30%</text>
+  <rect x="580" y="726" width="258" height="16" fill="#6b6157"/>
+  <text x="846" y="739" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="13" fill="#6b6157">PyVRP 0.43%</text>
+
+  <!-- caption -->
+  <line x1="70" y1="792" x2="1210" y2="792" stroke="#cfc6b3" stroke-width="1"/>
+  <text x="70" y="824" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="20" fill="#6b6157">The lever at bounded size is search, not the network. Two optimal solutions share only ~41% of their routes.</text>
+</svg>

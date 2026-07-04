@@ -28,6 +28,7 @@ const diagrams = [
 	{ file: 'llmedge-arch.svg', accent: { '#2b6cb0': '#79a7ff' } },
 	{ file: 'pilotrs-arch.svg', accent: { '#0e7c86': '#54cfdd' } },
 	{ file: 'framelimiter-arch.svg', accent: { '#9d6b0f': '#e3a73a' } },
+	{ file: 'neural-cvrp-arch.svg', accent: { '#5a3fc0': '#a98bf0' } },
 ];
 
 const replaceAll = (svg, map) =>

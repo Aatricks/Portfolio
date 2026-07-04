@@ -15,7 +15,7 @@ publishDate: 2024-12-13 00:00:00
 img: /Portfolio/assets/lightdiffusion-home.png
 img_alt: LightDiffusion-Next browser interface with prompt controls and generated output
 featured: true
-featuredOrder: 3
+featuredOrder: 4
 repoUrl: https://github.com/Aatricks/LightDiffusion-Next
 docsUrl: https://aatricks.github.io/LightDiffusion-Next/
 demoUrl: https://huggingface.co/spaces/Aatricks/LightDiffusion-Next

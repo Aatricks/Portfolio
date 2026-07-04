@@ -51,7 +51,7 @@ I've evolved this from a simple terminal experiment into a robust game utility w
 
 ## One hook
 
-A game gets each frame by asking its `CAMetalLayer` for the next drawable. FrameLimiter hooks `-[CAMetalLayer nextDrawable]` (via method swizzling) and paces that one call with `mach_wait_until`. Basically every native Metal game goes through that method—whether it's raw Metal, MetalKit/`MTKView`, SDL2, or MoltenVK—so one hook covers all of them. It sleeps until the next frame is due instead of busy-looping, because busy-looping would burn the power the cap is trying to save.
+A game gets each frame by asking its `CAMetalLayer` for the next drawable. FrameLimiter hooks `-[CAMetalLayer nextDrawable]` (via method swizzling) and paces that one call with `mach_wait_until`. Basically every native Metal game goes through that method (whether it's raw Metal, MetalKit/`MTKView`, SDL2, or MoltenVK) so one hook covers all of them. It sleeps until the next frame is due instead of busy-looping, because busy-looping would burn the power the cap is trying to save.
 
 ## Back-pressure
 
@@ -84,7 +84,7 @@ Instead of hardcoding 60 Hz or forcing manual config, FrameLimiter queries the m
 
 ## Control files and flctl
 
-All configuration—the FPS target, background cap, HUD state, and live status—is stored in simple files under `~/.framelimiter.*`.
+All configuration (the FPS target, background cap, HUD state, and live status) is stored in simple files under `~/.framelimiter.*`.
 - The dylib writes a status heartbeat (`~/.framelimiter.status`) containing the game's PID, measured FPS, and state once per second.
 - The `flctl` CLI reads and writes these files, letting you bind caps to global hotkeys (e.g. via Hammerspoon).
 - The menu-bar app reads the status heartbeat to draw live FPS charts and displays a list of your Steam library, letting you install or uninstall the wrapper with a single click.

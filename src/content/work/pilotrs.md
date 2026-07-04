@@ -64,6 +64,10 @@ The sim knows the aircraft's true state. The autopilot doesn't, and it's not all
 - PID and LQR controllers behind one trait, with waypoint missions and a fixed-wing autopilot on top. You can switch the controller or estimator while it's running.
 - The core is `no_std`, sits at MSRV 1.91, and has zero dependencies, so it can easily compile for embedded microcontrollers later.
 
+## Why it's no_std
+
+I made the flight-control core `no_std` with zero dependencies on purpose. No allocator, no hidden runtime, nothing in the loop that isn't deterministic and auditable, which is standard practice in safety-critical avionics. It also means running it through a qualified Rust compiler like Ferrocene (for DO-178C or ISO 26262 work) is actually possible without a complete rewrite down the line. I'm not certifying a real aircraft, but I wrote the code so that option stays open.
+
 ## The fly-by-wire fighter
 
 There's also a relaxed-stability fighter. It has a negative static margin, so it's unstable on its own and pitches away from level in about 0.34 s (an F-16 is around 0.3). A fly-by-wire system with angle-of-attack and rate feedback, command shaping, and gain scheduling keeps it flying. One key turns the flight computer off, and it goes unstable.

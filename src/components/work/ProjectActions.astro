@@ -1,6 +1,6 @@
 ---
 interface Props {
-	repoUrl: string;
+	repoUrl?: string;
 	docsUrl?: string;
 	demoUrl?: string;
 }
@@ -8,7 +8,7 @@ interface Props {
 const { repoUrl, docsUrl, demoUrl } = Astro.props;
 
 const links = [
-	{ href: repoUrl, label: 'source', glyph: '↗' },
+	repoUrl && { href: repoUrl, label: 'source', glyph: '↗' },
 	docsUrl && { href: docsUrl, label: 'docs', glyph: '↗' },
 	demoUrl && { href: demoUrl, label: 'demo', glyph: '▶' },
 ].filter(Boolean) as { href: string; label: string; glyph: string }[];

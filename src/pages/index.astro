@@ -13,8 +13,8 @@ const additionalProjects = work
 	.filter((project) => !project.data.featured && project.data.status !== 'archive')
 	.sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
 
-const flagship = featuredProjects[0];
-const secondary = featuredProjects.slice(1);
+const coFlagships = featuredProjects.slice(0, 2);
+const secondary = featuredProjects.slice(2);
 
 const aboutCredentials = [
 	{ label: 'now', value: 'CS engineering', detail: 'Polytech Tours · 2022–27' },
@@ -212,13 +212,15 @@ const starsFor = (repoUrl: string | undefined): number =>
 			</header>
 
 			<div id="selected-work" class="work">
-				{flagship && (
-					<div class="work__flagship">
-						<PortfolioPreview
-							project={flagship}
-							variant="dominant"
-							stars={starsFor(flagship.data.repoUrl)}
-						/>
+				{coFlagships.length > 0 && (
+					<div class="work__coflagship" data-reveal-stagger>
+						{coFlagships.map((project) => (
+							<PortfolioPreview
+								project={project}
+								variant="coflagship"
+								stars={starsFor(project.data.repoUrl)}
+							/>
+						))}
 					</div>
 				)}
 
@@ -263,8 +265,10 @@ const starsFor = (repoUrl: string | undefined): number =>
 						runtime that runs LLMs, diffusion, and speech right on the phone. The rest
 						tends to come from everyday friction: EasyReader because I wanted a better
 						reader, with the summaries running on-device, and FrameLimiter because I was
-						tired of my Air cooking itself in games. Pilotrs, a flight-control sim in
-						Rust, was just to see if I could.
+						tired of my Air cooking itself in games. <strong>Pilotrs</strong> is a flight
+						simulator core I wrote in Rust to play with control loops: keeping a relaxed-stability
+						airframe (which stalls in 0.3 seconds on its own) airborne using noisy sensor
+						estimates rather than clean simulator state.
 					</p>
 
 					<dl class="about__creds">
@@ -653,7 +657,7 @@ const starsFor = (repoUrl: string | undefined): number =>
 		border-block: 1px solid var(--rule);
 	}
 
-	/* About is a single narrative column — center it in the wide section. */
+	/* About is a single narrative column, centered in the wide section. */
 	.section--about .about__grid {
 		max-width: 42rem;
 		margin-inline: auto;
@@ -709,11 +713,25 @@ const starsFor = (repoUrl: string | undefined): number =>
 		gap: 0;
 	}
 
+	/* Two co-flagships share the top row: stacked on mobile, side by side on wide. */
+	.work__coflagship {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 0;
+	}
+
 	.work__secondary {
 		display: grid;
 		grid-template-columns: 1fr;
 		gap: 0;
 		border-top: 1px solid var(--rule);
+	}
+
+	@media (min-width: 64em) {
+		.work__coflagship {
+			grid-template-columns: 1fr 1fr;
+			column-gap: 3rem;
+		}
 	}
 
 	/* ====================== ABOUT ====================== */

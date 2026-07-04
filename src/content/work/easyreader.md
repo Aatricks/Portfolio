@@ -15,7 +15,7 @@ publishDate: 2025-10-23 00:00:00
 img: /Portfolio/assets/easyreader-explorer.jpg
 img_alt: EasyReader explore screen showing discovery cards on Android
 featured: true
-featuredOrder: 4
+featuredOrder: 5
 repoUrl: https://github.com/Aatricks/EasyReader
 metrics:
   - label: Product scope

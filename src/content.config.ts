@@ -21,6 +21,7 @@ export const collections = {
 				'pilotrs',
 				'framelimiter',
 				'pixcii',
+				'neural-cvrp',
 			]),
 			accent: z.string().default('#b8421a'),
 			accentDark: z.string().default('#e07a4a'),
@@ -31,7 +32,7 @@ export const collections = {
 			img_alt: z.string().optional(),
 			featured: z.boolean().default(false),
 			featuredOrder: z.number().optional(),
-			repoUrl: z.string().url(),
+			repoUrl: z.string().url().optional(),
 			docsUrl: z.string().url().optional(),
 			demoUrl: z.string().url().optional(),
 			metrics: z
