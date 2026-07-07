@@ -42,7 +42,7 @@ highlights:
   - Keeping the original colors is what makes it look like the photo instead of a typewriter effect.
   - Plenty of knobs, width, character ratio, gamma, brightness, contrast, retro quantization, and black-and-white.
   - Prints straight to the terminal for a quick look, or saves an image to share.
-status: secondary
+status: archive
 ---
 
 `pixcii` is a command-line tool that turns images into colorized ASCII art. It tries to keep enough detail and color that the output still looks like the original photo.
