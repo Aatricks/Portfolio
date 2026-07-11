@@ -4,7 +4,7 @@ description: An Android-native runtime for running AI models locally on phones. 
 thesis: A Kotlin wrapper that handles the messy native engines, memory allocations, and fallback logic so Android apps don't have to.
 eyebrow: Flagship system
 blurb: Android runtime that runs LLMs, diffusion, and speech models locally on real phones. One Kotlin API over llama.cpp, stable-diffusion.cpp, whisper.cpp, and ONNX.
-proof: powers EasyReader summaries · handles OpenCL/Vulkan/CPU fallback
+proof: pulled by 70+ companies via Maven Central · powers EasyReader summaries
 stackLine: Kotlin / JNI / C++ / Android NDK / Vulkan / OpenCL / ONNX
 themeKey: llmedge
 accent: '#2b6cb0'
@@ -19,6 +19,8 @@ featuredOrder: 3
 repoUrl: https://github.com/Aatricks/llmedge
 docsUrl: https://aatricks.github.io/llmedge/
 metrics:
+  - label: Adoption
+    value: Downloaded by 70+ companies via Maven Central
   - label: Runtime target
     value: Android-native multimodal inference
   - label: Backends
@@ -82,4 +84,4 @@ A single Kotlin API wrapping llama.cpp, stable-diffusion.cpp, and whisper.cpp. O
 
 ## Where it runs
 
-[`EasyReader`](/Portfolio/work/easyreader) ships llmedge in production for on-device chapter summaries, so the user's text never leaves the phone. The [`llmedge-examples`](https://github.com/Aatricks/llmedge-examples) repo has each feature as its own small Android app.
+It's published on Maven Central as `io.github.aatricks:llmedge`, where Sonatype's publisher insights show it being pulled by 70+ distinct companies each quarter. [`EasyReader`](/Portfolio/work/easyreader) ships llmedge in production for on-device chapter summaries, so the user's text never leaves the phone. The [`llmedge-examples`](https://github.com/Aatricks/llmedge-examples) repo has each feature as its own small Android app.
