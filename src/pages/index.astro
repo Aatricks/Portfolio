@@ -3,7 +3,6 @@ import { getCollection } from 'astro:content';
 
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PortfolioPreview from '../components/PortfolioPreview.astro';
-import StackInventory from '../components/StackInventory.astro';
 
 const work = await getCollection('work');
 const featuredProjects = work
@@ -156,8 +155,7 @@ const starsFor = (repoUrl: string | undefined): number =>
 		<div class="wrapper hero__inner" data-reveal-stagger>
 			<div class="hero__main">
 				<h1 class="hero__title" id="hero-title" data-reveal>
-					Emilio&nbsp;Melis.<br />
-					builds <em>edge&nbsp;AI</em> that<br />
+					I build <em>edge&nbsp;AI</em> that<br />
 					runs <em class="hero__title-mark"><span class="hero__title-text">on-device</span><svg
 							class="hero__title-stroke"
 							viewBox="0 0 320 18"
@@ -300,25 +298,11 @@ const starsFor = (repoUrl: string | undefined): number =>
 		</div>
 	</section>
 
-	{/* ============================== §03 · STACK ============================== */}
-	<section class="section" id="stack" aria-labelledby="stack-title">
-		<div class="wrapper">
-			<header class="section__head" data-reveal>
-				<p class="section-marker">03 · stack</p>
-				<h2 id="stack-title" class="section__title">
-					Tools I reach for, <em>and what I built with&nbsp;them</em>.
-				</h2>
-			</header>
-
-			<StackInventory />
-		</div>
-	</section>
-
-	{/* ============================== §04 · INDEX ============================== */}
+	{/* ============================== §03 · INDEX ============================== */}
 	<section class="section" id="more" aria-labelledby="more-title">
 		<div class="wrapper">
 			<header class="section__head" data-reveal>
-				<p class="section-marker">04 · index</p>
+				<p class="section-marker">03 · index</p>
 				<h2 id="more-title" class="section__title">
 					More work <em>worth a look</em>.
 				</h2>
