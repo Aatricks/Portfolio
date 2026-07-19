@@ -40,11 +40,11 @@ const routes = [
 		expectedText: 'LightDiffusion-Next',
 	},
 	{
-		name: 'work-easyreader',
-		url: `${baseUrl}/work/easyreader`,
-		screenshot: 'work-easyreader.png',
+		name: 'work-emaki',
+		url: `${baseUrl}/work/emaki`,
+		screenshot: 'work-emaki.png',
 		selectors: ['.project-page__hero', '.project-page__body', '.project-page__notes'],
-		expectedText: 'EasyReader',
+		expectedText: 'Emaki',
 	},
 	{
 		name: 'work-cchess',

@@ -16,7 +16,7 @@ export const collections = {
 			themeKey: z.enum([
 				'llmedge',
 				'lightdiffusion-next',
-				'easyreader',
+				'emaki',
 				'cchess',
 				'pilotrs',
 				'framelimiter',

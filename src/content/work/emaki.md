@@ -1,19 +1,19 @@
 ---
-title: EasyReader
+title: Emaki
 description: An offline-first Android reading app with on-device chapter summaries. It keeps your library and reading state, and the AI runs locally through llmedge.
 thesis: An Android reading app where the chapter summaries run on the phone instead of calling a server.
 eyebrow: Product surface
 blurb: Offline-first Android reader for web chapters, PDF, EPUB, and manga, with on-device chapter summaries through llmedge.
 proof: ships llmedge in production · user text never leaves the phone
 stackLine: Kotlin / Jetpack Compose / Room / Hilt / llmedge
-themeKey: easyreader
+themeKey: emaki
 accent: '#2f7a3a'
 accentDark: '#7ad88a'
-hint: ~/EasyReader/MainActivity.kt
+hint: ~/Emaki/MainActivity.kt
 galleryColumns: single
 publishDate: 2025-10-23 00:00:00
 img: /Portfolio/assets/easyreader-explorer.jpg
-img_alt: EasyReader explore screen showing discovery cards on Android
+img_alt: Emaki explore screen showing discovery cards on Android
 featured: true
 featuredOrder: 5
 repoUrl: https://github.com/Aatricks/EasyReader
@@ -32,7 +32,7 @@ heroPoints:
   - I put as much work into the Android side as the model part.
 gallery:
   - src: /Portfolio/assets/easyreader-manhwa.jpg
-    alt: EasyReader manhwa reader screen from the EasyReader repository
+    alt: Emaki manhwa reader screen from the Emaki repository
     caption: The reader mid-manhwa with the quick library drawer open.
     frame: phone
 architecture:
@@ -47,7 +47,7 @@ highlights:
 status: flagship
 ---
 
-`EasyReader` is an Android reading app: discovery, a library, and a multi-format reader, with the AI feature running on the phone. It's also where [`llmedge`](/Portfolio/work/llmedge) actually ships.
+`Emaki` (formerly EasyReader) is an Android reading app: discovery, a library, and a multi-format reader, with the AI feature running on the phone. It's also where [`llmedge`](/Portfolio/work/llmedge) actually ships.
 
 ## The app
 
