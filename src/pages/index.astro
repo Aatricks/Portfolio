@@ -27,119 +27,20 @@ const externalProjects = [
 		title: 'Android-battery-optimizer',
 		stack: 'Python / ADB / Android',
 		href: 'https://github.com/Aatricks/Android-battery-optimizer',
-		repo: 'Android-battery-optimizer',
 	},
 	{
 		title: 'Atoll',
 		stack: 'Swift / macOS',
 		href: 'https://github.com/Aatricks/Atoll',
-		repo: 'Atoll',
 	},
 	{
 		title: 'NixOS-EasyConfig',
 		stack: 'Nix / flakes',
 		href: 'https://github.com/Aatricks/NixOS-EasyConfig',
-		repo: 'NixOS-EasyConfig',
 	},
 ];
 
-// ---- Build-time GitHub activity strip (real contribution data) ----
-// Source: jogruber's contributions proxy, real per-day GitHub contribution
-// counts (commits + PRs + issues + reviews) with GitHub's own 0–4 levels.
-// No token needed; CORS-enabled. The public events API was too sparse to fill
-// a 90-day window, so the old strip rendered near-empty (the "placeholder").
-const WINDOW_DAYS = 90;
-type ContribDay = { date: string; count: number; level: number };
-let days: ContribDay[] = [];
 
-try {
-	const res = await fetch(
-		'https://github-contributions-api.jogruber.de/v4/Aatricks?y=last',
-		{
-			signal: AbortSignal.timeout(6000),
-			headers: { 'user-agent': 'portfolio-build', accept: 'application/json' },
-		},
-	);
-	if (res.ok) {
-		const data = (await res.json()) as { contributions?: ContribDay[] };
-		if (Array.isArray(data.contributions)) {
-			days = data.contributions.slice(-WINDOW_DAYS);
-		}
-	}
-} catch {
-	// Network failure or rate limit, fall through to the empty fallback below.
-}
-
-// Always render a full window, even if the fetch failed (graceful degradation).
-if (days.length === 0) {
-	const todayUtc = new Date();
-	todayUtc.setUTCHours(0, 0, 0, 0);
-	days = Array.from({ length: WINDOW_DAYS }, (_, i) => {
-		const d = new Date(todayUtc);
-		d.setUTCDate(d.getUTCDate() - (WINDOW_DAYS - 1 - i));
-		return { date: d.toISOString().slice(0, 10), count: 0, level: 0 };
-	});
-}
-
-// GitHub's 5-bucket scale mapped onto the strip's accent opacity.
-const LEVEL_OPACITY = [0.08, 0.34, 0.56, 0.78, 1];
-const totalContributions = days.reduce((sum, d) => sum + d.count, 0);
-const activityGrid = days.map((d) => ({
-	date: d.date,
-	count: d.count,
-	opacity: LEVEL_OPACITY[d.level] ?? 0.08,
-}));
-
-let lastActive: string | null = null;
-for (let i = days.length - 1; i >= 0; i--) {
-	if (days[i].count > 0) {
-		lastActive = days[i].date;
-		break;
-	}
-}
-
-function relativeAgo(iso: string | null): string {
-	if (!iso) return 'no recent activity';
-	const sec = (Date.now() - new Date(iso).getTime()) / 1000;
-	if (sec < 86400) return 'today';
-	if (sec < 86400 * 7) return `${Math.floor(sec / 86400)}d ago`;
-	return `${Math.floor(sec / (86400 * 7))}w ago`;
-}
-const lastActiveAgo = relativeAgo(lastActive);
-
-// ---- Build-time GitHub repo stats (totals + per-repo star counts) ----
-let totalStars = 0;
-let totalForks = 0;
-const repoStars: Record<string, number> = {};
-try {
-	const res = await fetch(
-		'https://api.github.com/users/Aatricks/repos?per_page=100&type=owner&sort=updated',
-		{
-			signal: AbortSignal.timeout(6000),
-			headers: { 'user-agent': 'portfolio-build', accept: 'application/vnd.github+json' },
-		},
-	);
-	if (res.ok) {
-		const repos = (await res.json()) as Array<{
-			name?: string;
-			stargazers_count?: number;
-			forks_count?: number;
-		}>;
-		if (Array.isArray(repos)) {
-			for (const r of repos) {
-				totalStars += r.stargazers_count ?? 0;
-				totalForks += r.forks_count ?? 0;
-				if (r.name) repoStars[r.name] = r.stargazers_count ?? 0;
-			}
-		}
-	}
-} catch {
-	// Network failure or rate limit, totals stay 0; the client refresh fills them.
-}
-
-// Star count for a project from its repo URL (case studies) or repo name (index rows).
-const starsFor = (repoUrl: string | undefined): number =>
-	repoUrl ? (repoStars[repoUrl.split('/').pop() ?? ''] ?? 0) : 0;
 ---
 
 <BaseLayout
@@ -204,7 +105,6 @@ const starsFor = (repoUrl: string | undefined): number =>
 							<PortfolioPreview
 								project={project}
 								variant="coflagship"
-								stars={starsFor(project.data.repoUrl)}
 							/>
 						))}
 					</div>
@@ -216,7 +116,6 @@ const starsFor = (repoUrl: string | undefined): number =>
 							<PortfolioPreview
 								project={project}
 								variant="secondary"
-								stars={starsFor(project.data.repoUrl)}
 							/>
 						))}
 					</div>
@@ -272,27 +171,6 @@ const starsFor = (repoUrl: string | undefined): number =>
 					<p class="about__spark">
 						off the clock · <strong>top 0.03% EU in Valorant · Model UN (C-MIMUN)</strong>
 					</p>
-
-					<div class="about__activity" data-reveal aria-label="GitHub activity, last 90 days">
-						<div class="about__activity-head">
-							<span class="label">last 90 days · github</span>
-							<span class="about__activity-meta">
-								last active <em data-activity-last>{lastActiveAgo}</em> · <span data-activity-total>{totalContributions}</span> contributions
-								· ★ <span data-repo-stars>{totalStars}</span> · ⑂ <span data-repo-forks>{totalForks}</span>
-							</span>
-						</div>
-						<svg class="about__activity-strip" data-activity-strip viewBox={`0 0 ${activityGrid.length * 3} 14`} preserveAspectRatio="none" aria-hidden="true">
-							{activityGrid.map((cell, i) => (
-								<rect x={i * 3} y={2} width={2} height={10} fill="currentColor" opacity={cell.opacity}>
-									<title>{cell.date}: {cell.count} contribution{cell.count === 1 ? '' : 's'}</title>
-								</rect>
-							))}
-						</svg>
-						<div class="about__activity-axis" aria-hidden="true">
-							<span>90d ago</span>
-							<span>today</span>
-						</div>
-					</div>
 				</div>
 			</div>
 		</div>
@@ -315,9 +193,6 @@ const starsFor = (repoUrl: string | undefined): number =>
 							<span class="project-index__num">{String(i + 1).padStart(2, '0')}</span>
 							<h3 class="project-index__title">{project.data.title}</h3>
 							<span class="project-index__stack">{project.data.blurb ?? project.data.stackLine}</span>
-							{starsFor(project.data.repoUrl) > 0 && (
-								<span class="project-index__stars">★ {starsFor(project.data.repoUrl)}</span>
-							)}
 							<span class="project-index__arrow" aria-hidden="true">→</span>
 						</a>
 					</li>
@@ -335,9 +210,6 @@ const starsFor = (repoUrl: string | undefined): number =>
 							</span>
 							<h3 class="project-index__title">{project.title}</h3>
 							<span class="project-index__stack">{project.stack}</span>
-							{(repoStars[project.repo] ?? 0) > 0 && (
-								<span class="project-index__stars">★ {repoStars[project.repo]}</span>
-							)}
 							<span class="project-index__arrow" aria-hidden="true">↗</span>
 						</a>
 					</li>
@@ -347,98 +219,7 @@ const starsFor = (repoUrl: string | undefined): number =>
 	</section>
 </BaseLayout>
 
-<script>
-	// Progressive enhancement: the strip is rendered with real data at build
-	// time, then refreshed live in the browser so it stays current between
-	// portfolio redeploys. If the fetch fails, the build-time baseline stays.
-	const ACTIVITY_USER = 'Aatricks';
-	const ACTIVITY_WINDOW = 90;
-	const ACTIVITY_LEVEL_OPACITY = [0.08, 0.34, 0.56, 0.78, 1];
-	const SVG_NS = 'http://www.w3.org/2000/svg';
 
-	function activityAgo(dateStr: string | null): string {
-		if (!dateStr) return 'no recent activity';
-		const sec = (Date.now() - new Date(dateStr).getTime()) / 1000;
-		if (sec < 86400) return 'today';
-		if (sec < 86400 * 7) return `${Math.floor(sec / 86400)}d ago`;
-		return `${Math.floor(sec / (86400 * 7))}w ago`;
-	}
-
-	async function refreshActivity() {
-		const strip = document.querySelector('[data-activity-strip]');
-		if (!strip) return;
-
-		let days: Array<{ date: string; count: number; level: number }>;
-		try {
-			const res = await fetch(
-				`https://github-contributions-api.jogruber.de/v4/${ACTIVITY_USER}?y=last`,
-			);
-			if (!res.ok) return;
-			const data = await res.json();
-			if (!Array.isArray(data?.contributions)) return;
-			days = data.contributions.slice(-ACTIVITY_WINDOW);
-		} catch {
-			return; // keep the build-time baseline
-		}
-		if (!days.length) return;
-
-		const frag = document.createDocumentFragment();
-		let total = 0;
-		let lastActive: string | null = null;
-		days.forEach((d, i) => {
-			total += d.count;
-			if (d.count > 0) lastActive = d.date;
-			const rect = document.createElementNS(SVG_NS, 'rect');
-			rect.setAttribute('x', String(i * 3));
-			rect.setAttribute('y', '2');
-			rect.setAttribute('width', '2');
-			rect.setAttribute('height', '10');
-			rect.setAttribute('fill', 'currentColor');
-			rect.setAttribute('opacity', String(ACTIVITY_LEVEL_OPACITY[d.level] ?? 0.08));
-			const title = document.createElementNS(SVG_NS, 'title');
-			title.textContent = `${d.date}: ${d.count} contribution${d.count === 1 ? '' : 's'}`;
-			rect.appendChild(title);
-			frag.appendChild(rect);
-		});
-		strip.replaceChildren(frag);
-
-		const totalEl = document.querySelector('[data-activity-total]');
-		if (totalEl) totalEl.textContent = String(total);
-		const lastEl = document.querySelector('[data-activity-last]');
-		if (lastEl) lastEl.textContent = activityAgo(lastActive);
-	}
-
-	async function refreshRepoStats() {
-		const starsEl = document.querySelector('[data-repo-stars]');
-		const forksEl = document.querySelector('[data-repo-forks]');
-		if (!starsEl && !forksEl) return;
-
-		let repos: Array<{ stargazers_count?: number; forks_count?: number }>;
-		try {
-			const res = await fetch(
-				`https://api.github.com/users/${ACTIVITY_USER}/repos?per_page=100&type=owner&sort=updated`,
-				{ headers: { accept: 'application/vnd.github+json' } },
-			);
-			if (!res.ok) return;
-			repos = await res.json();
-			if (!Array.isArray(repos)) return;
-		} catch {
-			return; // keep the build-time baseline
-		}
-
-		let stars = 0;
-		let forks = 0;
-		for (const r of repos) {
-			stars += r.stargazers_count ?? 0;
-			forks += r.forks_count ?? 0;
-		}
-		if (starsEl) starsEl.textContent = String(stars);
-		if (forksEl) forksEl.textContent = String(forks);
-	}
-
-	refreshActivity();
-	refreshRepoStats();
-</script>
 
 <style>
 	/* ====================== HERO ====================== */
@@ -796,52 +577,7 @@ const starsFor = (repoUrl: string | undefined): number =>
 		color: var(--ink-soft);
 	}
 
-	.about__activity {
-		margin-top: 0.4rem;
-		padding-top: 1.4rem;
-		border-top: 1px solid var(--rule);
-		color: var(--ink);
-		display: grid;
-		gap: 0.55rem;
-	}
 
-	.about__activity-head {
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: space-between;
-		gap: 0.5rem 1.25rem;
-		align-items: baseline;
-	}
-
-	.about__activity-meta {
-		font-family: var(--font-mono);
-		font-size: 0.72rem;
-		letter-spacing: 0.04em;
-		color: var(--mute);
-	}
-
-	.about__activity-meta em {
-		font-style: normal;
-		color: var(--ink-soft);
-		font-family: var(--font-mono);
-	}
-
-	.about__activity-strip {
-		width: 100%;
-		height: 1.6rem;
-		color: var(--accent);
-		display: block;
-	}
-
-	.about__activity-axis {
-		display: flex;
-		justify-content: space-between;
-		font-family: var(--font-mono);
-		font-size: 0.66rem;
-		letter-spacing: 0.12em;
-		text-transform: uppercase;
-		color: var(--mute-soft);
-	}
 
 	/* ====================== PROJECT INDEX ====================== */
 	.project-index {
@@ -921,17 +657,7 @@ const starsFor = (repoUrl: string | undefined): number =>
 		max-width: 34rem;
 	}
 
-	.project-index__stars {
-		font-family: var(--font-mono);
-		font-size: 0.74rem;
-		color: var(--mute);
-		font-variant-numeric: tabular-nums;
-		white-space: nowrap;
-	}
 
-	.project-index__link:hover .project-index__stars {
-		color: var(--accent);
-	}
 
 	.project-index__arrow {
 		font-family: var(--font-mono);

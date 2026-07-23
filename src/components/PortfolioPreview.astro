@@ -4,16 +4,12 @@ import type { CollectionEntry } from 'astro:content';
 interface Props {
 	project: CollectionEntry<'work'>;
 	variant?: 'dominant' | 'secondary' | 'coflagship';
-	stars?: number | undefined;
 }
 
-const { project, variant = 'secondary', stars } = Astro.props;
+const { project, variant = 'secondary' } = Astro.props;
 const { data, id } = project;
 const href = `/Portfolio/work/${id.replace(/\.md$/, '')}`;
-const proofParts = [
-	...(stars && stars > 0 ? [`★ ${stars}`] : []),
-	...(data.proof ? [data.proof] : []),
-];
+const proofParts = data.proof ? [data.proof] : [];
 // SVG diagrams ship a `-dark.svg` companion (see scripts/gen-dark-diagrams.mjs) so
 // they don't render as a bright card on a dark page. CSS swaps which one is shown.
 const imgDark = data.img.endsWith('.svg') ? data.img.replace(/\.svg$/, '-dark.svg') : null;
