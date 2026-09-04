@@ -28,7 +28,7 @@ metrics:
 heroPoints:
   - Built a parallel Rust ILS solver from scratch that beats PyVRP at 10 s, 60 s, and 120 s budgets on the 99-instance Set-X benchmark.
   - 'Mapped structural failure modes in learned CVRP methods: gradient blockage in differentiable split, and solution degeneracy in ML-guided local search.'
-  - Built an automated 9-stage pipeline using coding agents to reimplement 13 historical metaheuristics under a uniform protocol on VRP-REP.
+  - Built an automated 7-stage pipeline using coding agents to reimplement and verify reproduction of CVRP papers on VRP-REP.
 gallery:
   - src: /Portfolio/assets/neural-cvrp-arch.svg
     alt: Architecture overview showing the learned constructor and the parallel Rust ILS engine with benchmark results on Set-X
@@ -109,22 +109,20 @@ Key findings:
 
 ## Part three: automated reproducibility platform on VRP-REP
 
-To make this benchmarking methodology reusable, I built an automated 9-stage pipeline that processes a paper end-to-end:
+To make this reproducibility methodology reusable, I built an automated 7-stage pipeline that processes a paper end-to-end:
 1. Intake and parsing of published result tables, instances, and evaluation metrics.
-2. Specification drafting.
+2. Specification drafting (SPEC, decision log, proxy register).
 3. Blind independent second reading by a different model to cross-check ambiguities.
-4. Rust implementation against the shared core.
-5. Code review by a secondary agent.
-6. Mechanical validation (compilation, automated tests, independent Python solution verification).
-7. Reproduction of published results under the paper's original setup.
-8. Standardized benchmarking under the common protocol ($3 \times N$ s budget).
-9. Output generation for leaderboard submission.
+4. Sandboxed Rust implementation against the shared core.
+5. Rubric-based code review by a secondary agent.
+6. Mechanical validation (compilation, automated tests, determinism checks, independent Python solution verification).
+7. Reproduction of published results under the paper's original setup and stopping criteria.
 
 If any stage detects an unresolvable ambiguity, unregistered constant, or invalid solution, the pipeline halts and reports the exact citation discrepancy to the submitter.
 
 ### Integration with VRP-REP
 
-The platform is integrated directly into [VRP-REP](http://www.vrp-rep.org), the public vehicle routing repository, under the *Contribute* section.
+The platform is integrated directly into [VRP-REP](http://www.vrp-rep.org), the public vehicle routing repository, under the *Contribute* section. Its focus is paper reproduction and verification—giving submitters validated code and reproduction verdicts rather than forcing a public leaderboard ranking.
 
 As part of the deployment, I modernized the legacy VRP-REP infrastructure: patched critical authentication vulnerabilities in the PHP/Symfony application, fixed defunct source dependencies, automated HTTPS certificate renewals, and isolated submitted file storage outside the web root.
 
