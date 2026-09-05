@@ -1,11 +1,11 @@
 ---
 title: Emaki
-description: An offline-first Android reading app with on-device chapter summaries. It keeps your library and reading state, and the AI runs locally through llmedge.
-thesis: An Android reading app where the chapter summaries run on the phone instead of calling a server.
-eyebrow: Product surface
-blurb: Offline-first Android reader for web chapters, PDF, EPUB, and manga, with on-device chapter summaries through llmedge.
-proof: ships llmedge in production · user text never leaves the phone
-stackLine: Kotlin / Jetpack Compose / Room / Hilt / llmedge
+description: Android reader for web novels, manga, manhwa, EPUB, and PDF. Own scrapers with unified search across sources, offline chapter downloads, reading position that sticks, on-device chapter summaries through llmedge. 54k lines of Kotlin. The one project I actively maintain.
+thesis: Web novels, manga, EPUB, PDF, one reader. Scrapers, download queue, backups, self-update from GitHub releases. Summaries run on the phone through llmedge. v0.6.1, still moving.
+eyebrow: Android reader · active
+blurb: Android reader for web novels, manga, manhwa, EPUB, and PDF. Own scrapers, unified search, offline downloads, on-device chapter summaries through llmedge. 54k lines of Kotlin, 87 test files. Actively maintained.
+proof: v0.6.1 (September 2026) · actively maintained · user text never leaves the phone
+stackLine: Kotlin / Jetpack Compose / Room / Hilt / WorkManager / Ktor / Jsoup / llmedge
 themeKey: emaki
 accent: '#2f7a3a'
 accentDark: '#7ad88a'
@@ -16,7 +16,7 @@ img: /Portfolio/assets/easyreader-explorer.jpg
 img_alt: Emaki explore screen showing discovery cards on Android
 featured: true
 featuredOrder: 5
-repoUrl: https://github.com/Aatricks/EasyReader
+repoUrl: https://github.com/Aatricks/Emaki
 metrics:
   - label: Product scope
     value: Discovery, library, reader, and summary workflow
@@ -47,30 +47,22 @@ highlights:
 status: flagship
 ---
 
-`Emaki` (formerly EasyReader) is an Android reading app: discovery, a library, and a multi-format reader, with the AI feature running on the phone. It's also where [`llmedge`](/Portfolio/work/llmedge) actually ships.
+`Emaki` (formerly EasyReader, named after the Japanese picture scroll) is an Android reader for web novels, manga, manhwa, EPUB, and PDF. It's the one project I actively maintain. Last release v0.6.1, September 2026. It's also where [`llmedge`](/Portfolio/work/llmedge) ships.
 
-## The app
+## What it does
 
-The main job is reading, and it covers the whole loop:
-
-- finding content and organizing a library
-- opening web chapters, PDF, EPUB, manga/manhwa, and local HTML
-- keeping your position and library between sessions
-- working fully offline
-
-Every format goes through `ContentRepository` into one pipeline, so the reader doesn't care where a chapter came from.
+- **Sources.** Built-in scrapers for novel and manga sites (AsuraScans, MangaBat, NovelFire, Novelight), plus a `SmartSource` that infers the parser for a site it hasn't seen. Unified search runs across all sources at once. A kill switch can disable a source remotely when a site changes.
+- **Offline.** A `ChapterDownloadWorker` on WorkManager pre-fetches whole series with a per-host throttle and a download limiter. An offline chapter store serves them back. A reconciler keeps download status honest after crashes.
+- **Formats.** Web chapters, EPUB, PDF, and local HTML all go through `ContentRepository` into one reading pipeline. EPUB and PDF images are cached on disk. Manga pages are tiled and zoomable, with image bounds parsed ahead so the scroll doesn't jump.
+- **Reader.** Paged and scrolling modes, text paginator with its own cache, reading position restored per chapter, reading sessions tracked in Room, brightness, fonts, themes, reduced motion.
+- **Library.** Filters, sort modes, multi-select, auto-deletion policy, library update worker that checks for new chapters, and full backup and restore of library and settings (schema versioned, migration tested).
+- **Self-update.** The app checks GitHub releases, downloads the APK, and installs it. No store in the middle.
+- **Safety.** URL sanitiser, safe DNS, redirect interceptor, and a security test suite for the reader's WebView paths.
 
 ## The AI part
 
-Chapter summaries run on the device through llmedge:
+Chapter summaries run on the phone through llmedge. `LlmEdgeSummaryEngine` pulls `Qwen3-0.6B` Q4_K_M from Hugging Face, streams a 256-token summary, and the text never leaves the device. The app has two flavours: `standard` builds without llmedge (the summary button shows as unavailable) and `ai` pulls llmedge from Maven Central.
 
-- `SummaryService` loads a local model and summarizes with no network call
-- the text never leaves the phone
-- the summary sits inside the reading flow
+## Size and testing
 
-## Architecture
-
-- `MainActivity` runs the reader, library, explore, deep links, and file picking
-- `ContentRepository` handles import and normalizing formats
-- `SummaryService` hands off to llmedge instead of putting inference in the UI
-- Compose, Room, and Hilt give it a normal app lifecycle
+About 54k lines of Kotlin. 87 test files and 8 macrobenchmarks (cold and warm startup, PDF opening, manhwa scrolling, restored reader, AI initialisation), with a baseline profile generator. Min SDK 30.

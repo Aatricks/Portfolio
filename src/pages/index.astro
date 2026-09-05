@@ -17,7 +17,7 @@ const secondary = featuredProjects.slice(2);
 
 const aboutCredentials = [
 	{ label: 'now', value: 'CS engineering', detail: 'Polytech Tours · 2022–27' },
-	{ label: 'next', value: 'AI research intern', detail: 'HEC Montréal · 2026' },
+	{ label: 'was', value: 'AI research intern', detail: 'HEC Montréal · Apr–Aug 2026' },
 	{ label: 'based', value: 'France', detail: '14 yrs abroad' },
 ];
 
@@ -131,7 +131,7 @@ const externalProjects = [
 				<p class="section-marker">02 · about</p>
 				<h2 id="about-title" class="section__title">
 					CS engineering at <em>Polytech&nbsp;Tours</em>,<br />
-					next, AI research at <em>HEC&nbsp;Montréal</em>.
+					a research internship at <em>HEC&nbsp;Montréal</em> in 2026.
 				</h2>
 			</header>
 
@@ -145,11 +145,11 @@ const externalProjects = [
 					<p class="about__body">
 						It started with small stuff, a chess engine in C and the controls for an
 						autonomous submarine, then kept drifting toward local AI. That's the work I
-						care about most: <strong>LightDiffusion</strong>, a Stable Diffusion stack I
-						tuned to be one of the fastest, and <strong>llmedge</strong>, an Android
-						runtime that runs LLMs, diffusion, and speech right on the phone. The rest
-						tends to come from everyday friction: Emaki because I wanted a better
-						reader, with the summaries running on-device, and FrameLimiter because I was
+						care about most: <strong>LightDiffusion</strong>, a Stable Diffusion backend I
+						wrote for speed (2.8 it/s where ComfyUI does 1.4), and <strong>llmedge</strong>, an Android
+						library that runs LLMs, diffusion, and speech on the phone (on Maven Central, maintained on issues). The rest
+						tends to come from everyday friction: <strong>Emaki</strong> because I wanted a better
+						reader, with the summaries running on-device (the one I still actively maintain), and <strong>FrameLimiter</strong> because I was
 						tired of my Air cooking itself in games. <strong>Pilotrs</strong> is a flight
 						simulator core I wrote in Rust to play with control loops: keeping a relaxed-stability
 						airframe (which stalls in 0.3 seconds on its own) airborne using noisy sensor

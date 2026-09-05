@@ -1,11 +1,11 @@
 ---
 title: LightDiffusion-Next
-description: A local image-generation stack I tuned for speed. A pipeline core, a queueing server, and a browser UI.
-thesis: A local diffusion setup focused on speed, model support, and the implementation details.
-eyebrow: Generation stack
-blurb: Local image-generation system. Pipeline core, queueing server, browser UI, tuned with Xformers, BFloat16, WaveSpeed, and Stable-Fast.
-proof: ~30% faster inference than open-source baseline · Ready Tensor CV Expo 2024
-stackLine: Python / FastAPI / Streamlit / Gradio / PyTorch / Flux / SDXL
+description: A local Stable Diffusion and Flux backend written for speed. Own sampler stack, attention cascade, Stable-Fast compilation, FP8 / NVFP4 weights, request coalescing. FastAPI server, React UI, HuggingFace Space.
+thesis: Started as 3,000 lines of plain PyTorch, became a full diffusion backend with about 35 documented optimisations. 2.8 it/s on a mobile 3060 against ComfyUI's 1.4 on the same box. Last commit April 2026.
+eyebrow: Diffusion backend
+blurb: Local Stable Diffusion and Flux backend written for speed. Own samplers (AYS, CFG++), attention cascade, Stable-Fast, FP8 / NVFP4, DeepCache, request coalescing. FastAPI + React, HuggingFace Space. 51 stars.
+proof: 2.8 it/s vs ComfyUI 1.4 (SD1.5, 1024², mobile 3060) · Ready Tensor CV Expo 2024 · 51 stars
+stackLine: Python / PyTorch / FastAPI / React / Gradio / SD1.5 / SDXL / Flux2 Klein / CUDA / ROCm / MPS
 themeKey: lightdiffusion-next
 accent: '#b8421a'
 accentDark: '#f4b458'
@@ -54,31 +54,35 @@ highlights:
 status: flagship
 ---
 
-`LightDiffusion-Next` is a local image-generation system built around a pipeline core, a queueing server, and a web interface. The project includes a complete setup guide, API docs, and a breakdown of the architecture and performance optimizations.
+`LightDiffusion-Next` is a local image-generation backend I wrote for speed. It started as a 3,000-line plain PyTorch script (the original LightDiffusion), then got refactored into a modular backend with a FastAPI server, a React UI, a Gradio entry for HuggingFace ZeroGPU, and Docker.
 
-## The speed work
+Last commit April 2026. The repo, docs, and [HuggingFace Space](https://huggingface.co/spaces/Aatricks/LightDiffusion-Next) are up, and it has 51 stars.
 
-The first version of this project measured about **30% less inference time** than open-source baselines, earning a spot in the **Ready Tensor CV Projects Expo 2024**. The speedup comes from:
+## Speed
 
-- **Scheduler optimizations**: reworking the sampling loop instead of using the stock reference implementation.
-- **VRAM tensor management**: controlling exactly where and when tensors are allocated in memory instead of delegating it to the framework.
+Measured on a mobile 3060, SD1.5, 1024×1024, batch 1, BF16, stock installs:
 
-It also wires **Xformers**, **BFloat16**, **WaveSpeed**, and **Stable-Fast** into the execution path.
+| tool | it/s |
+|---|---|
+| LightDiffusion + Stable-Fast | 2.8 |
+| LightDiffusion | 1.9 |
+| ComfyUI | 1.4 |
+| SD Forge | 1.3 |
+| SD WebUI | 0.9 |
 
-## The workflow
+The first version measured about 30% less inference time than the baselines and got into the Ready Tensor CV Projects Expo 2024.
 
-It's built to be used repeatedly, with:
+## Where the speed comes from
 
-- prompt and negative prompt, presets, and generation modes
-- enhancement passes: Hires-Fix, ADetailer, prompt enhancement, img2img
-- queue, history, output previews, and uploads
-- a REST API and deployment paths (including a hosted HuggingFace Space)
+The repo has a [source-based optimisation report](https://aatricks.github.io/LightDiffusion-Next/implemented-optimizations-report/) listing about 35 items with the file each one lives in. The ones that matter most:
 
-## Architecture
+- **Attention cascade.** SpargeAttn, then SageAttention, then xformers, then PyTorch SDPA, whichever is present. Flux2 prefers cuDNN / Flash SDPA.
+- **Caches.** Prompt embedding cache so a repeated prompt is not re-encoded. Cross-attention K/V projection cache for static context. DeepCache and First Block Cache reuse denoiser output between steps.
+- **Sampling.** AYS scheduler by default (same quality in fewer steps), CFG++ samplers, CFG=1 skips the unconditional branch, optional CFG-free tapering and dynamic CFG rescale. Multi-scale latent switching does part of the denoising at lower resolution.
+- **Compilation and precision.** Stable-Fast traces the UNet. `torch.compile` as the alternative. BF16/FP16 picked per hardware. FP8 and NVFP4 weight quantisation, and load-time weight-only quantisation so Flux2 Klein fits on smaller VRAM.
+- **Memory.** Partial loading and offload policy for low-VRAM cards (down to 2 GB, or CPU only). Pinned checkpoint tensors and async transfers. Tiled VAE.
+- **Serving.** The FastAPI server coalesces compatible requests into one batch, prefetches the next checkpoint, keeps models loaded, and returns PNG bytes from memory instead of disk.
 
-The main pieces:
+## What it runs
 
-- generation settings go through one shared pipeline context, no per-UI branches
-- model families (SD1.5, SDXL, Flux, LoRAs) get assembled from diffusion, encoder, and VAE pieces
-- long jobs are queueable, not blocking calls
-- the frontend is kept separate from the pipeline
+SD1.5, SDXL, Flux2 Klein, LoRAs, textual inversion. Hires-Fix, ADetailer (Impact Pack based), UltimateSD upscale, img2img, TAESD live previews, an optional Ollama prompt enhancer. CUDA, ROCm, and Apple MPS. It also served as the image backend for a Discord bot (Boubou) and a Newelle extension.

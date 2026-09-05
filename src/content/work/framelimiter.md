@@ -1,11 +1,11 @@
 ---
 title: FrameLimiter
-description: A frame-rate limiter for native Metal games on Apple Silicon. A small injected dylib hooks CAMetalLayer's nextDrawable and paces the render loop, trading input lag for less GPU power and heat.
+description: A frame-rate limiter for native Metal games on Apple Silicon. An injected dylib swizzles CAMetalLayer nextDrawable and paces it with mach_wait_until, so back-pressure stalls the GPU. Hardened-runtime games get an opt-in ad-hoc re-sign so the injection isn't stripped.
 thesis: A frame cap that actually does less GPU work, not just shows fewer frames. It paces the one call every Metal game goes through and lets back-pressure do the rest.
 eyebrow: Native systems
-blurb: Frame-rate limiter for native Metal games on Apple Silicon. An injected dylib hooks nextDrawable and paces the render loop, trading lag for power and heat.
-proof: back-pressure cuts real GPU work · menu-bar app & CLI · background throttling
-stackLine: Objective-C / Metal / CAMetalLayer / C / DYLD injection
+blurb: Frame-rate limiter for native Metal games on Apple Silicon. Injects a dylib via DYLD_INSERT_LIBRARIES, swizzles CAMetalLayer nextDrawable, paces it with mach_wait_until. Gets past the hardened runtime with an ad-hoc re-sign.
+proof: one swizzled method covers Metal, MTKView, SDL2, MoltenVK · ad-hoc re-sign for hardened games · 10 fps when occluded
+stackLine: Objective-C / Metal / CAMetalLayer / C / DYLD injection / codesign
 themeKey: framelimiter
 accent: '#9d6b0f'
 accentDark: '#e3a73a'
@@ -69,6 +69,10 @@ When the game launches:
 3. It `execv`s into the real binary.
 
 Because `execv` preserves the PID, the menu-bar helper can monitor the game's exact PID and automatically exit the moment you quit the game. If you open the menu-bar app manually, it stays open for configuring global defaults.
+
+## Hardened runtime
+
+If a game is signed with the hardened runtime, macOS strips `DYLD_INSERT_LIBRARIES` before the process starts, so the dylib never loads. The installer detects this and refuses by default. If you opt in, it re-signs the game binary ad-hoc with its entitlements carried over, which is the only way the injection survives. Entitlements that ad-hoc signing can't carry (keychain access groups, and similar) are gone after that, and the installer says so before it does it. Games with a `__RESTRICT` segment can't be injected at all. Most Steam games aren't hardened, so most of the time this never comes up.
 
 ## Background occlusion throttling
 

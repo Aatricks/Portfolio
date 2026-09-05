@@ -30,31 +30,31 @@
 
   <g font-family="ui-monospace, Menlo, Consolas, monospace">
     <rect x="104" y="296" width="472" height="50" fill="none" stroke="#8a8170" stroke-width="1"/>
-    <text x="128" y="322" font-size="15" fill="#ede6d7">builds the tour point by point</text>
-    <text x="128" y="340" font-size="12" fill="#5e564a">one client at a time</text>
+    <text x="128" y="322" font-size="15" fill="#ede6d7">builds the solution no local search allowed after</text>
+    <text x="128" y="340" font-size="12" fill="#5e564a">no local search allowed after</text>
 
     <rect x="104" y="362" width="472" height="50" fill="none" stroke="#8a8170" stroke-width="1"/>
-    <text x="128" y="388" font-size="15" fill="#ede6d7">warm-started by imitation, then RL</text>
-    <text x="128" y="406" font-size="12" fill="#5e564a">n=50: ≈1.1% over the HGS oracle</text>
+    <text x="128" y="388" font-size="15" fill="#ede6d7">LEHD decoder, POMO training, adversarial instances</text>
+    <text x="128" y="406" font-size="12" fill="#5e564a">best run: 1.05% in-dist, 8.45% out-of-dist</text>
 
     <rect x="104" y="428" width="472" height="50" fill="none" stroke="#8a8170" stroke-width="1"/>
-    <text x="128" y="454" font-size="15" fill="#ede6d7">quality is in the test-time search</text>
-    <text x="128" y="472" font-size="12" fill="#5e564a">not in the network</text>
+    <text x="128" y="454" font-size="15" fill="#ede6d7">never beat the solver, never faster</text>
+    <text x="128" y="472" font-size="12" fill="#5e564a">AILS-II unbeaten at this size</text>
   </g>
 
   <g font-family="ui-monospace, Menlo, Consolas, monospace" fill="#8a8170" font-size="14">
-    <text x="104" y="514">· every learned replacement lost</text>
-    <text x="104" y="542">· ≈99.9% of the large-n win is classical SISR</text>
-    <text x="104" y="570">· the neural policy adds ≈0.07%</text>
+    <text x="104" y="514">· diffusion / flows / GFlowNets: collapsed</text>
+    <text x="104" y="542">· differentiable split: gradient is zero almost everywhere</text>
+    <text x="104" y="570">· learned steering inside ILS: no gain</text>
   </g>
   <rect x="104" y="592" width="176" height="30" fill="none" stroke="#8a8170" stroke-width="1" stroke-dasharray="5 4"/>
-  <text x="192" y="612" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12" fill="#8a8170">measured, set aside</text>
+  <text x="192" y="612" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12" fill="#8a8170">negative result, stopped</text>
 
   <!-- RIGHT: classical ILS engine, the spine that wins -->
   <rect x="680" y="210" width="520" height="440" fill="none" stroke="#ede6d7" stroke-width="1.5"/>
   <rect x="680" y="210" width="520" height="4" fill="#a98bf0"/>
   <text x="704" y="250" font-family="Georgia, 'Times New Roman', serif" font-size="22" fill="#ede6d7">Classical ILS engine</text>
-  <text x="1176" y="250" text-anchor="end" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="13" fill="#a98bf0">Study B · the win</text>
+  <text x="1176" y="250" text-anchor="end" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="13" fill="#a98bf0">Study B</text>
   <text x="704" y="274" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="14" fill="#8a8170">reimplemented from the papers, in Rust</text>
 
   <g font-family="ui-monospace, Menlo, Consolas, monospace">
@@ -68,25 +68,25 @@
     <text x="728" y="436" font-size="15" fill="#ede6d7">SISR ruin &amp; recreate + SREX</text>
 
     <rect x="704" y="464" width="472" height="44" fill="#0d0c0a" stroke="#a98bf0" stroke-width="1.5"/>
-    <text x="728" y="492" font-size="15" fill="#ede6d7">best-of-K parallel ruin oracle</text>
+    <text x="728" y="492" font-size="15" fill="#ede6d7">simulated annealing acceptance</text>
   </g>
 
   <text x="704" y="544" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="13" letter-spacing="3" fill="#a98bf0">RESULT</text>
-  <text x="704" y="572" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="15" fill="#ede6d7">beats PyVRP (HGS) at every budget</text>
-  <text x="704" y="598" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="13" fill="#8a8170">AILS-II unbeaten · single-thread SOTA</text>
+  <text x="704" y="572" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="15" fill="#ede6d7">ahead of PyVRP at 10 s, tied at 120 s</text>
+  <text x="704" y="598" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="13" fill="#8a8170">FILO and AILS-II ahead at every budget</text>
 
   <!-- standing strip -->
   <rect x="80" y="680" width="1120" height="76" fill="#1c1915" stroke="#ede6d7" stroke-width="1.5"/>
   <rect x="80" y="680" width="4" height="76" fill="#a98bf0"/>
   <text x="108" y="712" font-family="Georgia, 'Times New Roman', serif" font-size="18" fill="#ede6d7">Standing</text>
-  <text x="108" y="734" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="13" fill="#8a8170">Set-X · gap to best-known @120 s, lower is better</text>
+  <text x="108" y="734" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="13" fill="#8a8170">Set-X · gap to best-known @10 s, single core, lower is better</text>
 
-  <rect x="580" y="698" width="180" height="16" fill="#a98bf0"/>
-  <text x="768" y="711" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="13" fill="#ede6d7">engine 0.30%</text>
+  <rect x="580" y="698" width="143" height="16" fill="#a98bf0"/>
+  <text x="731" y="711" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="13" fill="#ede6d7">engine 0.76%</text>
   <rect x="580" y="726" width="258" height="16" fill="#8a8170"/>
-  <text x="846" y="739" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="13" fill="#8a8170">PyVRP 0.43%</text>
+  <text x="846" y="739" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="13" fill="#8a8170">PyVRP 1.37%</text>
 
   <!-- caption -->
   <line x1="70" y1="792" x2="1210" y2="792" stroke="#2a261f" stroke-width="1"/>
-  <text x="70" y="824" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="20" fill="#8a8170">The lever at bounded size is search, not the network. Two optimal solutions share only ~41% of their routes.</text>
+  <text x="70" y="824" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="20" fill="#8a8170">two near-optimal solutions share only ~40% of their same-route pairs. there is no single answer for a model to learn.</text>
 </svg>

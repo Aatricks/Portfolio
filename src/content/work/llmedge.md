@@ -1,11 +1,11 @@
 ---
 title: llmedge
-description: An Android-native runtime for running AI models locally on phones. LLMs, image generation, speech, and embeddings, all behind one Kotlin API.
-thesis: A Kotlin wrapper that handles the messy native engines, memory allocations, and fallback logic so Android apps don't have to.
-eyebrow: Flagship system
-blurb: Android runtime that runs LLMs, diffusion, and speech models locally on real phones. One Kotlin API over llama.cpp, stable-diffusion.cpp, whisper.cpp, and ONNX.
-proof: 2,000 Maven Central downloads (July 2026) · powers Emaki summaries
-stackLine: Kotlin / JNI / C++ / Android NDK / Vulkan / OpenCL / ONNX
+description: Android library for running GGUF models on the phone. Text, speech, image and video generation, vision, RAG, tool calling. One Kotlin API over llama.cpp, stable-diffusion.cpp, whisper.cpp, bark.cpp and ONNX. On Maven Central, ships inside Emaki and other apps.
+thesis: 72k lines of Kotlin over four native engines. Backend fallback, runtime pooling, model download and validation, on-device safetensors to GGUF conversion. Published on Maven Central, maintained on issues.
+eyebrow: Android on-device AI library
+blurb: Android library that runs LLMs, image and video generation, speech, vision, and RAG on the phone. One Kotlin API over llama.cpp, stable-diffusion.cpp, whisper.cpp, bark.cpp, and ONNX. 72k lines of Kotlin, 161 test files.
+proof: 2,000 Maven Central downloads (July 2026) · v0.4.7 · ships in Emaki and other people's apps · maintained on issues
+stackLine: Kotlin / JNI / C++ / Android NDK / OpenCL / Vulkan / ONNX / GGUF
 themeKey: llmedge
 accent: '#2b6cb0'
 accentDark: '#79a7ff'
@@ -49,39 +49,32 @@ highlights:
 status: flagship
 ---
 
-`llmedge` is an Android toolkit for running AI models on the device: LLMs, image generation, speech, and embeddings, all behind one Kotlin API, with the native engines and their failure modes kept out of app code.
-
-## The problem
-
-Running local AI on Android is mostly a systems problem:
-
-- devices vary a lot between vendors
-- GPU paths break differently on different phones
-- model files are big and annoying to move around
-- native runtimes are expensive to start up over and over
-- and apps still want a clean Kotlin API
-
-Wrapping a single backend doesn't cover that. The runtime has to handle the model files, device checks, and fallback itself.
-
-## What I decided
-
-- Kotlin handles the app-facing API, while JNI encapsulates the C++ code to keep the UI layer clean. Coroutines and Flow keep the public API normal even though the inside is heavily native.
-- Backends fall back in a set order: OpenCL if the device can do it, Vulkan if not, CPU as the safe last resort. The coordinator checks what works and stops retrying paths that already failed on that phone.
-- Runtimes get pooled and reused, so a session doesn't re-init native code on every call. On phones that startup cost is most of a short job.
-- Model files are the library's job. Downloading, resuming, validating, and caching all happen in ModelRepository instead of every app redoing it.
-
-## What it can do
-
-- LLM inference (GGUF via llama.cpp), with KV-cache reuse for multi-turn chat
-- image generation through stable-diffusion.cpp
-- speech-to-text and text-to-speech (whisper.cpp, bark.cpp)
-- embeddings, RAG, and PDF reading via ONNX utilities
-- example Android apps that exercise the whole API
+`llmedge` is an Android library for running AI models on the phone. One Kotlin API over four native engines (llama.cpp, stable-diffusion.cpp, whisper.cpp, bark.cpp) plus ONNX for embeddings. It is on Maven Central as `io.github.aatricks:llmedge`, it ships inside [`Emaki`](/Portfolio/work/emaki), and other people ship it in their apps. Last fix August 2026. Issues get handled when they come in.
 
 ## On a real phone
 
-A single Kotlin API wrapping llama.cpp, stable-diffusion.cpp, and whisper.cpp. On a stock Galaxy S22: 35 tok/s text generation (Qwen-0.6B, Q4_K_M) and ~40s for a 128×128 SD1.5 image (20 steps, dpmpp2m). Zero servers, zero cloud calls.
+one Kotlin API over llama.cpp / sd.cpp / whisper.cpp. stock Galaxy S22: 35 tok/s text (qwen3-0.6B, Q4_K_M), ~40s for a 128×128 SD1.5 image (20 steps, dpmpp2m). no server, no cloud call.
 
-## Where it runs
+## What it does
 
-It's published on Maven Central as `io.github.aatricks:llmedge` (2,000 downloads from 364 unique sources and 92 corporate networks over three months, measured July 2026). [`Emaki`](/Portfolio/work/emaki) ships llmedge in production for on-device chapter summaries, so the user's text never leaves the phone. The [`llmedge-examples`](https://github.com/Aatricks/llmedge-examples) repo has each feature as its own small Android app.
+- **Text.** GGUF models through llama.cpp (an ik_llama.cpp build, so BitNet b1.58 IQ2_BN runs). Batched blocking and streaming generation, native KV-cache reuse across turns, separate prompt and generation thread counts, a `ChatSession` that replays transcripts for reasoning models, reasoning on/off controls.
+- **Tool calling.** `edge.text.toolAgent(...)` lets the model call app-defined tools through a JSON envelope. Read-only tools run automatically. Action tools need an explicit policy. A bash tool exists for JVM hosts.
+- **Speech.** whisper.cpp with timestamps, language detection, streaming transcription, SRT output. bark.cpp for text-to-speech with ARM optimisations.
+- **Image.** stable-diffusion.cpp with EasyCache and LoRA, FLUX.2 Klein 4B (distilled DiT), per-step progress streaming, ESRGAN upscaling (Remacri).
+- **Video.** Wan 2.1, 4 to 64 frames, components loaded sequentially so it fits.
+- **Vision.** LLaVA-style models and a SmolVLM2-256M preset. OCR through ML Kit.
+- **RAG.** PDF indexing, ONNX embeddings, vector search, Q&A, all on the phone.
+- **Model files.** Hugging Face download with resume, progress, private repos, validation, old-mirror redirects. Big files can go through Android's DownloadManager so they stay off the Dalvik heap. Context window is read from the model and capped to what the heap allows (2K to 8K).
+- **On-device conversion.** safetensors to GGUF on the phone (Llama arch, GPT2-BPE tokenizer), with optional Q8_0 / Q4_K_M / IQ2_BN quantisation. So a model that only exists as safetensors can still run.
+
+## How it's built
+
+- `LLMEdge` is a thin facade that lazy-creates `text`, `speech`, `image`, `vision`, `rag` clients on first access. Each client is also constructible on its own.
+- `ModelRepository` owns download, validation, and caching. Inference clients never fetch files themselves.
+- `RuntimePool` and `RuntimeCoordinator` cache native runtimes across calls and pick the backend. Order is OpenCL, then Vulkan, then CPU. A backend that fails on a device gets recorded in a verdict store and is not retried on that device.
+- `RuntimePoolProfile` lets each domain say how its pool is keyed, sized, and loaded without duplicating the pool code.
+- Native loading is explicit and overridable, so the Kotlin layer runs in JVM tests without an emulator. 161 test files, including Linux end-to-end runs of the native engines.
+
+## Adoption
+
+2,000 Maven Central downloads from 364 unique sources and 92 corporate networks over three months, measured July 2026. Current release is v0.4.7. Emaki uses it for chapter summaries. The [`llmedge-examples`](https://github.com/Aatricks/llmedge-examples) repo has each feature as its own small Android app, and the [docs site](https://aatricks.github.io/llmedge/) covers install, usage, architecture, quirks, and testing.
