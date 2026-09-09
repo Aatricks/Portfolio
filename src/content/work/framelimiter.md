@@ -4,7 +4,7 @@ description: A frame-rate limiter for native Metal games on Apple Silicon. An in
 thesis: A frame cap that actually does less GPU work, not just shows fewer frames. It paces the one call every Metal game goes through and lets back-pressure do the rest.
 eyebrow: Native systems
 blurb: Frame-rate limiter for native Metal games on Apple Silicon. Injects a dylib via DYLD_INSERT_LIBRARIES, swizzles CAMetalLayer nextDrawable, paces it with mach_wait_until. Gets past the hardened runtime with an ad-hoc re-sign.
-proof: one swizzled method covers Metal, MTKView, SDL2, MoltenVK · ad-hoc re-sign for hardened games · 10 fps when occluded
+proof: one swizzled Metal call covers MTKView, SDL2, MoltenVK · ad-hoc codesign bypass
 stackLine: Objective-C / Metal / CAMetalLayer / C / DYLD injection / codesign
 themeKey: framelimiter
 accent: '#9d6b0f'

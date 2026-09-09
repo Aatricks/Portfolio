@@ -27,7 +27,6 @@ const imgDark = data.img.endsWith('.svg') ? data.img.replace(/\.svg$/, '-dark.sv
 				<span transition:name={`title-${data.themeKey}`}>{data.title}</span>
 				<span class="pp__arrow" aria-hidden="true">↗</span>
 			</h3>
-			{data.blurb && <p class="pp__blurb">{data.blurb}</p>}
 		</div>
 
 		<div class="pp__media">
@@ -118,19 +117,12 @@ const imgDark = data.img.endsWith('.svg') ? data.img.replace(/\.svg$/, '-dark.sv
 		line-height: 1.04;
 		letter-spacing: -0.022em;
 		color: var(--ink);
-		margin-bottom: 1rem;
+		margin-bottom: 0;
 		transition: font-variation-settings 360ms var(--ease);
 	}
 
 	.pp__link:hover .pp__title {
 		font-variation-settings: 'opsz' 144, 'SOFT' 90, 'WONK' 1;
-	}
-
-	.pp__blurb {
-		max-width: 34rem;
-		font-size: 0.98rem;
-		line-height: 1.6;
-		color: var(--ink-soft);
 	}
 
 	.pp__arrow {

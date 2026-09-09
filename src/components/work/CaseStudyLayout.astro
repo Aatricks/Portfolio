@@ -62,7 +62,6 @@ const buildLabel = [
 						))}
 					</ul>
 					<h1 class="project-page__title"><span transition:name={`title-${themeKey}`}>{data.title}</span></h1>
-					<p class="project-page__thesis">{data.thesis}</p>
 
 					<div class="project-page__tech-stack">
 						<span class="project-page__tech-label">stack //</span>
@@ -264,18 +263,6 @@ const buildLabel = [
 	}
 
 	/* Optical bleed removed for clean alignment */
-
-	.project-page__thesis {
-		max-width: 42rem;
-		margin-inline: auto;
-		font-size: clamp(1.08rem, 1.8vw, 1.32rem);
-		line-height: 1.55;
-		color: var(--ink-soft);
-		font-family: var(--font-display);
-		font-style: italic;
-		font-weight: 400;
-		margin-bottom: 2rem;
-	}
 
 	.project-page__hero-copy {
 		max-width: 56rem;

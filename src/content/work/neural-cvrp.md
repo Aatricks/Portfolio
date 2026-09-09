@@ -1,10 +1,10 @@
 ---
 title: Neural CVRP
 description: 'four months of research at HEC Montréal on the capacitated vehicle routing problem. neural methods lost to classical solvers. then 13 old metaheuristics re-implemented under one protocol to measure implementation bias, and a pipeline on VRP-REP that does it per paper.'
-thesis: 'research internship, HEC Montréal (CIRRELT), april to august 2026. part one: can a learned model beat HGS / AILS-II on CVRP? no. part two: how much of the published ranking is code quality rather than algorithm? enough to reorder a decade. part three: the protocol as a VRP-REP pipeline.'
+thesis: Research internship at HEC Montréal (CIRRELT). Empirical limits of neural CVRP solvers, benchmarking 13 historical metaheuristics under a single protocol, and deploying reproduction pipelines to VRP-REP.
 eyebrow: research · negative result
 blurb: 'neural CVRP (POMO / LEHD, GFlowNets, diffusion) tested against classical solvers: lost. 13 metaheuristics from 1964 to 2004 re-implemented in Rust under one protocol to measure implementation bias. now a reproduction pipeline on VRP-REP.'
-proof: learned methods 1.05% behind, never faster · 13 metaheuristics, 30 seeds, one cluster · DETABA (1999) joins the top group
+proof: learned models 1.05% behind classical baseline · 13 reproduced historical metaheuristics
 stackLine: PyTorch / POMO / LEHD / GFlowNet / Rust / PyVRP / Slurm / Claude agents / Symfony (VRP-REP)
 themeKey: neural-cvrp
 accent: '#5a3fc0'

@@ -147,9 +147,9 @@ const externalProjects = [
 						autonomous submarine, then kept drifting toward local AI. That's the work I
 						care about most: <strong>LightDiffusion</strong>, a Stable Diffusion backend I
 						wrote for speed (2.8 it/s where ComfyUI does 1.4), and <strong>llmedge</strong>, an Android
-						library that runs LLMs, diffusion, and speech on the phone (on Maven Central, maintained on issues). The rest
+						library that runs LLMs, diffusion, and speech directly on the phone. The rest
 						tends to come from everyday friction: <strong>Emaki</strong> because I wanted a better
-						reader, with the summaries running on-device (the one I still actively maintain), and <strong>FrameLimiter</strong> because I was
+						reader with on-device summaries, and <strong>FrameLimiter</strong> because I was
 						tired of my Air cooking itself in games. <strong>Pilotrs</strong> is a flight
 						simulator core I wrote in Rust to play with control loops: keeping a relaxed-stability
 						airframe (which stalls in 0.3 seconds on its own) airborne using noisy sensor
@@ -192,7 +192,7 @@ const externalProjects = [
 						<a href={`/Portfolio/work/${project.id}`} class="project-index__link">
 							<span class="project-index__num">{String(i + 1).padStart(2, '0')}</span>
 							<h3 class="project-index__title">{project.data.title}</h3>
-							<span class="project-index__stack">{project.data.blurb ?? project.data.stackLine}</span>
+							<span class="project-index__stack">{project.data.stackLine}</span>
 							<span class="project-index__arrow" aria-hidden="true">→</span>
 						</a>
 					</li>

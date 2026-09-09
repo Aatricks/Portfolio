@@ -8,7 +8,7 @@ export const collections = {
 		schema: z.object({
 			title: z.string(),
 			description: z.string(),
-			thesis: z.string(),
+			thesis: z.string().optional(),
 			eyebrow: z.string(),
 			blurb: z.string().optional(),
 			proof: z.string().optional(),

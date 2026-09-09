@@ -1,10 +1,10 @@
 ---
 title: LightDiffusion-Next
 description: A local Stable Diffusion and Flux backend written for speed. Own sampler stack, attention cascade, Stable-Fast compilation, FP8 / NVFP4 weights, request coalescing. FastAPI server, React UI, HuggingFace Space.
-thesis: Started as 3,000 lines of plain PyTorch, became a full diffusion backend with about 35 documented optimisations. 2.8 it/s on a mobile 3060 against ComfyUI's 1.4 on the same box. Last commit April 2026.
+thesis: A local diffusion backend tuned for throughput, achieving 2.8 it/s on a mobile RTX 3060 versus ComfyUI's 1.4 it/s on the same hardware.
 eyebrow: Diffusion backend
-blurb: Local Stable Diffusion and Flux backend written for speed. Own samplers (AYS, CFG++), attention cascade, Stable-Fast, FP8 / NVFP4, DeepCache, request coalescing. FastAPI + React, HuggingFace Space. 51 stars.
-proof: 2.8 it/s vs ComfyUI 1.4 (SD1.5, 1024², mobile 3060) · Ready Tensor CV Expo 2024 · 51 stars
+blurb: Local Stable Diffusion and Flux backend written for speed. Custom samplers (AYS, CFG++), attention cascade, Stable-Fast, FP8 / NVFP4, DeepCache, request coalescing.
+proof: 2.8 it/s vs ComfyUI 1.4 (SD1.5, mobile 3060) · Ready Tensor CV Expo 2024
 stackLine: Python / PyTorch / FastAPI / React / Gradio / SD1.5 / SDXL / Flux2 Klein / CUDA / ROCm / MPS
 themeKey: lightdiffusion-next
 accent: '#b8421a'
@@ -56,7 +56,7 @@ status: flagship
 
 `LightDiffusion-Next` is a local image-generation backend I wrote for speed. It started as a 3,000-line plain PyTorch script (the original LightDiffusion), then got refactored into a modular backend with a FastAPI server, a React UI, a Gradio entry for HuggingFace ZeroGPU, and Docker.
 
-Last commit April 2026. The repo, docs, and [HuggingFace Space](https://huggingface.co/spaces/Aatricks/LightDiffusion-Next) are up, and it has 51 stars.
+The repository, documentation, and an interactive [HuggingFace Space](https://huggingface.co/spaces/Aatricks/LightDiffusion-Next) are publicly available.
 
 ## Speed
 

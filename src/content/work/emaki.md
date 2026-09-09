@@ -1,10 +1,10 @@
 ---
 title: Emaki
-description: Android reader for web novels, manga, manhwa, EPUB, and PDF. Own scrapers with unified search across sources, offline chapter downloads, reading position that sticks, on-device chapter summaries through llmedge. 54k lines of Kotlin. The one project I actively maintain.
-thesis: Web novels, manga, EPUB, PDF, one reader. Scrapers, download queue, backups, self-update from GitHub releases. Summaries run on the phone through llmedge. v0.6.1, still moving.
-eyebrow: Android reader · active
-blurb: Android reader for web novels, manga, manhwa, EPUB, and PDF. Own scrapers, unified search, offline downloads, on-device chapter summaries through llmedge. 54k lines of Kotlin, 87 test files. Actively maintained.
-proof: v0.6.1 (September 2026) · actively maintained · user text never leaves the phone
+description: Android reader for web novels, manga, manhwa, EPUB, and PDF. Own scrapers with unified search across sources, offline chapter downloads, reading position that sticks, on-device chapter summaries through llmedge. 54k lines of Kotlin.
+thesis: Offline-first Android reader with unified scraping, persistent reading state, and on-device chapter summaries through llmedge.
+eyebrow: Android reader
+blurb: Offline-first Android reader for web novels, manga, EPUB, and PDF with on-device chapter summaries via llmedge.
+proof: on-device Qwen3-0.6B summaries · zero network calls · offline-first
 stackLine: Kotlin / Jetpack Compose / Room / Hilt / WorkManager / Ktor / Jsoup / llmedge
 themeKey: emaki
 accent: '#2f7a3a'
@@ -47,7 +47,7 @@ highlights:
 status: flagship
 ---
 
-`Emaki` (formerly EasyReader, named after the Japanese picture scroll) is an Android reader for web novels, manga, manhwa, EPUB, and PDF. It's the one project I actively maintain. Last release v0.6.1, September 2026. It's also where [`llmedge`](/Portfolio/work/llmedge) ships.
+`Emaki` (formerly EasyReader, named after the Japanese picture scroll) is an Android reader for web novels, manga, manhwa, EPUB, and PDF. It runs fully offline, with local chapter summaries powered by [`llmedge`](/Portfolio/work/llmedge).
 
 ## What it does
 
